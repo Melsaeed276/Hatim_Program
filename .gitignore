@@ -1,1 +1,6 @@
-/firebase_options.dart
+
+firebase.json
+firebase.json
+lib/firebase_options.dart
+macos/Runner/GoogleService-Info.plist
+macos/Runner.xcodeproj/project.pbxproj

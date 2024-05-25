@@ -33,18 +33,17 @@ class UserServices extends ServicesBase {
   Future<UserModel?> getUserByPhoneNumber(String phoneNumber) async {
     try {
       // by the ID
-      var data = await userDb.doc(UserModel.processPhoneNumber(phoneNumber)).get().then((value) {
+      var data = await userDb
+          .doc(UserModel.processPhoneNumber(phoneNumber))
+          .get()
+          .then((value) {
         return value;
       });
 
       if (kDebugMode) {
         print("from server data is ${UserModel.fromJson(data.data()!)}");
       }
-      if (data == null) {
-        return null;
-      }else {
-        return UserModel.fromJson(data.data()!);
-      }
+      return UserModel.fromJson(data.data()!);
     } catch (e) {
       if (kDebugMode) {
         print("error from server $e");

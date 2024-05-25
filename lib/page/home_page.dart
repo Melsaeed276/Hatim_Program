@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hatim_program/models/models.dart';
@@ -22,13 +20,16 @@ class HomePage extends StatelessWidget {
     //Theme
     final theme = Theme.of(context);
 
-   // print(ModalRoute.of(context)!.settings.name);
+    // print(ModalRoute.of(context)!.settings.name);
 
     return FutureBuilder<UserModel?>(
-      future: userController.getUserByPhoneNumber(), // Assuming this method loads the userController data
+      future: userController
+          .getUserByPhoneNumber(), // Assuming this method loads the userController data
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator()); // Show a loading spinner while waiting
+          return const Center(
+              child:
+                  CircularProgressIndicator()); // Show a loading spinner while waiting
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // Show error if any
         } else {
@@ -41,17 +42,18 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.logout),
                   onPressed: () async {
                     userController.setUserID = '0';
-                    context.read<AuthController>().phoneNumberController.clear();
+                    context
+                        .read<AuthController>()
+                        .phoneNumberController
+                        .clear();
                     context.read<AuthController>().nameController.clear();
 
-                   AppRoutes.goBack(context);
-
+                    AppRoutes.goBack(context);
                   },
                 ),
               ],
             ),
             body: Column(
-
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -62,19 +64,23 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 40.0, bottom: 18, right: 20),
+                  padding:
+                      const EdgeInsets.only(left: 40.0, bottom: 18, right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                           flex: 4,
-                          child: Text(lang.youCanFollowYourHatimAndUpdateItFromHere!,
+                          child: Text(
+                              lang.youCanFollowYourHatimAndUpdateItFromHere!,
                               style: theme.textTheme.labelLarge)),
-
                     ],
                   ),
                 ),
-                Expanded(child: UserGroupsView(userData: userController.userModel!,)),
+                Expanded(
+                    child: UserGroupsView(
+                  userData: userController.userModel!,
+                )),
               ],
             ),
           );

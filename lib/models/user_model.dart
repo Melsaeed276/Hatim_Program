@@ -8,16 +8,15 @@ class UserModel {
   late final String id;
   final String name;
   String phoneNumber;
-  final bool  isAdmin;
+  final bool isAdmin;
   // map of groupsID and int of the current chapter
   List<String> groups = [];
-
 
   UserModel({
     required this.name,
     required this.phoneNumber,
     this.isAdmin = false,
-  }){
+  }) {
     id = processPhoneNumber(phoneNumber);
   }
 
@@ -26,15 +25,15 @@ class UserModel {
         name = json['name'],
         phoneNumber = json['phoneNumber'],
         isAdmin = json['isAdmin'],
-        groups =  List<String>.from(json['groups'].map((x) => x.toString()));
+        groups = List<String>.from(json['groups'].map((x) => x.toString()));
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = processPhoneNumber(phoneNumber);
     data['name'] = name;
     data['phoneNumber'] = phoneNumber;
-    data['isAdmin'] = isAdmin ?? false;
-    data['groups'] = groups ?? [];
+    data['isAdmin'] = isAdmin;
+    data['groups'] = groups;
     return data;
   }
 
@@ -61,18 +60,17 @@ class UserModel {
 
   //if the current user has group
   bool isInTheGroups(String groupID) {
-     if (groups.contains(groupID)) {
-        return true;
-      }
-      return false;
+    if (groups.contains(groupID)) {
+      return true;
+    }
+    return false;
   }
 
-
   bool hasGroup(String groupID) {
-    if (groups!.isNotEmpty) {
+    if (groups.isNotEmpty) {
       return true;
     } else {
       return false;
     }
-    }
+  }
 }

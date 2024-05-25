@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:hatim_program/service/user_services.dart';
 
 import '../models/models.dart';
 
 class UserRepo {
-
   final service = UserServices();
 
 // get user info by phone number
@@ -13,16 +11,13 @@ class UserRepo {
     return user;
   }
 
-
-
 // if user exist with phone number return bool
   Future<bool> isUserExist(String phoneNumber) async {
     var user = await service.getUserByPhoneNumber(phoneNumber);
 
-
     if (user != null) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
@@ -33,7 +28,7 @@ class UserRepo {
     if (isUserExist == null) {
       await service.addUser(user);
       return true;
-    }else {
+    } else {
       return false;
     }
   }
@@ -48,7 +43,7 @@ class UserRepo {
     var user = await service.getUserByPhoneNumber(phoneNumber);
     if (user != null) {
       return user.groups;
-    }else {
+    } else {
       return [];
     }
   }
