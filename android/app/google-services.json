@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "413793071742",
+    "project_id": "hatim-program",
+    "storage_bucket": "hatim-program.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413793071742:android:bbcfdfd8b4b05be50fde2f",
+        "android_client_info": {
+          "package_name": "com.fluppy.dev.hatimprogram.hatim_program"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxX0lSHu1XQwGEQFEnksAPPQ1JX6q1-g4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
