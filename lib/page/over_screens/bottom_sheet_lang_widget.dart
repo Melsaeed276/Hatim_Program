@@ -13,12 +13,12 @@ class BottomSheetLangWidget extends StatelessWidget {
         Provider.of<LocalizationController>(context, listen: true);
     return TextButton(
       style: ButtonStyle(
-        padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
           horizontal: 24,
           vertical: 8,
         )),
-        overlayColor: MaterialStateProperty.all(theme.colorScheme.secondary),
-        side: MaterialStateProperty.all(
+        overlayColor: WidgetStateProperty.all(theme.colorScheme.secondary),
+        side: WidgetStateProperty.all(
           BorderSide(
             color: theme.colorScheme.primary,
             width: 1.5,

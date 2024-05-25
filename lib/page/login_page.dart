@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hatim_program/controller/auth_controller.dart';
@@ -117,15 +118,20 @@ class LoginPage extends StatelessWidget {
                             /// check the repo if the user phone number is exit
                             /// if it is exist go to the next page
                             /// if not exist  go to register the user page
-                            await user.getUserByPhoneNumber().then((value) {
+                            await user.getUserByPhoneNumber().then((value)  async {
                               if (value != null) {
+
                                 context.read<UserController>().userModel = value;
+
                                 AppRoutes.goToHome(context);
+
+
                                // AppRoutes.goToHome(context);
                               } else {
                                 AppRoutes.goToRegister(context);
                               }
                             });
+
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

@@ -12,6 +12,10 @@ class UserController extends ChangeNotifier{
 
   //userModel field
   UserModel? _userModel;
+
+  static String userID() {
+    return Hive.box('user').get('userID', defaultValue: '0');
+  }
   //get user model
   UserModel? get userModel {
     if (_userModel != null) {

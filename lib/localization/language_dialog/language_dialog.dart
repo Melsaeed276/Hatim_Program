@@ -16,7 +16,7 @@ class LanguageDialog extends StatelessWidget {
     return Dialog(
       // insetAnimationDuration: const Duration(seconds: 2),
 
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       child: SizedBox(
         width: MediaQuery.of(context).size.width/2,
         child: Padding(
@@ -69,13 +69,13 @@ class LanguageDialog extends StatelessWidget {
                       theme: theme,
                       backgroundColor: lang.getLanguageTitle() ==
                               lang.getLanguageTitles().values.elementAt(index)
-                          ? MaterialStateProperty.all(
+                          ? WidgetStateProperty.all(
                               theme.colorScheme.secondaryContainer)
-                          : MaterialStateProperty.all(Colors.transparent),
+                          : WidgetStateProperty.all(Colors.transparent),
                       textColor: lang.getLanguageTitle() ==
                               lang.getLanguageTitles().values.elementAt(index)
                           ? theme.colorScheme.primary
-                          : theme.colorScheme.onBackground,
+                          : theme.colorScheme.onSurface,
                       onPressed: lang.getLanguageTitle() ==
                               lang.getLanguageTitles().values.elementAt(index)
                           ? () {

@@ -8,7 +8,7 @@ import 'bottom_sheet_lang_widget.dart';
 class NotSupportedWebView extends StatelessWidget {
   final Widget child;
 
-  const NotSupportedWebView({Key? key, required this.child}) : super(key: key);
+  const NotSupportedWebView({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

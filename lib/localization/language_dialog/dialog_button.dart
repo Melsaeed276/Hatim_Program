@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class DialogButton extends StatelessWidget {
   final String buttonText;
   final ThemeData theme;
-  final MaterialStateProperty<Color?>? backgroundColor;
+  final WidgetStateProperty<Color?>? backgroundColor;
   final TextDirection langDirection;
   final Color? textColor;
   final VoidCallback? onPressed;
@@ -33,8 +33,8 @@ class DialogButton extends StatelessWidget {
               ? Alignment.centerLeft
               : Alignment.centerRight,
           animationDuration: const Duration(seconds: 10),
-          elevation: MaterialStateProperty.all(0),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          elevation: WidgetStateProperty.all(0),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18.0),
             ),

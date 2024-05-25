@@ -155,7 +155,9 @@ class GroupModel {
       /// if the users become 30 then the group will be active and stop taking new users
       if (usersID.length == 30) {
 
-        print("Start Hattim");
+        if (kDebugMode) {
+          print("Start Hattim");
+        }
 
         ///status will be active
         status = GroupStatus.active;
