@@ -422,7 +422,11 @@
       "languageVersion": "3.3"
     }
   ],
+<<<<<<< HEAD
   "generated": "2024-05-25T17:14:15.655182Z",
+=======
+  "generated": "2024-05-29T16:53:17.825111Z",
+>>>>>>> cd002a5 (add fıles)
   "generator": "pub",
   "generatorVersion": "3.4.0",
   "flutterRoot": "file:///Users/caydanlik/flutter",

@@ -19,7 +19,7 @@ class WhoInTheGroup extends StatefulWidget {
 class _WhoInTheGroupState extends State<WhoInTheGroup> {
   final ScrollController _scrollController = ScrollController();
 
-  late final List<UserModel> userNameList;
+  late final List<UserModel> userNameList = [];
   //future to get the available groups for the user
   late  final Future<List<UserModel>> _getUserNameList;
   @override

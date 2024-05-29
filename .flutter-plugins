@@ -2,8 +2,11 @@
 cloud_firestore=/Users/caydanlik/.pub-cache/hosted/pub.dev/cloud_firestore-4.17.4/
 cloud_firestore_web=/Users/caydanlik/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.12.4/
 connectivity_plus=/Users/caydanlik/.pub-cache/hosted/pub.dev/connectivity_plus-6.0.3/
+<<<<<<< HEAD
 firebase_analytics=/Users/caydanlik/.pub-cache/hosted/pub.dev/firebase_analytics-10.10.6/
 firebase_analytics_web=/Users/caydanlik/.pub-cache/hosted/pub.dev/firebase_analytics_web-0.5.7+6/
+=======
+>>>>>>> cd002a5 (add fıles)
 firebase_auth=/Users/caydanlik/.pub-cache/hosted/pub.dev/firebase_auth-4.19.6/
 firebase_auth_web=/Users/caydanlik/.pub-cache/hosted/pub.dev/firebase_auth_web-5.11.6/
 firebase_core=/Users/caydanlik/.pub-cache/hosted/pub.dev/firebase_core-2.31.1/
