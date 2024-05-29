@@ -1,4 +1,3 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -29,9 +28,6 @@ class AuthController extends UserController {
       await userRepo.addUser(userModel!);
       setUserID = userModel!.id;
 
-      await FirebaseAnalytics.instance.setUserId(id: userModel!.id);
-      await FirebaseAnalytics.instance
-          .setUserProperty(name: "joined Date:", value: "${DateTime.now()}");
 
       phoneNumberController.clear();
       nameController.clear();

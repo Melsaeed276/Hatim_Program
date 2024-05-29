@@ -44,7 +44,7 @@ dependencies:
   hive_flutter: ^1.1.0
   connectivity_plus: ^6.0.3
   go_router: ^14.1.1
-  firebase_analytics: ^10.10.6
+
 
 dev_dependencies:
   flutter_test:

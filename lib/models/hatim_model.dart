@@ -22,10 +22,7 @@ late DateTime endDate;
   HatimRoundModel({required this.roundID, required this.userList}) {
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
 
-    String dateString = "2024-04-25";
-    DateTime dateTime = DateTime.parse(dateString);
-
-    startDate = dateTime.add(Duration(days: (roundID - 1) * 7));
+    startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
 
     ///The endDate is calculated by adding 7 days to the startDate.
     endDate = startDate.add(const Duration(days: 7));
@@ -37,7 +34,11 @@ late DateTime endDate;
 
   HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,}){
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
-    startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
+
+    // String dateString = "2024-04-25";
+    // DateTime dateTime = DateTime.parse(dateString);
+
+    startDate = startDate.add(Duration(days: (roundID - 1) * 7));
 
     ///The endDate is calculated by adding 7 days to the startDate.
     endDate = startDate.add(const Duration(days: 7));
