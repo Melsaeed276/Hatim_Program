@@ -91,7 +91,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     // style make it primary
                     style: ElevatedButton.styleFrom(
                       foregroundColor: themeColor.onSurfaceVariant,
-                      backgroundColor: themeColor.surfaceVariant,
+                      backgroundColor: themeColor.surfaceContainerHighest,
                     ),
                     onPressed: () {
                       // dismiss the dialog

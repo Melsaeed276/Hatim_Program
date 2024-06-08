@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:core';
 
+import 'package:hatim_program/models/group_model.dart';
+
 class HatimRoundModel {
 
   ///The roundID is a unique identifier for the hatim round. also
@@ -23,34 +25,54 @@ class HatimRoundModel {
   ///it will be assigned  as 1 week from the start date of the round
 late DateTime endDate;
 
+late final GroupDateType dateType;
 
-  HatimRoundModel({required this.roundID, required this.userList}) {
+
+  HatimRoundModel({required this.roundID, required this.userList,required this.dateType}) {
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
 
     // String dateString = "2024-04-25";
     // DateTime dateTime = DateTime.parse(dateString);
 
-    startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
 
-    ///The endDate is calculated by adding 7 days to the startDate.
-    endDate = startDate.add(const Duration(days: 7));
+    switch (dateType) {
+
+      case GroupDateType.week:
+        startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
+        ///The endDate is calculated by adding 7 days to the startDate.
+        endDate = startDate.add(const Duration(days: 7));
+      case GroupDateType.day:
+        startDate = DateTime.now().add(Duration(days: (roundID - 1) ));
+        ///The endDate is calculated by adding 1 days to the startDate.
+        endDate = startDate.add(const Duration(days: 1));
+    }
+
+
+
+
+
 
     ///
     _assignHatim();
   }
 
 
-  HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,}){
+  HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,required this.dateType}){
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
 
     // String dateString = "2024-04-25";
     // DateTime dateTime = DateTime.parse(dateString);
 
-    startDate = startDate.add(Duration(days: (roundID - 1) * 7));
-
-    ///The endDate is calculated by adding 7 days to the startDate.
-    endDate = startDate.add(const Duration(days: 7));
-
+    switch (dateType) {
+      case GroupDateType.week:
+        startDate = startDate.add(Duration(days: (roundID - 1) * 7));
+        ///The endDate is calculated by adding 7 days to the startDate.
+        endDate = startDate.add(const Duration(days: 7));
+      case GroupDateType.day:
+        startDate = startDate.add(Duration(days: (roundID - 1) ));
+        ///The endDate is calculated by adding 1 days to the startDate.
+        endDate = startDate.add(const Duration(days: 1));
+    }
     ///
     _assignHatim();
   }
@@ -137,7 +159,7 @@ late DateTime endDate;
   factory HatimRoundModel.fromJson(Map<String, dynamic> json) {
     return HatimRoundModel(
       roundID: json['roundID'],
-      userList: List<String>.from(json['userList']),
+      userList: List<String>.from(json['userList']), dateType: GroupDateType.week,
     )..userHatim = LinkedHashMap<String, int>.from(json['userHatim'])
       ..userHatimCompleted = LinkedHashMap<String, bool>.from(json['userHatimCompleted'])
       ..startDate = DateTime.parse(json['startDate'])
@@ -161,7 +183,8 @@ late DateTime endDate;
     return '''
   HatimRoundModel{
   roundID: $roundID,
-   startDate: $startDate,
+  
+  startDate: $startDate,
   endDate: $endDate,
   
   userHatim: $userHatim,

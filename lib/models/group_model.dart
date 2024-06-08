@@ -10,6 +10,9 @@ import 'hatim_model.dart';
 // 3- finished
 enum GroupStatus {waiting, active, finished }
 
+enum GroupDateType {week, day }
+
+
 /// group model
 class GroupModel {
   /// group id
@@ -43,6 +46,7 @@ class GroupModel {
   /// if the users are 30 users then the group will be active and round will be 1
   /// if the round is more than 30 then the group will be finished
   GroupStatus status = GroupStatus.waiting;
+  late final GroupDateType dateType;
 
   // constructor
   ///  when you create a either give a name or it will be generated randomly
@@ -54,20 +58,20 @@ class GroupModel {
 
   // constructor with group name
 
-  GroupModel({required this.groupID}) {
+  GroupModel({required this.groupID,this.dateType = GroupDateType.week}) {
     round = 0;
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
   }
 
-  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30}) {
+  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.dateType = GroupDateType.week}) {
     round = 0;
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
   }
 
   // constructor with random group name
-  GroupModel.randomID() {
+  GroupModel.randomID({this.dateType = GroupDateType.week}) {
     groupID = generateRandomGroupID().toString();
     round = 0;
     status = GroupStatus.waiting;
@@ -77,7 +81,7 @@ class GroupModel {
   void _assignHatim() {
     if (usersID.length == userCount) {
       for (int i = 0; i < groupDateCount; i++) {
-        hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID));
+        hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID,dateType: dateType));
       }
     }
   }
@@ -107,11 +111,13 @@ class GroupModel {
   GroupModel.fromJson(Map<String, dynamic> json) {
     groupID = json['group_id'];
     round = json['round'];
+
     userCount = json['users'].length;
     groupDateCount = json['groupDateCount'];
     userCount = json['userCount'];
     usersID = List<String>.from(json['users'].map((x) => x.toString()));
     status = GroupStatus.values[json['status']];
+    dateType = GroupDateType.values[json['dateType']];
     createdDate = DateTime.parse(json['created_date']);
     startDate =
         json['start_date'] != null ? DateTime.parse(json['start_date']) : null;
@@ -128,6 +134,7 @@ class GroupModel {
       'users': usersID,
       'groupDateCount': groupDateCount,
       'userCount': userCount,
+      'dateType': dateType.index,
       'status': status.index,
       'created_date': createdDate.toIso8601String(),
       'start_date': startDate?.toIso8601String(),
@@ -180,8 +187,19 @@ class GroupModel {
         round = 1;
         ///startDate will be the current date
         startDate = DateTime.now();
-        ///endDate will be the startDate + groupDays weeks
-       endDate = startDate!.add(Duration(days: groupDateCount * 7));
+
+
+        switch (dateType){
+          case GroupDateType.week:
+            endDate = startDate!.add(Duration(days: groupDateCount * 7));
+            break;
+
+          case GroupDateType.day:
+            endDate = startDate!.add(Duration(days: groupDateCount));
+            break;
+        }
+        ///endDate will be the startDate + 30 weeks
+
        ///assign the hatim to the users
         _assignHatim();
 
