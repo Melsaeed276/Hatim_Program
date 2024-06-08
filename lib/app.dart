@@ -7,21 +7,28 @@ import 'page_route.dart';
 class App extends StatelessWidget {
   const App({super.key});
 
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    final appColor = Provider.of<UserController>(context, listen: true);
+
     return MaterialApp.router(
       title: context.read<LocalizationController>().getLanguage().appTitle!,
-      themeMode: ThemeMode.light,
+      themeMode: appColor.getThemeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.green, brightness: Brightness.light),
+            seedColor: appColor.getAppColor(),
+            brightness: Brightness.light),
         useMaterial3: true,
         brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.green, brightness: Brightness.dark),
+            seedColor: appColor.getAppColor(),
+            brightness: Brightness.dark),
         useMaterial3: true,
         brightness: Brightness.dark,
       ),

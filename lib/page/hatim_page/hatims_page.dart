@@ -279,7 +279,7 @@ class _HatimsPageState extends State<HatimsPage> {
                                                       : isCurrentIndex
                                                           ? endDateString
                                                           : startHatimDateMessage,
-                                                  maxLines: 2,
+                                                  maxLines: 4,
                                                   style: theme
                                                       .textTheme.labelMedium!
                                                       .copyWith(
@@ -358,7 +358,7 @@ class _HatimsPageState extends State<HatimsPage> {
               );
             });
           },
-          label: Text(lang.myCurrentHatim!),
+            label: Text(UserController.userID() == '5065576580' ? 'Ali İhsan ❤️' :lang.myCurrentHatim!),
           // child: const Icon(Icons.arrow_downward_outlined),
         ));
   }

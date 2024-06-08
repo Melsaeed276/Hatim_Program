@@ -9,6 +9,7 @@ class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  final _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class RegisterPage extends StatelessWidget {
     /// Phone number
     /// Name
     return Scaffold(
+
       appBar: AppBar(
         title: Text('${lang.register!} ${lang.page!}'),
         leading: IconButton(
@@ -84,7 +86,10 @@ class RegisterPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: TextFormField(
                     // make the focus to be on the phone number
-                    autofocus: true,
+                    focusNode: _focusNode,
+                    onTap: () {
+                      _focusNode.requestFocus();
+                    },
                     controller: userController.nameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(

@@ -10,6 +10,35 @@ class UserController extends ChangeNotifier{
 
   final _userBox = Hive.box('user');
 
+  Color appColor = Colors.green;
+
+
+  Color getAppColor() {
+    if (getCurrentUserID == '5528695818') {
+      appColor = Colors.red;
+    }else if (getCurrentUserID == '5065576580') {
+      appColor = Colors.blue;
+    }else {
+      appColor = Colors.green;
+    }
+    return appColor;
+  }
+
+
+  ThemeMode themeMode = ThemeMode.light;
+
+  ThemeMode get getThemeMode {
+    if (getCurrentUserID == '5528695818') {
+
+      themeMode = ThemeMode.dark;
+
+    }else {
+      themeMode = ThemeMode.light;
+
+    }
+    return themeMode;
+  }
+
   //userModel field
   UserModel? _userModel;
 
@@ -24,6 +53,8 @@ class UserController extends ChangeNotifier{
       var id = getCurrentUserID;
       if (id != '0') {
         userRepo.getUserByPhoneNumber(id).then((value) {
+          getAppColor();
+          getThemeMode;
           userModel = value;
         });
       }else{
@@ -43,6 +74,8 @@ class UserController extends ChangeNotifier{
         }
     }
     _userModel = userModel;
+    getThemeMode;
+    getAppColor();
     setUserID = _userModel!.id;
     notifyListeners();
   }
@@ -52,6 +85,8 @@ class UserController extends ChangeNotifier{
       _userBox.get('userID', defaultValue: '0');
 
   set setUserID(String id) {
+    getAppColor();
+    getThemeMode;
     _userBox.put('userID', id);
   }
 
@@ -89,6 +124,14 @@ class UserController extends ChangeNotifier{
   }
 
 
+
+  void resetUser() {
+    _userModel = null;
+    setUserID = '0';
+    getAppColor();
+    getThemeMode;
+    notifyListeners();
+  }
 
   /// get all Group models of the user
   Future<List<GroupModel>> getAllGroupsOfUser() async {

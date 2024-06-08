@@ -48,7 +48,11 @@ class HomePage extends StatelessWidget {
                         .clear();
                     context.read<AuthController>().nameController.clear();
 
-                    AppRoutes.goBack(context);
+
+                    if (context.mounted) {
+                      AppRoutes.goBack(context);
+                    }
+                    userController.resetUser();
                   },
                 ),
               ],
