@@ -34,7 +34,10 @@ class GroupModel {
   /// if the group is active then the end date will be the start date + 30 weeks
   DateTime? endDate;
 
-  int groupDays = 30;
+  int groupDateCount = 30;
+  int userCount = 30;
+
+
   /// group status
   /// by default the group will be waiting
   /// if the users are 30 users then the group will be active and round will be 1
@@ -57,7 +60,7 @@ class GroupModel {
     createdDate = DateTime.now();
   }
 
-  GroupModel.withCustomWeeks({required this.groupID,this.groupDays = 30}) {
+  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30}) {
     round = 0;
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
@@ -72,8 +75,8 @@ class GroupModel {
   }
 
   void _assignHatim() {
-    if (usersID.length == groupDays) {
-      for (int i = 0; i < groupDays; i++) {
+    if (usersID.length == userCount) {
+      for (int i = 0; i < groupDateCount; i++) {
         hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID));
       }
     }
@@ -86,7 +89,7 @@ class GroupModel {
     /// if the round is more than 30 then the group will be finished
     if (usersID.isEmpty) {
       status = GroupStatus.waiting;
-    } else if (usersID.length == groupDays && round == 0) {
+    } else if (usersID.length == userCount && round == 0) {
       status = GroupStatus.active;
       round = 1;
     } else if (round > 30) {
@@ -104,6 +107,9 @@ class GroupModel {
   GroupModel.fromJson(Map<String, dynamic> json) {
     groupID = json['group_id'];
     round = json['round'];
+    userCount = json['users'].length;
+    groupDateCount = json['groupDateCount'];
+    userCount = json['userCount'];
     usersID = List<String>.from(json['users'].map((x) => x.toString()));
     status = GroupStatus.values[json['status']];
     createdDate = DateTime.parse(json['created_date']);
@@ -120,6 +126,8 @@ class GroupModel {
       'group_id': groupID,
       'round': round,
       'users': usersID,
+      'groupDateCount': groupDateCount,
+      'userCount': userCount,
       'status': status.index,
       'created_date': createdDate.toIso8601String(),
       'start_date': startDate?.toIso8601String(),
@@ -141,7 +149,7 @@ class GroupModel {
   bool addUserToGroup(String newUser) {
 
 /// check if  the users is already in the group
-    if (usersID.length >= groupDays) {
+    if (usersID.length >= userCount) {
       /// if the user is more than 30  in the group then it will not add  any new  user
       if (kDebugMode) {
         print("You can not add more user to the group");
@@ -160,7 +168,7 @@ class GroupModel {
       }
 
       /// if the users become 30 then the group will be active and stop taking new users
-      if (usersID.length == groupDays) {
+      if (usersID.length == userCount) {
 
         if (kDebugMode) {
           print("Start Hattim");
@@ -173,7 +181,7 @@ class GroupModel {
         ///startDate will be the current date
         startDate = DateTime.now();
         ///endDate will be the startDate + groupDays weeks
-       endDate = startDate!.add(Duration(days: groupDays * 7));
+       endDate = startDate!.add(Duration(days: groupDateCount * 7));
        ///assign the hatim to the users
         _assignHatim();
 
@@ -218,7 +226,7 @@ class GroupModel {
   ///write by Mohammed
   /// get the available users
   int getHowMuchLeftPlaceInTheGroup() {
-    return groupDays - usersID.length;
+    return userCount - usersID.length;
     }
 
   ///write by Mohammed
@@ -254,8 +262,8 @@ class GroupModel {
         if (hatimRound.isHatimCompleted(userID) == true) {
           // If the user is in round 30 and has completed the Hatim, return 0
 
-          if (hatimRound.roundID == groupDays) {
-            return groupDays;
+          if (hatimRound.roundID == groupDateCount) {
+            return groupDateCount;
           }else {
             count ++;
           }
