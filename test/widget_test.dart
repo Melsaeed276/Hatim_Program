@@ -11,31 +11,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hatim_program/models/models.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-
-    GroupModel groupModel = GroupModel(groupID: '1');
-
-     // add users to the group
 
 
+  testWidgets('Group with custom weeks', (WidgetTester tester) async {
 
-    for(int i = 0; i < 30; i++){
+    GroupModel groupModel = GroupModel.withCustomWeeks(groupID: '9',groupDays: 15);
+
+    // add users to the group
+    //add 30 person to the group so it will start
+    for(int i = 0; i < 15; i++){
       groupModel.addUserToGroup(i.toString());
     }
 
 
 
-    if (groupModel.hatimRounds.isNotEmpty){
-      for(var hatim in groupModel.hatimRounds){
-        // print only the date without the time
 
-        print(hatim.roundID);
-        print(hatim.startDate.toString().split(' ')[0]);
-        print(hatim.endDate.toString().split(' ')[0]);
-        print("");
-      }
-    }
+   // print(groupModel.hatimRounds.length);
+  for(int i = 0; i < 15; i++){
+    groupModel.hatimRounds[i].updateHatim(i.toString());
+  }
+
+
+    print(groupModel.hatimRounds.toString());
 
   });
+
 }
 

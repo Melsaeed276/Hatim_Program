@@ -34,6 +34,7 @@ class GroupModel {
   /// if the group is active then the end date will be the start date + 30 weeks
   DateTime? endDate;
 
+  int groupDays = 30;
   /// group status
   /// by default the group will be waiting
   /// if the users are 30 users then the group will be active and round will be 1
@@ -56,6 +57,12 @@ class GroupModel {
     createdDate = DateTime.now();
   }
 
+  GroupModel.withCustomWeeks({required this.groupID,this.groupDays = 30}) {
+    round = 0;
+    status = GroupStatus.waiting;
+    createdDate = DateTime.now();
+  }
+
   // constructor with random group name
   GroupModel.randomID() {
     groupID = generateRandomGroupID().toString();
@@ -65,8 +72,8 @@ class GroupModel {
   }
 
   void _assignHatim() {
-    if (usersID.length == 30) {
-      for (int i = 0; i < 30; i++) {
+    if (usersID.length == groupDays) {
+      for (int i = 0; i < groupDays; i++) {
         hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID));
       }
     }
@@ -79,7 +86,7 @@ class GroupModel {
     /// if the round is more than 30 then the group will be finished
     if (usersID.isEmpty) {
       status = GroupStatus.waiting;
-    } else if (usersID.length == 30 && round == 0) {
+    } else if (usersID.length == groupDays && round == 0) {
       status = GroupStatus.active;
       round = 1;
     } else if (round > 30) {
@@ -134,7 +141,7 @@ class GroupModel {
   bool addUserToGroup(String newUser) {
 
 /// check if  the users is already in the group
-    if (usersID.length >= 30) {
+    if (usersID.length >= groupDays) {
       /// if the user is more than 30  in the group then it will not add  any new  user
       if (kDebugMode) {
         print("You can not add more user to the group");
@@ -153,7 +160,7 @@ class GroupModel {
       }
 
       /// if the users become 30 then the group will be active and stop taking new users
-      if (usersID.length == 30) {
+      if (usersID.length == groupDays) {
 
         if (kDebugMode) {
           print("Start Hattim");
@@ -165,8 +172,8 @@ class GroupModel {
         round = 1;
         ///startDate will be the current date
         startDate = DateTime.now();
-        ///endDate will be the startDate + 30 weeks
-       endDate = startDate!.add(const Duration(days: 30 * 7));
+        ///endDate will be the startDate + groupDays weeks
+       endDate = startDate!.add(Duration(days: groupDays * 7));
        ///assign the hatim to the users
         _assignHatim();
 
@@ -211,7 +218,7 @@ class GroupModel {
   ///write by Mohammed
   /// get the available users
   int getHowMuchLeftPlaceInTheGroup() {
-    return 30 - usersID.length;
+    return groupDays - usersID.length;
     }
 
   ///write by Mohammed
@@ -247,8 +254,8 @@ class GroupModel {
         if (hatimRound.isHatimCompleted(userID) == true) {
           // If the user is in round 30 and has completed the Hatim, return 0
 
-          if (hatimRound.roundID == 30) {
-            return 30;
+          if (hatimRound.roundID == groupDays) {
+            return groupDays;
           }else {
             count ++;
           }
@@ -456,4 +463,5 @@ class GroupModel {
     }
 
   }
+
 }

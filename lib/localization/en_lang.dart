@@ -14,7 +14,7 @@ class ENText implements Localization {
       'Guess the Topic game is an application that aims for people to come together and socialize.';
 
   @override
-  String? appTitle = 'Mysterious Topic';
+  String? appTitle = 'YAVUZ SELİM VAKFI HATİM ÇİZELGE TAKİP FORMU';
 
   // Authentication
   @override

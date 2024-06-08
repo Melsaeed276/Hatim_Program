@@ -2,12 +2,17 @@ import 'dart:collection';
 import 'dart:core';
 
 class HatimRoundModel {
+
+  ///The roundID is a unique identifier for the hatim round. also
+  ///It is used to calculate the start and end dates of the round.
   final int roundID;
 
   final List<String> userList;
 
+  /// the 'user ID' : 'hatim chapter number'
   Map<String, int> userHatim = {};
 
+  /// the 'user ID' : 'is completed that chapter'
   Map<String, bool> userHatimCompleted = {};
 
   ///Start date of the hatim round
@@ -150,6 +155,20 @@ late DateTime endDate;
         hatimRoundModel.endDate == endDate;
   }
 
+  //To string
+  @override
+  String toString() {
+    return '''
+  HatimRoundModel{
+  roundID: $roundID,
+   startDate: $startDate,
+  endDate: $endDate,
+  
+  userHatim: $userHatim,
+  userHatimCompleted: $userHatimCompleted,
+ 
+}'''; // Note the triple quotes for multi-line strings
+  }
 }
 
 
