@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/project_code.iml" filepath="$PROJECT_DIR$/.idea/project_code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hatim_program.iml" filepath="$PROJECT_DIR$/hatim_program.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/hatim_program_android.iml" filepath="$PROJECT_DIR$/android/hatim_program_android.iml" />
     </modules>
   </component>
 </project>
