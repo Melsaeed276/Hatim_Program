@@ -25,15 +25,16 @@ class HatimRoundModel {
   ///it will be assigned  as 1 week from the start date of the round
 late DateTime endDate;
 
+HatimStyle hatimStyle;
+
 late final GroupDateType dateType;
 
 
-  HatimRoundModel({required this.roundID, required this.userList,required this.dateType}) {
+  HatimRoundModel({required this.roundID, required this.userList,required this.dateType,required this.hatimStyle}) {
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
 
     // String dateString = "2024-04-25";
     // DateTime dateTime = DateTime.parse(dateString);
-
 
     switch (dateType) {
 
@@ -57,7 +58,7 @@ late final GroupDateType dateType;
   }
 
 
-  HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,required this.dateType}){
+  HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,required this.dateType,required this.hatimStyle}){
     ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
 
     // String dateString = "2024-04-25";
@@ -77,12 +78,19 @@ late final GroupDateType dateType;
     _assignHatim();
   }
 
-  void _assignHatim() {
+ void _assignHatim() {
+    // Iterate over each user in the userList
     for (var element in userList) {
+      // Get the index of the current user
       int index = userList.indexOf(element);
-      userHatim[element] = giveChapterNumber(index + roundID);
+      // Assign a chapter number to the user based on the index and roundID
+      if (hatimStyle == HatimStyle.allTogetherInOneHatim) {
+        userHatim[element] = giveChapterNumber(index + roundID);
+      } else {
+        userHatim[element] = giveChapterNumber(roundID);
+      }
+      // Mark the user's hatim as not completed
       userHatimCompleted[element] = false;
-
     }
   }
 
@@ -160,6 +168,7 @@ late final GroupDateType dateType;
     return HatimRoundModel(
       roundID: json['roundID'],
       userList: List<String>.from(json['userList']), dateType: GroupDateType.week,
+      hatimStyle: json['hatimStyle'] == HatimStyle.allTogetherInOneHatim.toString() ? HatimStyle.allTogetherInOneHatim : HatimStyle.byRounds
     )..userHatim = LinkedHashMap<String, int>.from(json['userHatim'])
       ..userHatimCompleted = LinkedHashMap<String, bool>.from(json['userHatimCompleted'])
       ..startDate = DateTime.parse(json['startDate'])

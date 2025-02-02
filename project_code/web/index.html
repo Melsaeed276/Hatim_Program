@@ -10,9 +10,6 @@
 
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
@@ -31,8 +28,13 @@
 
   <title>hatim_program</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Add the renderer setting here -->
+  <script>
+    window.flutterWebRenderer = "canvaskit";
+  </script>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+<script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

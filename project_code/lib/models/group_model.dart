@@ -12,6 +12,30 @@ enum GroupStatus {waiting, active, finished }
 
 enum GroupDateType {week, day }
 
+enum HatimStyle {allTogetherInOneHatim, byRounds, byChallenge}
+
+extension HatimStyleExtension on HatimStyle {
+  // check the if the json input is valid and return the hatim style
+  static HatimStyle? fromJson(dynamic json) {
+    if (json is int) {
+      return HatimStyle.values[json];
+    }
+    return null;
+  }
+
+  // name of the hatim style
+  String get name {
+    switch (this) {
+      case HatimStyle.allTogetherInOneHatim:
+        return 'All Together in One Hatim';
+      case HatimStyle.byRounds:
+        return 'By Rounds';
+      case HatimStyle.byChallenge:
+        return 'By Challenge';
+    }
+  }
+}
+
 
 /// group model
 class GroupModel {
@@ -37,10 +61,11 @@ class GroupModel {
   /// if the group is active then the end date will be the start date + 30 weeks
   DateTime? endDate;
 
-  int groupDateCount = 30;
-  int userCount = 30;
+  int groupDateCount;
+  int userCount;
 
 
+  HatimStyle hatimStyle = HatimStyle.allTogetherInOneHatim;
   /// group status
   /// by default the group will be waiting
   /// if the users are 30 users then the group will be active and round will be 1
@@ -58,22 +83,25 @@ class GroupModel {
 
   // constructor with group name
 
-  GroupModel({required this.groupID,this.dateType = GroupDateType.week}) {
+  GroupModel({required this.groupID,this.dateType = GroupDateType.week,this.userCount = 30,this.groupDateCount = 30}) {
     round = 0;
     status = GroupStatus.waiting;
+    hatimStyle = HatimStyle.allTogetherInOneHatim;
     createdDate = DateTime.now();
   }
 
-  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.dateType = GroupDateType.week}) {
+  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.hatimStyle = HatimStyle.allTogetherInOneHatim, this.dateType = GroupDateType.week}) {
     round = 0;
+    this.hatimStyle = hatimStyle;
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
   }
 
   // constructor with random group name
-  GroupModel.randomID({this.dateType = GroupDateType.week}) {
+  GroupModel.randomID({this.dateType = GroupDateType.week,this.userCount = 30,this.groupDateCount = 30}) {
     groupID = generateRandomGroupID().toString();
     round = 0;
+
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
   }
@@ -81,7 +109,7 @@ class GroupModel {
   void _assignHatim() {
     if (usersID.length == userCount) {
       for (int i = 0; i < groupDateCount; i++) {
-        hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID,dateType: dateType));
+        hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID,dateType: dateType,hatimStyle: hatimStyle));
       }
     }
   }
@@ -108,29 +136,23 @@ class GroupModel {
 
   ///write by Mohammed
   // from json
-  GroupModel.fromJson(Map<String, dynamic> json) {
-    groupID = json['group_id'] ?? 'default_group_id'; // Provide a default groupID if null
-    round = json['round'] ?? 0; // Provide a default round if null
-    // Ensure userCount is correctly assigned once, considering 'users' might be null
-    var users = json['users'] as List<dynamic>? ?? [];
-    userCount = users.length;
-    groupDateCount = json['groupDateCount'] ?? 30; // Provide a default groupDateCount if null
-    usersID = users.map((x) => x.toString()).toList();
-    // Safely handle enum conversion, defaulting to waiting if null or invalid
-    var statusIndex = json['status'];
-    status = statusIndex != null && statusIndex >= 0 && statusIndex < GroupStatus.values.length
-        ? GroupStatus.values[statusIndex]
-        : GroupStatus.waiting;
-    // Safely handle enum conversion for dateType, defaulting to week if null or invalid
-    var dateTypeIndex = json['dateType'];
-    dateType = dateTypeIndex != null && dateTypeIndex >= 0 && dateTypeIndex < GroupDateType.values.length
-        ? GroupDateType.values[dateTypeIndex]
-        : GroupDateType.week;
-    // Handle DateTime parsing with null checks
-    createdDate = json['created_date'] != null ? DateTime.parse(json['created_date']) : DateTime.now(); // Provide current DateTime if null
-    startDate = json['start_date'] != null ? DateTime.parse(json['start_date']) : null;
-    endDate = json['end_date'] != null ? DateTime.parse(json['end_date']) : null;
-  }
+  GroupModel.fromJson(Map<String, dynamic> json)
+      : groupID = json['group_id'] ?? 'default_group_id',
+        round = json['round'] ?? 0,
+        userCount = json['userCount'] ?? 30,
+        groupDateCount = json['groupDateCount'] ?? 30,
+        usersID = (json['users'] as List<dynamic>? ?? []).map((x) => x.toString()).toList(),
+        status = (json['status'] != null && json['status'] >= 0 && json['status'] < GroupStatus.values.length)
+            ? GroupStatus.values[json['status']]
+            : GroupStatus.waiting,
+        dateType = (json['dateType'] != null && json['dateType'] >= 0 && json['dateType'] < GroupDateType.values.length)
+            ? GroupDateType.values[json['dateType']]
+            : GroupDateType.week,
+        hatimStyle = HatimStyleExtension.fromJson(json['hatimStyle']) ?? HatimStyle.allTogetherInOneHatim,
+        createdDate = json['created_date'] != null ? DateTime.parse(json['created_date']) : DateTime.now(),
+        startDate = json['start_date'] != null ? DateTime.parse(json['start_date']) : null,
+        endDate = json['end_date'] != null ? DateTime.parse(json['end_date']) : null;
+
 
   ///write by Mohammed
   // to json
@@ -142,6 +164,7 @@ class GroupModel {
       'groupDateCount': groupDateCount,
       'userCount': userCount,
       'dateType': dateType.index,
+      'hatimStyle': hatimStyle.index,
       'status': status.index,
       'created_date': createdDate.toIso8601String(),
       'start_date': startDate?.toIso8601String(),
@@ -162,6 +185,7 @@ class GroupModel {
   ///  the round still 0
   bool addUserToGroup(String newUser) {
 
+    print(toString());
 /// check if  the users is already in the group
     if (usersID.length >= userCount) {
       /// if the user is more than 30  in the group then it will not add  any new  user
@@ -497,4 +521,9 @@ class GroupModel {
 
   }
 
+  // to string
+  @override
+  String toString() {
+    return 'GroupModel{groupID: $groupID, round: $round, usersID: $usersID, hatimRounds: $hatimRounds, startDate: $startDate, endDate: $endDate, groupDateCount: $groupDateCount, userCount: $userCount, hatimStyle: $hatimStyle, status: $status, dateType: $dateType, createdDate: $createdDate}';
+  }
 }

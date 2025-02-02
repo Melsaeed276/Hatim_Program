@@ -18,7 +18,11 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
 
   //TextEditingController
   final TextEditingController groupName = TextEditingController();
-
+  final TextEditingController countController = TextEditingController();
+  // date type controller
+  late GroupDateType groupDateType = GroupDateType.week;
+  // hatim style
+  late HatimStyle hatimStyle = HatimStyle.allTogetherInOneHatim;
   bool isExistMessage = false;
 
   @override
@@ -40,11 +44,12 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SizedBox(
-          height: 300,
+          height: 350,
           width: 300,
           child: Form(
             key: _formKey,
             child: Column(
+              spacing: 10,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Text('Add new group'),
@@ -76,6 +81,96 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     }
                     return null;
                   },
+                ),
+
+// add the group count text filed that only accept numbers and by default it is 30 max 100
+                TextFormField(
+                  controller: countController,
+                  decoration: InputDecoration(
+                    // make it rounded
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelText: 'Group count default:  30',
+                    // make the help text small or 2 line
+                    helperStyle: theme.textTheme.bodySmall,
+                    helperMaxLines: 2,
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                       return null;
+                    } else if (value.isNotEmpty) {
+                      final n = num.tryParse(value);
+                      if (n == null) {
+                        return 'Please enter a valid number';
+                      }else if (n > 100) {
+                        return 'Please enter a number less than 100';
+                      }
+
+                    }
+                    return null;
+                  },
+                ),
+
+                // drop down for the group date type and by default it is week
+                // drop down for the group date type and by default it is week
+                DropdownButtonFormField<GroupDateType>(
+                  decoration: InputDecoration(
+                    // make it rounded
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelText: 'Group date type',
+                    // make the help text small or 2 line
+                    helperStyle: theme.textTheme.bodySmall,
+                    helperMaxLines: 2,
+                  ),
+                  value: groupDateType,
+                  onChanged: (GroupDateType? newValue) {
+                    setState(() {
+                      groupDateType = newValue!;
+                    });
+                  },
+                  items: GroupDateType.values
+                      .map<DropdownMenuItem<GroupDateType>>(
+                        (GroupDateType value) => DropdownMenuItem<GroupDateType>(
+                          value: value,
+                          child: Text(value.toString().split('.').last),
+                        ),
+                      )
+                      .toList(),
+                ),
+
+                // drop down for the hatim style and by default it is all together in one hatim
+                DropdownButtonFormField<HatimStyle>(
+                  decoration: InputDecoration(
+                    // make it rounded
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelText: 'Hatim style',
+                    // make the help text small or 2 line
+                    helperStyle: theme.textTheme.bodySmall,
+                    helperMaxLines: 2,
+                  ),
+                  value: hatimStyle,
+                  onChanged: (HatimStyle? newValue) {
+                    setState(() {
+                      hatimStyle = newValue!;
+                    });
+                  },
+                  items: HatimStyle.values
+                      .map<DropdownMenuItem<HatimStyle>>(
+                        (HatimStyle value) => DropdownMenuItem<HatimStyle>(
+                          value: value,
+                          child: Text(value.name),
+                        ),
+                      )
+                      .toList(),
                 ),
 
                 if (isExistMessage)
@@ -122,7 +217,10 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                             setState(() {
                               isExistMessage = false;
                             });
-                            groupController.addNewGroup(groupName.text);
+                            groupController.addNewGroup(groupName.text,
+                                groupDateType: groupDateType,
+                                hatimStyle: hatimStyle,
+                                count: int.parse(countController.text));
                             dismissDialog();
                           }
                         }

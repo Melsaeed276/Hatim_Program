@@ -82,7 +82,7 @@ GroupModel? _groupModel;
 
 
 // Method to add group to repository
-  Future<void> addNewGroup(String? name) async {
+  Future<void> addNewGroup(String? name,{required GroupDateType groupDateType,required HatimStyle hatimStyle,required int count}) async {
     // if name is null then random
     if (name == null) {
       //create a new group
@@ -91,7 +91,7 @@ GroupModel? _groupModel;
       await _groupRepo.addNewGroup(group);
     } else {
       //create a new group
-      var group = GroupModel(groupID: name);
+      var group = GroupModel.withCustomInfo(groupID: name,dateType: groupDateType,hatimStyle: hatimStyle,userCount: count);
      // groupModel = group;
       await _groupRepo.addNewGroup(group);
     }

@@ -102,5 +102,22 @@ void main() {
 
 
   });
+
+
+  // test only 2 users
+  testWidgets('2 users making hatim', (WidgetTester tester) async {
+
+    GroupModel groupWith2 = GroupModel.withCustomInfo(groupID: '2',userCount: 1,dateType: GroupDateType.day,hatimStyle: HatimStyle.byRounds);
+
+    // add users to the group
+    //add 30 person to the group so it will start
+    for(int i = 0; i < 1; i++){
+      groupWith2.addUserToGroup(i.toString());
+    }
+
+    if (kDebugMode) {
+      print(groupWith2.hatimRounds.toString());
+    }});
+
 }
 

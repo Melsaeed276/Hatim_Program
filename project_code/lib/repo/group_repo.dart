@@ -64,10 +64,10 @@ class GroupRepo{
         await updateGroup(group);
         return group;
       }else {
-        return group;
+        return null;
       }
     }
-    return group;
+    return null;
   }
 
 }

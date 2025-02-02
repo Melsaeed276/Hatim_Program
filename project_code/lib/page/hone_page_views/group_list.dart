@@ -36,7 +36,8 @@ class GroupList extends StatelessWidget {
           child: GestureDetector(
             onTap: () async {
 
-              if (group.usersID.length < 30){
+
+              if (group.usersID.length < group.userCount){
                 if(isAdmin){
                   //show Dialog of the users
                   // input the user list

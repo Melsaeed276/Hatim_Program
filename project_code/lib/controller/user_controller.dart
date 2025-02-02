@@ -114,11 +114,15 @@ class UserController extends ChangeNotifier{
   Future<void> addUserGroup(String groupID) async {
     userModel ??= await getUserByPhoneNumber();
     var groupRepo = GroupRepo();
-    userModel!.groups.add(groupID);
-    var didAddedToGroup = await userRepo.updateUser(userModel!);
 
-    if (didAddedToGroup) {
-       await groupRepo.addUserToGroup(groupID, userModel!.id);
+    var didAddedToGroup =  await groupRepo.addUserToGroup(groupID, userModel!.id);
+
+    print(didAddedToGroup);
+    print(userModel!.groups);
+
+    if (didAddedToGroup != null) {
+      userModel!.groups.add(groupID);
+      await userRepo.updateUser(userModel!);
     }
       notifyListeners();
   }
