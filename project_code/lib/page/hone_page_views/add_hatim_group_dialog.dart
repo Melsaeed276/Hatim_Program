@@ -25,6 +25,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
   late HatimStyle hatimStyle = HatimStyle.allTogetherInOneHatim;
   bool isExistMessage = false;
 
+
   @override
   Widget build(BuildContext context) {
     final groupController = Provider.of<GroupController>(context, listen: true);
@@ -32,6 +33,11 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
     final theme = Theme.of(context);
     //colorScheme
     final themeColor = Theme.of(context).colorScheme;
+
+    // language controller
+    final lang = Provider.of<LocalizationController>(context, listen: true)
+        .getLanguage();
+
 
     /// in this dialog it  will add a new group to the hatim
     ///
@@ -45,14 +51,13 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
         padding: const EdgeInsets.all(20.0),
         child: SizedBox(
           height: 350,
-          width: 300,
           child: Form(
             key: _formKey,
             child: Column(
               spacing: 10,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text('Add new group'),
+                 Text(lang.addGroup!),
 
                 TextFormField(
                   controller: groupName,
@@ -61,23 +66,18 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    labelText: 'Group name',
+                    labelText: lang.groupName,
                     // make the help text small or 2 line
                     helperStyle: theme.textTheme.bodySmall,
                     helperMaxLines: 2,
                   ),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.digitsOnly,
+                  // ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the group name';
-                    } else if (value.isNotEmpty) {
-                      final n = num.tryParse(value);
-                      if (n == null) {
-                        return 'Please enter a valid number';
-                      }
+                      return lang.pleaseEnterYourGroupName;
                     }
                     return null;
                   },

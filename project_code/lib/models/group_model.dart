@@ -90,7 +90,7 @@ class GroupModel {
     createdDate = DateTime.now();
   }
 
-  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.hatimStyle = HatimStyle.allTogetherInOneHatim, this.dateType = GroupDateType.week}) {
+  GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.hatimStyle = HatimStyle.allTogetherInOneHatim, this.dateType = GroupDateType.week,this.startDate, this.endDate}) {
     round = 0;
     this.hatimStyle = hatimStyle;
     status = GroupStatus.waiting;
@@ -109,7 +109,7 @@ class GroupModel {
   void _assignHatim() {
     if (usersID.length == userCount) {
       for (int i = 0; i < groupDateCount; i++) {
-        hatimRounds.add(HatimRoundModel(roundID: round + i, userList: usersID,dateType: dateType,hatimStyle: hatimStyle));
+        hatimRounds.add(HatimRoundModel.withStartDateTime(roundID: round + i, userList: usersID,dateType: dateType,hatimStyle: hatimStyle,startDate: startDate!));
       }
     }
   }
@@ -217,7 +217,7 @@ class GroupModel {
         ///round will be 1
         round = 1;
         ///startDate will be the current date
-        startDate = DateTime.now();
+        startDate = createdDate;
 
 
         switch (dateType){

@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
                 bottom: 3,
                 right: 8,
                 //App version
-                child: Text('Version 1.0.7'),
+                child: Text('Version 1.1.1'),
               ),
 
             Form(
