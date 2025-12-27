@@ -338,7 +338,7 @@ class TRText implements Localization {
   String? somethingWentWrong = 'Hata oluştu';
 
   @override
-  String? welcome = 'Hoşgeldiniz';
+  String? welcome = 'Hoş geldiniz';
 
   @override
   String? group = 'Grup';
