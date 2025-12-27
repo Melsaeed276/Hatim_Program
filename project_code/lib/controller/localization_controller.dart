@@ -30,7 +30,7 @@ class LocalizationController with ChangeNotifier {
     notifyListeners();
   }
 
-  get getAppLang => languageBox.get('langCode', defaultValue: 'tr');
+  dynamic get getAppLang => languageBox.get('langCode', defaultValue: 'tr');
 
   set setAppLang(String languageCode) {
     languageBox.put('langCode', languageCode);

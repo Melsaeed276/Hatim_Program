@@ -14,7 +14,7 @@ class ConnectionController with ChangeNotifier {
     notifyListeners();
   }
 
-  checkConnectivityState(ConnectivityResult result) {
+  void checkConnectivityState(ConnectivityResult result) {
     switch (result) {
       case ConnectivityResult.mobile:
         setIsConnected = true;
