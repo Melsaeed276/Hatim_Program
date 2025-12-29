@@ -37,15 +37,16 @@ late final GroupDateType dateType;
     // DateTime dateTime = DateTime.parse(dateString);
 
     switch (dateType) {
-
       case GroupDateType.week:
         startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
         ///The endDate is calculated by adding 7 days to the startDate.
         endDate = startDate.add(const Duration(days: 7));
+        break;
       case GroupDateType.day:
         startDate = DateTime.now().add(Duration(days: (roundID - 1) ));
         ///The endDate is calculated by adding 1 days to the startDate.
         endDate = startDate.add(const Duration(days: 1));
+        break;
     }
 
 
@@ -69,10 +70,12 @@ late final GroupDateType dateType;
         startDate = startDate.add(Duration(days: (roundID - 1) * 7));
         ///The endDate is calculated by adding 7 days to the startDate.
         endDate = startDate.add(const Duration(days: 7));
+        break;
       case GroupDateType.day:
         startDate = startDate.add(Duration(days: (roundID - 1) ));
         ///The endDate is calculated by adding 1 days to the startDate.
         endDate = startDate.add(const Duration(days: 1));
+        break;
     }
     ///
     _assignHatim();
@@ -160,15 +163,23 @@ late final GroupDateType dateType;
       'userHatimCompleted': userHatimCompleted,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
+      'dateType': dateType.index,
+      'hatimStyle': hatimStyle.index,
     };
   }
 
   ///From json
   factory HatimRoundModel.fromJson(Map<String, dynamic> json) {
+    final dateType = (json['dateType'] != null && json['dateType'] >= 0 && json['dateType'] < GroupDateType.values.length)
+        ? GroupDateType.values[json['dateType']]
+        : GroupDateType.week;
+    final hatimStyle = HatimStyleExtension.fromJson(json['hatimStyle']) ?? HatimStyle.allTogetherInOneHatim;
+    
     return HatimRoundModel(
       roundID: json['roundID'],
-      userList: List<String>.from(json['userList']), dateType: GroupDateType.week,
-      hatimStyle: json['hatimStyle'] == HatimStyle.allTogetherInOneHatim.toString() ? HatimStyle.allTogetherInOneHatim : HatimStyle.byRounds
+      userList: List<String>.from(json['userList']),
+      dateType: dateType,
+      hatimStyle: hatimStyle,
     )..userHatim = LinkedHashMap<String, int>.from(json['userHatim'])
       ..userHatimCompleted = LinkedHashMap<String, bool>.from(json['userHatimCompleted'])
       ..startDate = DateTime.parse(json['startDate'])

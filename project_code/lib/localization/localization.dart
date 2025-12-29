@@ -48,6 +48,9 @@ abstract class Localization {
   late String? pleaseEnterYourPassword;
   late String? passwordLengthError;
   late String? passwordNotValid;
+  late String? adminPasswordPrompt;
+  late String? adminPasswordRequired;
+  late String? adminPasswordIncorrect;
   late String? registerText;
   late String? loginText;
   late String? userNotFound;
@@ -323,5 +326,21 @@ late String? hatimEndDate;
 late String? hatimWillEndAt;
 
 late String? week;
+
+  // Additional UI strings
+  late String? version;
+  late String? error;
+  late String? errorPrefix;
+  late String? noData;
+  late String? unknown;
+  late String? back;
+  late String? hatimDetails;
+  late String? errorLoadingUserData;
+  late String? errorHatimRoundNull;
+  late String? groupCountDefault;
+  late String? pleaseEnterValidNumber;
+  late String? pleaseEnterNumberLessThan100;
+  late String? addWithRandomID;
+  late String? groupNameAlreadyExists;
 }
 

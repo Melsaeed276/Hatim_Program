@@ -69,9 +69,16 @@ class UserController extends ChangeNotifier{
     if (userModel == null) {
         if (getCurrentUserID != '0') {
           userRepo.getUserByPhoneNumber(getCurrentUserID).then((value) {
-            userModel = value;
+            if (value != null) {
+              _userModel = value;
+              getThemeMode;
+              getAppColor();
+              setUserID = _userModel!.id;
+              notifyListeners();
+            }
           });
         }
+        return;
     }
     _userModel = userModel;
     getThemeMode;
@@ -88,6 +95,20 @@ class UserController extends ChangeNotifier{
     getAppColor();
     getThemeMode;
     _userBox.put('userID', id);
+  }
+
+  // Admin password verification flag
+  bool get isAdminPasswordVerified =>
+      _userBox.get('adminPasswordVerified', defaultValue: false);
+
+  set setAdminPasswordVerified(bool verified) {
+    _userBox.put('adminPasswordVerified', verified);
+    notifyListeners();
+  }
+
+  void clearAdminPasswordVerification() {
+    _userBox.put('adminPasswordVerified', false);
+    notifyListeners();
   }
 
   ///   ----------------- Repo
@@ -132,6 +153,7 @@ class UserController extends ChangeNotifier{
   void resetUser() {
     _userModel = null;
     setUserID = '0';
+    clearAdminPasswordVerification();
     getAppColor();
     getThemeMode;
     notifyListeners();

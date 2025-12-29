@@ -11,7 +11,7 @@ class ENText implements Localization {
   // App
   @override
   String? appDescription =
-      'Guess the Topic game is an application that aims for people to come together and socialize.';
+      'Guess the Topic app is an application that aims for people to come together and socialize.';
 
   @override
   String? appTitle = 'YAVUZ SELİM VAKFI HATİM ÇİZELGE TAKİP FORMU';
@@ -43,6 +43,16 @@ class ENText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'Please Enter Your Password';
+  
+  @override
+  String? adminPasswordPrompt = 'Please enter your admin password to continue';
+  
+  @override
+  String? adminPasswordRequired = 'Admin password is required';
+  
+  @override
+  String? adminPasswordIncorrect = 'Incorrect password. Please try again.';
+  
   @override
   String? logOut = 'Sign Out';
 
@@ -83,7 +93,7 @@ class ENText implements Localization {
   // Internet Dialog
   @override
   String? noInternetWarningDialogText =
-      'No internet connection detected at this time. The game needs an internet connection to constantly update your game data. Please reconnect to continue';
+      'No internet connection detected at this time. The app needs an internet connection to constantly update your app data. Please reconnect to continue';
 
   @override
   String? languageDialogDoneButtonText = 'Done';
@@ -147,7 +157,7 @@ class ENText implements Localization {
 
   @override
   String? largeWebViewError =
-      "This device is not supported. Please play the game only on your mobile browser.";
+      "This device is not supported. Please use the app only on your mobile browser.";
 
   //Main Menu
 
@@ -225,7 +235,7 @@ class ENText implements Localization {
   String? votingDialogCallButtonText = 'Voting';
 
   @override
-  String? returnToGame = "Return to Game";
+  String? returnToGame = "Return to App";
 
   @override
   String? voteAgain = "Vote Again";
@@ -243,7 +253,7 @@ class ENText implements Localization {
 
   @override
   String? exitDialogDescriptionText =
-      'Are you sure that you want to exit the game?';
+      'Are you sure that you want to exit the app?';
 
   // Logout Dialog
   @override
@@ -299,7 +309,7 @@ class ENText implements Localization {
   String? skip = 'Skip';
 
   @override
-  String? applicationColor = 'Game Color';
+  String? applicationColor = 'App Color';
 
   @override
   String? pleaseEnterYourPhoneNumber = 'Please Enter Your Phone Number';
@@ -509,5 +519,47 @@ class ENText implements Localization {
 
   @override
   String? week = 'week';
+
+  @override
+  String? version = 'Version';
+
+  @override
+  String? error = 'Error';
+
+  @override
+  String? errorPrefix = 'Error: ';
+
+  @override
+  String? noData = 'No data';
+
+  @override
+  String? unknown = 'Unknown';
+
+  @override
+  String? back = 'Back';
+
+  @override
+  String? hatimDetails = 'Hatim Details';
+
+  @override
+  String? errorLoadingUserData = 'Error loading user data: ';
+
+  @override
+  String? errorHatimRoundNull = 'Error: Hatim Round is null';
+
+  @override
+  String? groupCountDefault = 'Group count default: 30';
+
+  @override
+  String? pleaseEnterValidNumber = 'Please enter a valid number';
+
+  @override
+  String? pleaseEnterNumberLessThan100 = 'Please enter a number less than 100';
+
+  @override
+  String? addWithRandomID = 'Add with random ID';
+
+  @override
+  String? groupNameAlreadyExists = 'The group name already exists please generate a new one';
 
   }

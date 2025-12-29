@@ -91,7 +91,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    labelText: 'Group count default:  30',
+                    labelText: lang.groupCountDefault!,
                     // make the help text small or 2 line
                     helperStyle: theme.textTheme.bodySmall,
                     helperMaxLines: 2,
@@ -106,9 +106,9 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     } else if (value.isNotEmpty) {
                       final n = num.tryParse(value);
                       if (n == null) {
-                        return 'Please enter a valid number';
+                        return lang.pleaseEnterValidNumber!;
                       }else if (n > 100) {
-                        return 'Please enter a number less than 100';
+                        return lang.pleaseEnterNumberLessThan100!;
                       }
 
                     }
@@ -175,7 +175,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
 
                 if (isExistMessage)
                   Text(
-                    'The group name is already exist please generate a new one',
+                    lang.groupNameAlreadyExists!,
                     style: theme.textTheme.bodySmall!.copyWith(
                       color: themeColor.error,
                     ),
@@ -188,14 +188,21 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                       foregroundColor: themeColor.onSurfaceVariant,
                       backgroundColor: themeColor.surfaceContainerHighest,
                     ),
-                    onPressed: () {
-                      // dismiss the dialog
-                      ///check the current group name if it is the same as the generated one then generate a new one
-
-                      groupName.text =
-                          GroupModel.generateRandomGroupID().toString();
+                    onPressed: () async {
+                      // Generate a random ID and check if it exists
+                      int randomID;
+                      GroupModel? existingGroup;
+                      do {
+                        randomID = GroupModel.generateRandomGroupID();
+                        existingGroup = await groupController.getGroupByID(randomID.toString());
+                      } while (existingGroup != null); // Keep generating until we find a unique ID
+                      
+                      groupName.text = randomID.toString();
+                      setState(() {
+                        isExistMessage = false;
+                      });
                     },
-                    child: const Text('Add with random ID')),
+                    child: Text(lang.addWithRandomID!)),
 
                 // add button
                 Row(
@@ -217,16 +224,20 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                             setState(() {
                               isExistMessage = false;
                             });
+                            // Default to 30 if count is empty
+                            final count = countController.text.isEmpty 
+                                ? 30 
+                                : int.parse(countController.text);
                             groupController.addNewGroup(groupName.text,
                                 groupDateType: groupDateType,
                                 hatimStyle: hatimStyle,
-                                count: int.parse(countController.text));
+                                count: count);
                             dismissDialog();
                           }
                         }
                         // add the group
                       },
-                      child: const Text('Add'),
+                      child: Text(lang.add!),
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
@@ -237,7 +248,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                         // cancel the dialog
                         dismissDialog();
                       },
-                      child: const Text('Cancel'),
+                      child: Text(lang.close!),
                     ),
                   ],
                 ),

@@ -9,6 +9,7 @@ class UserModel {
   final String name;
   String phoneNumber;
   final bool isAdmin;
+  final String? adminPassword; // Password for admin verification
   // map of groupsID and int of the current chapter
   List<String> groups = [];
 
@@ -16,6 +17,7 @@ class UserModel {
     required this.name,
     required this.phoneNumber,
     this.isAdmin = false,
+    this.adminPassword,
   }) {
     id = processPhoneNumber(phoneNumber);
   }
@@ -24,7 +26,8 @@ class UserModel {
       : id = json['id'],
         name = json['name'],
         phoneNumber = json['phoneNumber'],
-        isAdmin = json['isAdmin'],
+        isAdmin = json['isAdmin'] ?? false,
+        adminPassword = json['adminPassword']?.toString(),
         groups = List<String>.from(json['groups'].map((x) => x.toString()));
 
   Map<String, dynamic> toJson() {
@@ -33,6 +36,9 @@ class UserModel {
     data['name'] = name;
     data['phoneNumber'] = phoneNumber;
     data['isAdmin'] = isAdmin;
+    if (adminPassword != null) {
+      data['adminPassword'] = adminPassword;
+    }
     data['groups'] = groups;
     return data;
   }

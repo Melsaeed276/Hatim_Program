@@ -510,15 +510,11 @@ class GroupModel {
   // generate a random groupID that is max 2 numbers between 1 and 10
   static int generateRandomGroupID() {
     int id = 0;
-
-    id = Random().nextInt(11);
-    if (id > 0) {
-      return id;
-    } else {
-      id = Random().nextInt(11);
-      return id;
-    }
-
+    // Generate a random number between 1 and 10 (inclusive)
+    do {
+      id = Random().nextInt(10) + 1; // nextInt(10) gives 0-9, +1 gives 1-10
+    } while (id <= 0); // Ensure it's always > 0 (shouldn't happen, but safety check)
+    return id;
   }
 
   // to string

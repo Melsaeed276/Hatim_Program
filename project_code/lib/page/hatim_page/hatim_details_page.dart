@@ -49,13 +49,14 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
   }
 
   Widget _buildErrorScreen(BuildContext context) {
+    final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            const Text('Error: Hatim Round is null'),
+            Text(lang.errorHatimRoundNull!),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -63,7 +64,7 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
 
                 AppRoutes.goToGroup(context);
               },
-              child: const Text('Back'),
+              child: Text(lang.back!),
             ),
           ],
         ),
@@ -81,7 +82,7 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Hatim Details'),
+          title: Text(lang.hatimDetails!),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -103,7 +104,7 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading user data: ${snapshot.error}'));
+            return Center(child: Text('${lang.errorLoadingUserData!}${snapshot.error}'));
           } else {
             final userMap = snapshot.data!; // User data is now available
             return Expanded(
@@ -111,7 +112,7 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
                 itemCount: widget.hatimRound!.userList.length,
                 itemBuilder: (context, index) {
                   final userID = widget.hatimRound!.sortByWhoCompletedHatim()[index];
-                  final userName = userMap[userID]?.name ?? 'Unknown';
+                  final userName = userMap[userID]?.name ?? lang.unknown!;
 
                   bool isHatimCompleted =
                   widget.hatimRound!.isHatimCompleted(userID);

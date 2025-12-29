@@ -77,7 +77,7 @@ class _HatimsPageState extends State<HatimsPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return Text('${lang.errorPrefix!}${snapshot.error}');
             } else if (snapshot.data != null){
               final GroupModel group = snapshot.data!;
               final List<HatimRoundModel> hatims = group.getHatimGroups();
@@ -337,7 +337,7 @@ class _HatimsPageState extends State<HatimsPage> {
                 ],
               );
             }else {
-              return const Center(child: Text('No data'));
+              return Center(child: Text(lang.noData!));
             }
           },
         ),

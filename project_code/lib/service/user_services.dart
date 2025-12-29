@@ -41,7 +41,11 @@ class UserServices extends ServicesBase {
       });
 
       if (kDebugMode) {
-        print("from server data is ${UserModel.fromJson(data.data()!)}");
+        final firestoreData = data.data()!;
+        print("from server data is ${UserModel.fromJson(firestoreData)}");
+        print("Firestore raw data: $firestoreData");
+        print("adminPassword field in Firestore: ${firestoreData['adminPassword']}");
+        print("adminPassword type: ${firestoreData['adminPassword'].runtimeType}");
       }
       return UserModel.fromJson(data.data()!);
     } catch (e) {

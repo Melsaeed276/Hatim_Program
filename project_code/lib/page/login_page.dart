@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hatim_program/controller/auth_controller.dart';
@@ -5,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
 import '../page_route.dart';
+import 'dialogs/admin_password_dialog.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -39,11 +41,11 @@ class LoginPage extends StatelessWidget {
           children: [
 
             if (!isKeyboardOpen)
-              const Positioned(
+              Positioned(
                 bottom: 3,
                 right: 8,
                 //App version
-                child: Text('Version 1.1.1'),
+                child: Text('${lang.version!} 1.1.1'),
               ),
 
             Form(
@@ -145,13 +147,59 @@ class LoginPage extends StatelessWidget {
                                   /// if not exist  go to register the user page
                                   await user.getUserByPhoneNumber().then((value)  async {
                                     if (value != null) {
+                                      if (kDebugMode) {
+                                        print('User found: ${value.name}');
+                                        print('Is Admin: ${value.isAdmin}');
+                                        print('Has Password: ${value.adminPassword != null && value.adminPassword!.isNotEmpty}');
+                                        if (value.adminPassword != null) {
+                                          print('Password length: ${value.adminPassword!.length}');
+                                        }
+                                      }
+                                      
+                                      // Check if user is admin and has password
+                                      if (value.isAdmin && value.adminPassword != null && value.adminPassword!.isNotEmpty) {
+                                        if (kDebugMode) {
+                                          print('Showing admin password dialog');
+                                        }
+                                        // Show password dialog for admin
+                                        final passwordVerified = await showDialog<bool>(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) => AdminPasswordDialog(
+                                            storedPassword: value.adminPassword!,
+                                          ),
+                                        );
+                                        
+                                        if (kDebugMode) {
+                                          print('Password verified result: $passwordVerified');
+                                        }
 
-                                      context.read<UserController>().userModel = value;
-
-                                      AppRoutes.goToHome(context);
-
-
-                                     // AppRoutes.goToHome(context);
+                                        if (passwordVerified == true) {
+                                          // Password verified, set flag and proceed to home
+                                          if (context.mounted) {
+                                            final userController = context.read<UserController>();
+                                            userController.setAdminPasswordVerified = true;
+                                            userController.userModel = value;
+                                            AppRoutes.goToHome(context);
+                                          }
+                                        } else {
+                                          // Password verification failed or cancelled
+                                          // Don't navigate, stay on login page
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(lang.wrongPasswordMessage ?? 'Authentication failed'),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      } else {
+                                        // Not admin or no password, proceed normally
+                                        final userController = context.read<UserController>();
+                                        userController.clearAdminPasswordVerification();
+                                        userController.userModel = value;
+                                        AppRoutes.goToHome(context);
+                                      }
                                     } else {
                                       AppRoutes.goToRegister(context);
                                     }

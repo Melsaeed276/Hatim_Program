@@ -37,7 +37,7 @@ class AuthController extends UserController {
     }
   }
 
-  // get user from repo
+  // get user from repo (without setting userID - for login verification)
   @override
   Future<UserModel?> getUserByPhoneNumber({String? id}) async {
     var user = await userRepo.getUserByPhoneNumber(phoneNumberController.text);
@@ -46,8 +46,7 @@ class AuthController extends UserController {
       print("from controller data is $user");
     }
     if (user != null) {
-      userModel = user;
-      setUserID = user.id;
+      // Don't set userModel or userID here - let login page handle it after password verification
       return user;
     } else {
       return null;

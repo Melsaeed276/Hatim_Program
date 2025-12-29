@@ -207,7 +207,8 @@ class _UserGroupsViewState extends State<UserGroupsView> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
+                    return Text('${lang.errorPrefix!}${snapshot.error}');
                   } else {
                     return GroupList(
                         groups: snapshot.data!, userID: widget.userData.id);

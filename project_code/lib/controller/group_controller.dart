@@ -33,9 +33,14 @@ GroupModel? _groupModel;
     if (groupModel == null) {
       if (getCurrentGroupID != '0') {
         _groupRepo.getGroupByID(getCurrentGroupID).then((value) {
-          groupModel = value;
+          if (value != null) {
+            _groupModel = value;
+            setGroupID = _groupModel!.groupID;
+            notifyListeners();
+          }
         });
       }
+      return;
     }
     _groupModel = groupModel;
     setGroupID = _groupModel!.groupID;

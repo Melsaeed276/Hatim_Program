@@ -6,6 +6,7 @@ import 'package:hatim_program/page_route.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
+import 'dialogs/admin_password_dialog.dart';
 import 'hone_page_views/user_groups_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -31,8 +32,39 @@ class HomePage extends StatelessWidget {
               child:
                   CircularProgressIndicator()); // Show a loading spinner while waiting
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // Show error if any
+          final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
+          return Text('${lang.errorPrefix!}${snapshot.error}'); // Show error if any
         } else {
+          // Check if admin password verification is required
+          final userModel = snapshot.data;
+          if (userModel != null && 
+              userModel.isAdmin && 
+              userModel.adminPassword != null && 
+              userModel.adminPassword!.isNotEmpty &&
+              !userController.isAdminPasswordVerified) {
+            // Admin user but password not verified - show password dialog
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              final passwordVerified = await showDialog<bool>(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AdminPasswordDialog(
+                  storedPassword: userModel.adminPassword!,
+                ),
+              );
+
+              if (passwordVerified == true) {
+                // Password verified, set flag
+                userController.setAdminPasswordVerified = true;
+              } else {
+                // Password verification failed or cancelled, redirect to login
+                userController.resetUser();
+                if (context.mounted) {
+                  AppRoutes.goToLogin(context);
+                }
+              }
+            });
+            return const Center(child: CircularProgressIndicator());
+          }
           return Scaffold(
             appBar: AppBar(
               title: Text(lang.homePageTitle!),

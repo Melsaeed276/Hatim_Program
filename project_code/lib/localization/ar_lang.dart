@@ -50,6 +50,15 @@ class ARText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'الرجاء إدخال كلمة المرور';
+  
+  @override
+  String? adminPasswordPrompt = 'الرجاء إدخال كلمة مرور المسؤول للمتابعة';
+  
+  @override
+  String? adminPasswordRequired = 'كلمة مرور المسؤول مطلوبة';
+  
+  @override
+  String? adminPasswordIncorrect = 'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.';
 
   @override
   String? logOut = 'تسجيل الخروج';
@@ -91,7 +100,7 @@ class ARText implements Localization {
   // Internet Dialog
   @override
   String? noInternetWarningDialogText =
-      'لم يتم الكشف عن اتصال بالإنترنت في هذا الوقت. تحتاج اللعبة إلى اتصال بالإنترنت لتحديث بيانات اللعبة باستمرار. يرجى إعادة الاتصال للمتابعة';
+      'لم يتم الكشف عن اتصال بالإنترنت في هذا الوقت. يحتاج التطبيق إلى اتصال بالإنترنت لتحديث بيانات التطبيق باستمرار. يرجى إعادة الاتصال للمتابعة';
 
   @override
   String? languageDialogDoneButtonText = 'تم';
@@ -152,7 +161,7 @@ class ARText implements Localization {
 
   @override
   String? largeWebViewError =
-      "هذا الجهاز لا يدعم اللعبه. يرجى لعب اللعبة فقط على متصفح هاتفك المحمول.";
+      "هذا الجهاز لا يدعم التطبيق. يرجى استخدام التطبيق فقط على متصفح هاتفك المحمول.";
 
   //Main Menu
 
@@ -228,7 +237,7 @@ class ARText implements Localization {
   String? votingDialogCallButtonText = 'تصويت';
 
   @override
-  String? returnToGame = "Return to Game";
+  String? returnToGame = "العودة إلى التطبيق";
 
   @override
   String? voteAgain = "Vote Again";
@@ -247,7 +256,7 @@ class ARText implements Localization {
   String? exitDialogExitButtonText = 'نعم';
 
   @override
-  String? exitDialogDescriptionText = 'هل أنت متأكد أنك تريد الخروج من اللعبة؟';
+  String? exitDialogDescriptionText = 'هل أنت متأكد أنك تريد الخروج من التطبيق؟';
 
   // Logout Dialog
   @override
@@ -302,7 +311,7 @@ class ARText implements Localization {
   String? skip = 'تخطى';
 
   @override
-  String? applicationColor = 'لون اللعبة';
+  String? applicationColor = 'لون التطبيق';
 
   @override
   String? pleaseEnterYourPhoneNumber = '';
@@ -511,5 +520,47 @@ class ARText implements Localization {
 
   @override
   String? week = 'اسبوع';
+
+  @override
+  String? version = 'الإصدار';
+
+  @override
+  String? error = 'خطأ';
+
+  @override
+  String? errorPrefix = 'خطأ: ';
+
+  @override
+  String? noData = 'لا توجد بيانات';
+
+  @override
+  String? unknown = 'غير معروف';
+
+  @override
+  String? back = 'رجوع';
+
+  @override
+  String? hatimDetails = 'تفاصيل الختم';
+
+  @override
+  String? errorLoadingUserData = 'خطأ في تحميل بيانات المستخدم: ';
+
+  @override
+  String? errorHatimRoundNull = 'خطأ: جولة الختم فارغة';
+
+  @override
+  String? groupCountDefault = 'عدد المجموعة الافتراضي: 30';
+
+  @override
+  String? pleaseEnterValidNumber = 'الرجاء إدخال رقم صالح';
+
+  @override
+  String? pleaseEnterNumberLessThan100 = 'الرجاء إدخال رقم أقل من 100';
+
+  @override
+  String? addWithRandomID = 'إضافة برقم عشوائي';
+
+  @override
+  String? groupNameAlreadyExists = 'اسم المجموعة موجود بالفعل، يرجى إنشاء واحد جديد';
 
 }

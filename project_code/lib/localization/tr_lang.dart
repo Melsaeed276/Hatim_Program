@@ -43,6 +43,15 @@ class TRText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'Lütfen şifrenizi giriniz';
+  
+  @override
+  String? adminPasswordPrompt = 'Devam etmek için lütfen admin şifrenizi girin';
+  
+  @override
+  String? adminPasswordRequired = 'Admin şifresi gereklidir';
+  
+  @override
+  String? adminPasswordIncorrect = 'Yanlış şifre. Lütfen tekrar deneyin.';
 
   @override
   String? logOut = 'Oturumu kapat';
@@ -523,4 +532,47 @@ class TRText implements Localization {
 
   @override
   String? week = 'Hafta';
+
+  @override
+  String? version = 'Sürüm';
+
+  @override
+  String? error = 'Hata';
+
+  @override
+  String? errorPrefix = 'Hata: ';
+
+  @override
+  String? noData = 'Veri yok';
+
+  @override
+  String? unknown = 'Bilinmiyor';
+
+  @override
+  String? back = 'Geri';
+
+  @override
+  String? hatimDetails = 'Hatim Detayları';
+
+  @override
+  String? errorLoadingUserData = 'Kullanıcı verisi yüklenirken hata: ';
+
+  @override
+  String? errorHatimRoundNull = 'Hata: Hatim Turu null';
+
+  @override
+  String? groupCountDefault = 'Grup sayısı varsayılan: 30';
+
+  @override
+  String? pleaseEnterValidNumber = 'Lütfen geçerli bir sayı giriniz';
+
+  @override
+  String? pleaseEnterNumberLessThan100 = 'Lütfen 100\'den küçük bir sayı giriniz';
+
+  @override
+  String? addWithRandomID = 'Rastgele ID ile ekle';
+
+  @override
+  String? groupNameAlreadyExists = 'Grup adı zaten mevcut, lütfen yeni bir tane oluşturun';
+
 }

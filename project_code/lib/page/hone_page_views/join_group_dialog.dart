@@ -162,7 +162,7 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
               );
             }
           } else {
-            return const Center(child: Text('No Data'));
+            return Center(child: Text(lang.noData!));
           }
         },
       ),

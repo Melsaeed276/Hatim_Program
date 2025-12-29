@@ -15,8 +15,8 @@ class GroupList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lang = LocalizationController().getLanguage();
-    final languageController = LocalizationController();
+    final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
+    final languageController = Provider.of<LocalizationController>(context, listen: false);
 
     final userController = Provider.of<UserController>(context, listen: false);
     final isAdmin = userController.userModel!.isAdmin;

@@ -125,7 +125,7 @@ class _WhoInTheGroupState extends State<WhoInTheGroup> {
               );
             }
           } else {
-            return const Center(child: Text('No Data'));
+            return Center(child: Text(lang.noData!));
           }
         },
       ),
