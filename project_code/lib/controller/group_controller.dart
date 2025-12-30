@@ -191,6 +191,13 @@ class GroupController extends ChangeNotifier {
     await _groupRepo.deleteGroupAsAdmin(groupId);
   }
 
+  /// remove user from group as admin
+  Future<void> removeUserFromGroup(String groupId, String userId) async {
+    await _groupRepo.removeUserFromGroup(groupId, userId);
+    // Clear cache for this group since it was updated
+    _clearGroupCache(groupId);
+  }
+
   /// Generate a unique random group ID
   Future<String> generateUniqueRandomGroupID() async {
     return await _groupCreationService.generateUniqueRandomGroupID();

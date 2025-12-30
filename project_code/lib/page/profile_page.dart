@@ -15,24 +15,7 @@ class ProfileContent extends StatefulWidget {
 }
 
 class _ProfileContentState extends State<ProfileContent> {
-  late UserModel _user;
-  final bool _isLoading = false;
-
-
-  String supportPhoneNumber =  '+095388902129';
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  void _loadUserData() {
-    final userController = context.read<UserController>();
-    if (userController.userModel != null) {
-      _user = userController.userModel!;
-      supportPhoneNumber = _user.joinedByAdminId != null ? '+90${_user.joinedByAdminId}' : '+095388902129';
-    }
-  }
+  String supportPhoneNumber = '+095388902129';
 
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -68,10 +51,21 @@ class _ProfileContentState extends State<ProfileContent> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final local = Provider.of<LocalizationController>(context, listen: true);
+    final userController = Provider.of<UserController>(context, listen: true);
+    final user = userController.userModel;
 
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
+    // Update support phone number based on current user data
+    if (user != null) {
+      supportPhoneNumber = user.joinedByAdminId != null 
+          ? '+90${user.joinedByAdminId}' 
+          : '+095388902129';
+    }
+
+    if (user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,8 +83,8 @@ class _ProfileContentState extends State<ProfileContent> {
                               radius: 30,
                               backgroundColor: theme.colorScheme.primary,
                               child: Text(
-                                _user.name.isNotEmpty
-                                    ? _user.name[0].toUpperCase()
+                                user.name.isNotEmpty
+                                    ? user.name[0].toUpperCase()
                                     : '?',
                                 style: theme.textTheme.headlineMedium?.copyWith(
                                   color: theme.colorScheme.onPrimary,
@@ -103,16 +97,16 @@ class _ProfileContentState extends State<ProfileContent> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _user.name,
+                                    user.name,
                                     style: theme.textTheme.headlineSmall,
                                   ),
                                   Text(
-                                    _user.phoneNumber,
+                                    user.phoneNumber,
                                     style: theme.textTheme.bodyLarge?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),
                                   ),
-                                  if (_user.isAdmin)
+                                  if (user.isAdmin)
                                     const Chip(
                                       label: Text('Admin'),
                                       backgroundColor: Colors.red,
@@ -145,7 +139,7 @@ class _ProfileContentState extends State<ProfileContent> {
                         _buildStatCard(
                           context,
                           local.getLanguage().score ?? 'Score',
-                          _user.score.toStringAsFixed(1), // Formatting score
+                          user.score.toStringAsFixed(1), // Formatting score
                           Icons.star,
                           fullWidth: true,
                         ),
@@ -157,7 +151,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                 context,
                                 local.getLanguage().completedHatims ??
                                     'Completed Hatims',
-                                _user.totalCompletedHatim.toString(),
+                                user.totalCompletedHatim.toString(),
                                 Icons.book,
                               ),
                             ),
@@ -167,7 +161,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                 context,
                                 local.getLanguage().completedChapters ??
                                     'Completed Chapters',
-                                _user.totalCompletedChapters.toString(),
+                                user.totalCompletedChapters.toString(),
                                 Icons.article,
                               ),
                             ),
@@ -195,14 +189,14 @@ class _ProfileContentState extends State<ProfileContent> {
                         ListTile(
                           leading: const Icon(Icons.lock),
                           title: Text(
-                            _hasPasswordSet()
+                            _hasPasswordSet(user)
                                 ? (local.getLanguage().changePassword ??
                                       'Change Password')
                                 : (local.getLanguage().setPassword ??
                                       'Set Password'),
                           ),
                           subtitle: Text(
-                            _hasPasswordSet()
+                            _hasPasswordSet(user)
                                 ? (local
                                           .getLanguage()
                                           .updatePasswordDescription ??
@@ -211,9 +205,9 @@ class _ProfileContentState extends State<ProfileContent> {
                                       'Add password protection to your account'),
                           ),
                           trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: _showPasswordDialog,
+                          onTap: () => _showPasswordDialog(user),
                         ),
-                        if (_hasPasswordSet())
+                        if (_hasPasswordSet(user))
                           Padding(
                             padding: const EdgeInsets.only(
                               left: 16,
@@ -325,42 +319,42 @@ class _ProfileContentState extends State<ProfileContent> {
     );
   }
 
-  bool _hasPasswordSet() {
-    if (_user.isAdmin) {
-      return _user.adminPassword != null && _user.adminPassword!.isNotEmpty;
+  bool _hasPasswordSet(UserModel user) {
+    if (user.isAdmin) {
+      return user.adminPassword != null && user.adminPassword!.isNotEmpty;
     } else {
-      return _user.password != null && _user.password!.isNotEmpty;
+      return user.password != null && user.password!.isNotEmpty;
     }
   }
 
-  String? _getStoredPassword() {
-    if (_user.isAdmin) {
-      return _user.adminPassword;
+  String? _getStoredPassword(UserModel user) {
+    if (user.isAdmin) {
+      return user.adminPassword;
     } else {
-      return _user.password;
+      return user.password;
     }
   }
 
-  void _showPasswordDialog() async {
+  void _showPasswordDialog(UserModel user) async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => UserPasswordDialog(
-        storedPassword: _getStoredPassword(),
+        storedPassword: _getStoredPassword(user),
         isForVerification: false,
-        title: _hasPasswordSet() ? 'Change Password' : 'Set Password',
-        description: _hasPasswordSet()
+        title: _hasPasswordSet(user) ? 'Change Password' : 'Set Password',
+        description: _hasPasswordSet(user)
             ? 'Enter your current password and then set a new one.'
             : 'Set a password to secure your account.',
-        isAdmin: _user.isAdmin,
+        isAdmin: user.isAdmin,
       ),
     );
 
     if (result == true && mounted) {
-      // Refresh user data
-      setState(() {
-        _loadUserData();
-      });
+      // Show success message - no need to manually refresh as the stream will update automatically
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password updated successfully')),
+      );
     }
   }
 }

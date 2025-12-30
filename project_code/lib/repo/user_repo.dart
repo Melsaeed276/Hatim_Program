@@ -47,4 +47,9 @@ class UserRepo {
       return [];
     }
   }
+
+  // Stream user data - real-time updates
+  Stream<UserModel?> getUserStream(String phoneNumber) {
+    return service.getUserStream(phoneNumber);
+  }
 }

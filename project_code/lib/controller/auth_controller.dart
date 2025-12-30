@@ -88,7 +88,22 @@ class AuthController extends UserController {
   /// Set password for current user
   Future<bool> setUserPassword(String newPassword) async {
     if (userModel != null) {
-      userModel!.password = newPassword;
+      // Create a new UserModel with updated password
+      final updatedUser = UserModel(
+        name: userModel!.name,
+        phoneNumber: userModel!.phoneNumber,
+        isAdmin: userModel!.isAdmin,
+        adminPassword: userModel!.adminPassword,
+        password: newPassword,
+        totalCompletedHatim: userModel!.totalCompletedHatim,
+        totalCompletedChapters: userModel!.totalCompletedChapters,
+        score: userModel!.score,
+        joinedByAdminId: userModel!.joinedByAdminId,
+        joinedAt: userModel!.joinedAt,
+      );
+      // Copy groups
+      updatedUser.groups.addAll(userModel!.groups);
+      userModel = updatedUser;
       await userRepo.updateUser(userModel!);
       return true;
     }
@@ -108,6 +123,8 @@ class AuthController extends UserController {
         totalCompletedHatim: userModel!.totalCompletedHatim,
         totalCompletedChapters: userModel!.totalCompletedChapters,
         score: userModel!.score,
+        joinedByAdminId: userModel!.joinedByAdminId,
+        joinedAt: userModel!.joinedAt,
       );
       // Copy groups
       updatedUser.groups.addAll(userModel!.groups);

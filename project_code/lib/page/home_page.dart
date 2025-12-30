@@ -23,7 +23,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  Future<UserModel?>? _userFuture;
+  Stream<UserModel?>? _userStream;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the user stream once when the widget is created
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _userStream = Provider.of<UserController>(
+            context,
+            listen: false,
+          ).getUserStream();
+        });
+      }
+    });
+  }
 
   Future<void> _logout(BuildContext context) async {
     final userController = context.read<UserController>();
@@ -45,16 +61,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Cache the user fetch Future so changing tabs doesn't refetch/rebuild everything.
-    _userFuture ??= Provider.of<UserController>(
-      context,
-      listen: false,
-    ).getUserByPhoneNumber();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final lang = Provider.of<LocalizationController>(
       context,
@@ -65,8 +71,8 @@ class _HomePageState extends State<HomePage> {
     //Theme
     final theme = Theme.of(context);
 
-    return FutureBuilder<UserModel?>(
-      future: _userFuture,
+    return StreamBuilder<UserModel?>(
+      stream: _userStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -78,6 +84,16 @@ class _HomePageState extends State<HomePage> {
           return Text('${lang.errorPrefix!}${snapshot.error}');
         } else {
           final userModel = snapshot.data;
+          
+          // Update the controller's userModel when we receive data from the stream
+          if (userModel != null && userController.userModel?.id != userModel.id) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                userController.userModel = userModel;
+              }
+            });
+          }
+          
           final isAdmin = userModel?.isAdmin ?? false;
 
           if (userModel != null &&
@@ -172,9 +188,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Expanded(
-                      child: UserGroupsView(
-                        userData: userController.userModel!,
-                      ),
+                      child: userModel != null
+                          ? UserGroupsView(
+                              userData: userModel,
+                            )
+                          : const Center(
+                              child: Text('No user data available'),
+                            ),
                     ),
                   ],
                 ),

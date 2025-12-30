@@ -7,6 +7,7 @@ import 'package:hatim_program/page/hatim_page/hatim_details_page.dart';
 import 'page/over_screens/over_screens.dart';
 import 'page/pages.dart';
 import 'page/admin/admin_config_page.dart';
+import 'page/admin/group_members_page.dart';
 
 /// in this file we will define all the routes of the application and manage the navigation of the application
 
@@ -17,6 +18,7 @@ class AppRoutes {
   static const group = 'home/group';
   static const hatim = 'home/group/hatim';
   static const adminConfig = 'home/admin';
+  static const groupMembers = 'home/admin/members';
   static const profile = 'home/profile';
 
   static String _location(String path) {
@@ -92,6 +94,17 @@ class AppRoutes {
                   path: 'admin',
                   builder: (context, state) =>
                       const ApplyForEachPage(child: AdminConfigPage()),
+                  routes: [
+                    GoRoute(
+                      path: 'members',
+                      builder: (context, state) {
+                        final group = state.extra as GroupModel;
+                        return ApplyForEachPage(
+                          child: GroupMembersPage(group: group),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 GoRoute(
                   path: 'profile',
@@ -152,6 +165,11 @@ class AppRoutes {
   //static go to the profile page
   static void goToProfile(BuildContext context) {
     GoRouter.of(context).push(_location(AppRoutes.profile));
+  }
+
+  //static go to the group members page
+  static void goToGroupMembers(BuildContext context, GroupModel group) {
+    GoRouter.of(context).push(_location(groupMembers), extra: group);
   }
 
   //static go back

@@ -377,24 +377,33 @@ class GroupModel {
 
   ///write by Cengizhan
   /// delete user from group
+  /// Updated: Admin can now remove users even from active groups
   void deleteUser(String userid) {
     if (usersID.isNotEmpty) {
       ///check if the group is not empty
-      if (status == GroupStatus.waiting) {
-        ///check if the group is waiting so it can delete the user from the group
-        if (usersID.contains(userid)) {
-          ///check if the user is in the group
+      if (usersID.contains(userid)) {
+        ///check if the user is in the group
 
-          ///get the index of the user
-          int index = usersID.indexOf(userid);
+        ///get the index of the user
+        int index = usersID.indexOf(userid);
 
-          ///remove the user from the group
-          usersID.removeAt(index);
-        }
-      } else {
-        ///if the group is active then it can not delete the user
-        if (kDebugMode) {
-          print("the group is active you can not delete the user");
+        ///remove the user from the group
+        usersID.removeAt(index);
+
+        // If the group was active and now has fewer users than required,
+        // set status back to waiting
+        if (status == GroupStatus.active && usersID.length < userCount) {
+          status = GroupStatus.waiting;
+          round = 0;
+          // Clear dates when reverting to waiting status
+          startDate = null;
+          endDate = null;
+          // Clear hatim rounds as they're no longer valid
+          hatimRounds.clear();
+          
+          if (kDebugMode) {
+            print("Group reverted to waiting status after user removal");
+          }
         }
       }
     }

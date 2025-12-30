@@ -100,6 +100,11 @@ class UserController extends ChangeNotifier {
     }
   }
 
+  // Stream user data - real-time updates from Firestore
+  Stream<UserModel?> getUserStream({String? id}) {
+    return userRepo.getUserStream(id ?? getCurrentUserID);
+  }
+
   Future<UserModel?> loadUser({String? id}) async {
     return await userRepo.getUserByPhoneNumber(id ?? getCurrentUserID);
   }
@@ -192,6 +197,16 @@ class UserController extends ChangeNotifier {
       userModel!.totalCompletedHatim += hatimDelta;
       userModel!.totalCompletedChapters += chapterDelta;
       await userRepo.updateUser(userModel!);
+      notifyListeners();
+    }
+  }
+
+  /// Update any user's data (not just current user)
+  Future<void> updateUserData(UserModel user) async {
+    await userRepo.updateUser(user);
+    // If this is the current user, update the cached userModel
+    if (userModel?.id == user.id) {
+      userModel = user;
       notifyListeners();
     }
   }

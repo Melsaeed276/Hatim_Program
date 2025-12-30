@@ -16,6 +16,7 @@ abstract class GroupRepoInterface {
   Future<void> addNewGroup(GroupModel group);
   Future<GroupCreationResult> addUserToGroup(String groupID, String userID);
   Future<void> deleteGroupAsAdmin(String groupId);
+  Future<void> removeUserFromGroup(String groupId, String userId);
 }
 
 class GroupRepo implements GroupRepoInterface {
@@ -183,5 +184,11 @@ class GroupRepo implements GroupRepoInterface {
   @override
   Future<void> deleteGroupAsAdmin(String groupId) async {
     await groupService.deleteGroupAsAdmin(groupId);
+  }
+
+  /// remove a user from a group as admin
+  @override
+  Future<void> removeUserFromGroup(String groupId, String userId) async {
+    await groupService.removeUserFromGroup(groupId, userId);
   }
 }

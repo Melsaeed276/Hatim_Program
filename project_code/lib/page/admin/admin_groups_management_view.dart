@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../controller/contollers.dart';
 import '../../models/models.dart';
+import '../../page_route.dart';
 import '../dialogs/admin_password_dialog.dart';
 import '../dialogs/user_selection_dialog.dart';
 import '../hone_page_views/add_hatim_group_dialog.dart';
@@ -33,6 +34,8 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
   }
 
   void _refreshOwnedGroups() {
+    if (!mounted) return;
+    
     final userController = Provider.of<UserController>(context, listen: false);
     final groupController = Provider.of<GroupController>(
       context,
@@ -40,11 +43,13 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
     );
     final currentUserId = userController.getCurrentUserID;
 
-    setState(() {
-      _ownedGroupsFuture = groupController.getGroupsCreatedByAdmin(
-        currentUserId,
-      );
-    });
+    if (mounted) {
+      setState(() {
+        _ownedGroupsFuture = groupController.getGroupsCreatedByAdmin(
+          currentUserId,
+        );
+      });
+    }
   }
 
   Future<void> _handleDeleteGroup(
@@ -125,6 +130,11 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
     }
   }
 
+  void _navigateToGroupMembers(GroupModel group) {
+    if (!mounted) return;
+    AppRoutes.goToGroupMembers(context, group);
+  }
+
   @override
   Widget build(BuildContext context) {
     final lang = Provider.of<LocalizationController>(
@@ -155,8 +165,8 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.onSurface,
-                    backgroundColor: theme.colorScheme.surface,
+                    foregroundColor: theme.colorScheme.tertiaryContainer,
+                    backgroundColor: theme.colorScheme.tertiaryContainer,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
@@ -178,7 +188,7 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
                       maxLines: 2,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.labelSmall!.copyWith(
-                        color: theme.colorScheme.outline,
+                        color: theme.colorScheme.onTertiaryContainer,
                       ),
                     ),
                   ),
@@ -271,9 +281,15 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            IconButton(
+                              icon: const Icon(Icons.people),
+                              tooltip: 'View Members',
+                              onPressed: () => _navigateToGroupMembers(group),
+                            ),
                             if (group.usersID.length < group.userCount)
                               IconButton(
                                 icon: const Icon(Icons.person_add),
+                                tooltip: 'Add User',
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -287,6 +303,7 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
                                 Icons.delete,
                                 color: Theme.of(context).colorScheme.error,
                               ),
+                              tooltip: 'Delete Group',
                               onPressed: () =>
                                   _handleDeleteGroup(group, adminPassword),
                             ),

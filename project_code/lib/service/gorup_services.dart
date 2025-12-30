@@ -350,4 +350,57 @@ class GroupServices extends ServicesBase implements GroupServiceInterface {
       }
     }
   }
+
+  /// Remove a user from a group as admin
+  /// - removes userId from group's users array
+  /// - updates group status if needed (if group becomes waiting when user is removed)
+  @override
+  Future<void> removeUserFromGroup(String groupId, String userId) async {
+    try {
+      if (kDebugMode) {
+        print('GROUP_SERVICE: removeUserFromGroup called');
+        print('GROUP_SERVICE: groupId = $groupId, userId = $userId');
+      }
+
+      final groupRef = groupsDb.doc(groupId);
+      final snap = await groupRef.get();
+      final data = snap.data();
+      
+      if (data == null) {
+        if (kDebugMode) {
+          print('GROUP_SERVICE: Group not found');
+        }
+        return;
+      }
+
+      // Parse the group to get current state
+      final group = GroupModel.fromJson(data);
+      
+      if (kDebugMode) {
+        print('GROUP_SERVICE: Current users count = ${group.usersID.length}');
+        print('GROUP_SERVICE: Current status = ${group.status}');
+      }
+
+      // Remove the user using the model's deleteUser method
+      group.deleteUser(userId);
+
+      if (kDebugMode) {
+        print('GROUP_SERVICE: After removal users count = ${group.usersID.length}');
+        print('GROUP_SERVICE: New status = ${group.status}');
+      }
+
+      // Update the group in the database
+      await updateGroup(group);
+
+      if (kDebugMode) {
+        print('GROUP_SERVICE: removeUserFromGroup completed successfully');
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('GROUP_SERVICE ERROR in removeUserFromGroup: $e');
+        print('GROUP_SERVICE Stack trace: $stackTrace');
+      }
+      rethrow;
+    }
+  }
 }

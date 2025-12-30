@@ -25,6 +25,7 @@ abstract class GroupServiceInterface {
   Future<List<GroupModel>> getAllGroups();
   Future<List<GroupModel>> getGroupsCreatedByAdmin(String adminId);
   Future<void> deleteGroupAsAdmin(String groupId);
+  Future<void> removeUserFromGroup(String groupId, String userId);
 }
 
 // Service dedicated to handling group creation logic

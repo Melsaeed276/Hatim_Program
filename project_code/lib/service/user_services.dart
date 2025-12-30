@@ -61,6 +61,19 @@ class UserServices extends ServicesBase {
     }
   }
 
+  // Stream user data - real-time updates from Firestore
+  Stream<UserModel?> getUserStream(String phoneNumber) {
+    return userDb
+        .doc(UserModel.processPhoneNumber(phoneNumber))
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return UserModel.fromJson(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
   // update user
   Future<bool> updateUser(UserModel user) async {
     try {

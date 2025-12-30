@@ -184,14 +184,7 @@ class _HatimsPageState extends State<HatimsPage> {
                                 ///if the hatim is the current one will open a dialog to update the hatim
                                 ///if the hatim is not the current one will show a snackbar saying that the hatim is not the current one
                                 ///
-                                if (ownerAdmin) {
-                                  // got to the hatim details page
-                                  // Navigator.of(context).pushNamed(
-                                  //     AppRoutes.hatim,
-                                  //     arguments: hatim);
-
-                                  AppRoutes.goToHatim(context, hatim, group);
-                                } else if (didUserCompleteHatim) {
+                                 if (didUserCompleteHatim) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(lang.theHatimIsCompleted!),
