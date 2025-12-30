@@ -137,10 +137,28 @@ class GroupModel {
   }
 
   void _assignHatim() {
+    if (kDebugMode) {
+      print('GROUP_MODEL: _assignHatim() called');
+      print('GROUP_MODEL: Users count: ${usersID.length}, userCount: $userCount');
+      print('GROUP_MODEL: Will create $groupDateCount rounds');
+    }
+    
     if (usersID.length == userCount) {
       for (int i = 0; i < groupDateCount; i++) {
         // Lean Model: only store roundID
         hatimRounds.add(HatimRoundModel(roundID: i + 1));
+        
+        if (kDebugMode && i < 3) {
+          print('GROUP_MODEL: Created round ${i + 1}');
+        }
+      }
+      
+      if (kDebugMode) {
+        print('GROUP_MODEL: All $groupDateCount rounds created successfully');
+      }
+    } else {
+      if (kDebugMode) {
+        print('GROUP_MODEL: Cannot assign hatim - users count mismatch');
       }
     }
   }
@@ -208,21 +226,43 @@ class GroupModel {
   ///write by Mohammed
   // to json
   Map<String, dynamic> toJson() {
-    return {
-      'group_id': groupID,
-      if (adminId != null) 'adminId': adminId,
-      'name': name,
-      'round': round,
-      'users': usersID,
-      'groupDateCount': groupDateCount,
-      'userCount': userCount,
-      'dateType': dateType.index,
-      'hatimStyle': hatimStyle.index,
-      'status': status.index,
-      'created_date': createdDate.toIso8601String(),
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
-    };
+    if (kDebugMode) {
+      print('GROUP_MODEL: toJson() called');
+      print('GROUP_MODEL: groupID type = ${groupID.runtimeType}, value = $groupID');
+      print('GROUP_MODEL: adminId type = ${adminId?.runtimeType}, value = $adminId');
+      print('GROUP_MODEL: usersID length = ${usersID.length}');
+      print('GROUP_MODEL: status = $status (index: ${status.index})');
+    }
+    
+    try {
+      final json = {
+        'group_id': groupID,
+        if (adminId != null) 'adminId': adminId,
+        'name': name,
+        'round': round,
+        'users': usersID,
+        'groupDateCount': groupDateCount,
+        'userCount': userCount,
+        'dateType': dateType.index,
+        'hatimStyle': hatimStyle.index,
+        'status': status.index,
+        'created_date': createdDate.toIso8601String(),
+        'start_date': startDate?.toIso8601String(),
+        'end_date': endDate?.toIso8601String(),
+      };
+      
+      if (kDebugMode) {
+        print('GROUP_MODEL: toJson() completed successfully');
+      }
+      
+      return json;
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('GROUP_MODEL ERROR in toJson(): $e');
+        print('GROUP_MODEL Stack trace: $stackTrace');
+      }
+      rethrow;
+    }
   }
 
   ///write by Cengizhan
@@ -237,13 +277,19 @@ class GroupModel {
   ///  if the group is less then 30 user the status will be waiting and can add more users
   ///  the round still 0
   bool addUserToGroup(String newUser) {
-    print(toString());
+    if (kDebugMode) {
+      print('=== GROUP_MODEL: addUserToGroup START ===');
+      print('GROUP_MODEL: Current state: ${toString()}');
+      print('GROUP_MODEL: Adding user: $newUser');
+      print('GROUP_MODEL: Current users count: ${usersID.length}');
+      print('GROUP_MODEL: Max users: $userCount');
+    }
 
     /// check if  the users is already in the group
     if (usersID.length >= userCount) {
       /// if the user is more than 30  in the group then it will not add  any new  user
       if (kDebugMode) {
-        print("You can not add more user to the group");
+        print("GROUP_MODEL: Cannot add - group is full");
       }
       return false;
     } else {
@@ -251,27 +297,40 @@ class GroupModel {
       /// check if the user is exist in the group
       if (usersID.contains(newUser)) {
         if (kDebugMode) {
-          print("the user is already in the group");
+          print("GROUP_MODEL: Cannot add - user already in group");
         }
         return false;
       } else {
+        if (kDebugMode) {
+          print("GROUP_MODEL: Adding user to list");
+        }
         usersID.add(newUser);
       }
 
       /// if the users become 30 then the group will be active and stop taking new users
       if (usersID.length == userCount) {
         if (kDebugMode) {
-          print("Start Hattim");
+          print("GROUP_MODEL: *** GROUP IS NOW FULL - STARTING HATIM ***");
+          print("GROUP_MODEL: Users count: ${usersID.length}");
         }
 
         ///status will be active
         status = GroupStatus.active;
+        if (kDebugMode) {
+          print("GROUP_MODEL: Status set to: $status");
+        }
 
         ///round will be 1
         round = 1;
+        if (kDebugMode) {
+          print("GROUP_MODEL: Round set to: $round");
+        }
 
         ///startDate will be the activation time (when group becomes active)
         startDate = DateTime.now();
+        if (kDebugMode) {
+          print("GROUP_MODEL: Start date set to: $startDate");
+        }
 
         switch (dateType) {
           case GroupDateType.week:
@@ -282,16 +341,35 @@ class GroupModel {
             endDate = startDate!.add(Duration(days: groupDateCount));
             break;
         }
+        
+        if (kDebugMode) {
+          print("GROUP_MODEL: End date set to: $endDate");
+        }
 
         ///endDate will be the startDate + 30 weeks
 
         ///assign the hatim to the users
+        if (kDebugMode) {
+          print("GROUP_MODEL: Calling _assignHatim()");
+        }
         _assignHatim();
+        
+        if (kDebugMode) {
+          print("GROUP_MODEL: _assignHatim() completed");
+          print("GROUP_MODEL: Created ${hatimRounds.length} hatim rounds");
+        }
       } else {
         /// if the users is less than 30 then the group will be waiting
         if (status != GroupStatus.waiting) {
           status = GroupStatus.waiting;
+          if (kDebugMode) {
+            print("GROUP_MODEL: Status set to waiting");
+          }
         }
+      }
+      
+      if (kDebugMode) {
+        print('=== GROUP_MODEL: addUserToGroup SUCCESS ===');
       }
       return true;
     }

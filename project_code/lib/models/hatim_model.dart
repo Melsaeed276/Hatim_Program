@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:flutter/foundation.dart';
 import 'package:hatim_program/models/group_model.dart';
 
 class HatimRoundModel {
@@ -8,7 +9,8 @@ class HatimRoundModel {
   final int roundID;
   final List<String> completedUserIDs;
 
-  HatimRoundModel({required this.roundID, this.completedUserIDs = const []});
+  HatimRoundModel({required this.roundID, List<String>? completedUserIDs})
+      : completedUserIDs = completedUserIDs ?? [];
 
   /// Ensures the Juz number is always between 1 and 30
   static int giveChapterNumber(int value) {
@@ -54,7 +56,17 @@ class HatimRoundModel {
 
   /// To json (Lean Storage: only persist roundID and who is done)
   Map<String, dynamic> toJson() {
-    return {'roundID': roundID, 'completedUserIDs': completedUserIDs};
+    try {
+      final json = {'roundID': roundID, 'completedUserIDs': completedUserIDs};
+      return json;
+    } catch (e) {
+      if (kDebugMode) {
+        print('HATIM_MODEL ERROR in toJson(): $e');
+        print('HATIM_MODEL: roundID = $roundID');
+        print('HATIM_MODEL: completedUserIDs = $completedUserIDs');
+      }
+      rethrow;
+    }
   }
 
   /// From json

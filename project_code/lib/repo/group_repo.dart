@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hatim_program/service/gorup_services.dart';
 import 'package:hatim_program/service/group_creation_service.dart';
 
@@ -56,7 +57,17 @@ class GroupRepo implements GroupRepoInterface {
   // get group data by ID
   @override
   Future<GroupModel?> getGroupByID(String groupID) async {
-    return await groupService.getGroupByID(groupID);
+    if (kDebugMode) {
+      print('GROUP_REPO: getGroupByID called with groupID = $groupID');
+    }
+    
+    final result = await groupService.getGroupByID(groupID);
+    
+    if (kDebugMode) {
+      print('GROUP_REPO: getGroupByID result = ${result != null ? "found" : "null"}');
+    }
+    
+    return result;
   }
 
   /// update group status
@@ -71,8 +82,17 @@ class GroupRepo implements GroupRepoInterface {
   /// update group
   @override
   Future<void> updateGroup(GroupModel group) async {
+    if (kDebugMode) {
+      print('=== GROUP_REPO: updateGroup START ===');
+      print('GROUP_REPO: Calling groupService.updateGroup');
+    }
+    
     //when it update check the status of the group and update it
     await groupService.updateGroup(group);
+    
+    if (kDebugMode) {
+      print('=== GROUP_REPO: updateGroup COMPLETE ===');
+    }
   }
 
   /// add new group to database
@@ -89,20 +109,70 @@ class GroupRepo implements GroupRepoInterface {
     String userID,
   ) async {
     try {
+      if (kDebugMode) {
+        print('=== GROUP_REPO: addUserToGroup START ===');
+        print('GROUP_REPO: groupID = $groupID');
+        print('GROUP_REPO: userID = $userID');
+      }
+      
       GroupModel? group = await getGroupByID(groupID);
+      
+      if (kDebugMode) {
+        print('GROUP_REPO: Retrieved group = ${group?.toString()}');
+      }
+      
       if (group != null) {
-        if (group.addUserToGroup(userID)) {
+        if (kDebugMode) {
+          print('GROUP_REPO: Group found, attempting to add user');
+          print('GROUP_REPO: Current users count = ${group.usersID.length}');
+          print('GROUP_REPO: Max users = ${group.userCount}');
+          print('GROUP_REPO: Current status = ${group.status}');
+        }
+        
+        bool addResult = group.addUserToGroup(userID);
+        
+        if (kDebugMode) {
+          print('GROUP_REPO: addUserToGroup result = $addResult');
+          print('GROUP_REPO: New users count = ${group.usersID.length}');
+          print('GROUP_REPO: New status = ${group.status}');
+          print('GROUP_REPO: Hatim rounds count = ${group.hatimRounds.length}');
+        }
+        
+        if (addResult) {
+          if (kDebugMode) {
+            print('GROUP_REPO: Calling updateGroup...');
+          }
+          
           await updateGroup(group);
+          
+          if (kDebugMode) {
+            print('GROUP_REPO: updateGroup completed successfully');
+            print('=== GROUP_REPO: addUserToGroup SUCCESS ===');
+          }
+          
           return GroupCreationResult.success(group: group);
         } else {
+          if (kDebugMode) {
+            print('GROUP_REPO: Failed to add user (full or already exists)');
+          }
           return GroupCreationResult.failure(
             error:
                 'Failed to add user to group (group may be full or user already exists)',
           );
         }
       }
+      
+      if (kDebugMode) {
+        print('GROUP_REPO: Group not found');
+      }
       return GroupCreationResult.failure(error: 'Group not found');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('=== GROUP_REPO: addUserToGroup ERROR ===');
+        print('GROUP_REPO ERROR: $e');
+        print('GROUP_REPO ERROR type: ${e.runtimeType}');
+        print('GROUP_REPO Stack trace: $stackTrace');
+      }
       return GroupCreationResult.failure(
         error: 'Error adding user to group: ${e.toString()}',
       );

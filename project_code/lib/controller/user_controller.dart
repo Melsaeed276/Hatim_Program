@@ -106,26 +106,75 @@ class UserController extends ChangeNotifier {
 
   /// add the group of the user  by group ID
   Future<bool> addUserGroup(String groupID) async {
+    if (kDebugMode) {
+      print('=== USER_CONTROLLER: addUserGroup START ===');
+      print('USER_CONTROLLER: groupID = $groupID');
+    }
+    
     userModel ??= await getUserByPhoneNumber();
-    if (userModel == null) return false;
+    
+    if (userModel == null) {
+      if (kDebugMode) {
+        print('USER_CONTROLLER: userModel is null');
+      }
+      return false;
+    }
+
+    if (kDebugMode) {
+      print('USER_CONTROLLER: userModel.id = ${userModel!.id}');
+      print('USER_CONTROLLER: Current groups = ${userModel!.groups}');
+    }
 
     // Check if already in group locally
     if (userModel!.groups.contains(groupID)) {
+      if (kDebugMode) {
+        print('USER_CONTROLLER: User already in group');
+      }
       return true;
     }
 
+    if (kDebugMode) {
+      print('USER_CONTROLLER: Creating GroupRepo and calling addUserToGroup');
+    }
+    
     var groupRepo = GroupRepo();
     var result = await groupRepo.addUserToGroup(groupID, userModel!.id);
 
+    if (kDebugMode) {
+      print('USER_CONTROLLER: GroupRepo.addUserToGroup result = ${result.isSuccess ? "SUCCESS" : "FAILURE"}');
+      if (!result.isSuccess) {
+        print('USER_CONTROLLER: Error = ${result.error}');
+      }
+    }
+
     if (result.isSuccess) {
+      if (kDebugMode) {
+        print('USER_CONTROLLER: Adding group to user model and updating score');
+      }
+      
       userModel!.groups.add(groupID);
       userModel!.score += 0.1; // Add score for joining group
+      
+      if (kDebugMode) {
+        print('USER_CONTROLLER: Calling userRepo.updateUser');
+      }
+      
       await userRepo.updateUser(userModel!);
+      
+      if (kDebugMode) {
+        print('USER_CONTROLLER: User updated, notifying listeners');
+      }
+      
       notifyListeners();
+      
+      if (kDebugMode) {
+        print('=== USER_CONTROLLER: addUserGroup SUCCESS ===');
+      }
       return true;
     } else {
       if (kDebugMode) {
-        print('Failed to add user to group: ${result.error}');
+        print('USER_CONTROLLER: Failed to add user to group: ${result.error}');
+        print('=== USER_CONTROLLER: addUserGroup FAILURE ===');
       }
       return false;
     }
