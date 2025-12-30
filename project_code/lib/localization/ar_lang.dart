@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'localization.dart';
 
-
 class ARText implements Localization {
   @override
   TextDirection textDirection = TextDirection.rtl;
@@ -50,15 +49,16 @@ class ARText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'الرجاء إدخال كلمة المرور';
-  
+
   @override
   String? adminPasswordPrompt = 'الرجاء إدخال كلمة مرور المسؤول للمتابعة';
-  
+
   @override
   String? adminPasswordRequired = 'كلمة مرور المسؤول مطلوبة';
-  
+
   @override
-  String? adminPasswordIncorrect = 'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.';
+  String? adminPasswordIncorrect =
+      'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.';
 
   @override
   String? logOut = 'تسجيل الخروج';
@@ -140,7 +140,6 @@ class ARText implements Localization {
   @override
   String? allCategoriesErrorMessage = 'حدث خطأ!';
 
-
   @override
   String? addCategoryToDatabaseSuccessMessage = 'تم إضافة فئة جديدة بنجاح!';
 
@@ -202,6 +201,9 @@ class ARText implements Localization {
   String? theme = 'وضع الالوان';
 
   @override
+  String? settings = 'الإعدادات';
+
+  @override
   String? dark = 'الوضع اليلي';
 
   @override
@@ -217,7 +219,6 @@ class ARText implements Localization {
   String? done = 'اغلاق';
 
   //Add Player
-
 
   // Voting Dialog
   @override
@@ -246,8 +247,6 @@ class ARText implements Localization {
   String? votingStalemateText =
       "يبدو أنكم لم تقررو الشخص المخفي. لذلك، إما الاستمرار في اللعب أو التصويت مرة أخرى.";
 
-
-
   // Exit Dialog
   @override
   String? exitDialogCancelButtonText = 'لا';
@@ -256,7 +255,8 @@ class ARText implements Localization {
   String? exitDialogExitButtonText = 'نعم';
 
   @override
-  String? exitDialogDescriptionText = 'هل أنت متأكد أنك تريد الخروج من التطبيق؟';
+  String? exitDialogDescriptionText =
+      'هل أنت متأكد أنك تريد الخروج من التطبيق؟';
 
   // Logout Dialog
   @override
@@ -306,7 +306,6 @@ class ARText implements Localization {
   @override
   String? show = 'إظهار';
 
-
   @override
   String? skip = 'تخطى';
 
@@ -330,7 +329,8 @@ class ARText implements Localization {
   String? continueText = 'إستمر';
 
   @override
-  String? phoneNumberShouldBe10Digits = 'يجب أن يكون رقم الهاتف متكون من 10 أرقام';
+  String? phoneNumberShouldBe10Digits =
+      'يجب أن يكون رقم الهاتف متكون من 10 أرقام';
 
   @override
   String? phoneNumberShouldStartWith5 = 'يجب أن يبدأ رقم الهاتف بـ5';
@@ -366,7 +366,7 @@ class ARText implements Localization {
   String? groupIsNotFull = 'المجموعة غير ممتلئة';
 
   @override
-  String? groupIsNotStated  = 'المجموعة لم تبدأ بعد';
+  String? groupIsNotStated = 'المجموعة لم تبدأ بعد';
 
   @override
   String? groupIsStarted = 'المجموعة بدأت';
@@ -384,7 +384,8 @@ class ARText implements Localization {
   String? pleaseEnterYourGroupName = 'الرجاء إدخال اسم مجموعتك';
 
   @override
-  String? pleaseJoinAGroupYouNeedToPressOnJoinButton  = 'الرجاء الانضمام إلى مجموعة عن طريق الضغط على زر الانضمام';
+  String? pleaseJoinAGroupYouNeedToPressOnJoinButton =
+      'الرجاء الانضمام إلى مجموعة عن طريق الضغط على زر الانضمام';
 
   @override
   String? theGroupIsAvailable = 'المجموعة متاحة';
@@ -393,13 +394,16 @@ class ARText implements Localization {
   String? theGroupIsNotAvailable = 'المجموعة غير متاحة';
 
   @override
-  String Function({required int count})? thereIsStillXPlaceInTheGroupToStart = ({required count}) => ' لبدء المجموعة لا يزال هناك $count مكان ';
+  String Function({required int count})? thereIsStillXPlaceInTheGroupToStart =
+      ({required count}) => ' لبدء المجموعة لا يزال هناك $count مكان ';
 
   @override
-  String Function({required int count})? xPersonAreInTheGroup = ({required count}) => ' $count شخص في المجموعة ';
+  String Function({required int count})? xPersonAreInTheGroup =
+      ({required count}) => ' $count شخص في المجموعة ';
 
   @override
-  String? youCanJoinTheGroupByPressingOnThePlusButton = 'يمكنك الانضمام إلى المجموعة عن طريق الضغط على زر الزائد';
+  String? youCanJoinTheGroupByPressingOnThePlusButton =
+      'يمكنك الانضمام إلى المجموعة عن طريق الضغط على زر الزائد';
 
   @override
   String? youDoNotHaveGroupYet = 'ليس لديك مجموعة بعد';
@@ -414,22 +418,29 @@ class ARText implements Localization {
   String? joinGroup = 'انضمام إلى المجموعة';
 
   @override
-  String Function({required String hatimName})? theCurrentHatimIsX = ({required hatimName}) => 'الختم الحالي هو $hatimName';
+  String? myCreatedGroups = 'المجموعات التي أنشأتها';
 
   @override
-  String Function({required String week})? thisIsTheWeekXOfTheHatim = ({required week}) => 'هذا هو الأسبوع $week من الختم';
+  String Function({required String hatimName})? theCurrentHatimIsX =
+      ({required hatimName}) => 'الختم الحالي هو $hatimName';
+
+  @override
+  String Function({required String week})? thisIsTheWeekXOfTheHatim =
+      ({required week}) => 'هذا هو الأسبوع $week من الختم';
 
   @override
   String? newText = 'جديد';
 
   @override
-  String? youCanFollowYourHatimAndUpdateItFromHere = 'يمكنك متابعة ختمك وتحديثه من هنا';
+  String? youCanFollowYourHatimAndUpdateItFromHere =
+      'يمكنك متابعة ختمك وتحديثه من هنا';
 
   @override
   String? join = 'انضم';
 
   @override
-  String? areYouSureThatYouCompletedTheHatim = 'هل أنت متأكد من أنك أكملت الختم؟';
+  String? areYouSureThatYouCompletedTheHatim =
+      'هل أنت متأكد من أنك أكملت الختم؟';
 
   @override
   String? didYouCompleteTheHatim = 'هل أكملت الختم؟';
@@ -444,7 +455,8 @@ class ARText implements Localization {
   String? hatimChapterNumber = 'رقم الجزء';
 
   @override
-  String? ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound = 'إذا أكملت الجزء ، يجب عليك الضغط على الختم لتحديث جولة الختم الخاصة بك';
+  String? ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound =
+      'إذا أكملت الجزء ، يجب عليك الضغط على الختم لتحديث جولة الختم الخاصة بك';
 
   @override
   String? myHatimsOfThisGroup = 'ختمتي في هذه المجموعة';
@@ -453,7 +465,8 @@ class ARText implements Localization {
   String? no = 'لا';
 
   @override
-  String? theCurrentHatimIsAboutToOverPleaseUpdateYourHatim = 'الختم الحالي على وشك الانتهاء ، يرجى تحديث ختمك';
+  String? theCurrentHatimIsAboutToOverPleaseUpdateYourHatim =
+      'الختم الحالي على وشك الانتهاء ، يرجى تحديث ختمك';
 
   @override
   String? theHatimIsCompleted = 'الختم مكتمل';
@@ -465,7 +478,9 @@ class ARText implements Localization {
   String? theHatimIsNotCompleted = 'الختم غير مكتمل';
 
   @override
-  String? thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup = 'لا توجد مجموعات متاحة للانضمام إليها الآن. يجب عليك التحدث إلى المسؤول لإضافة مجموعة جديدة';
+  String?
+  thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup =
+      'لا توجد مجموعات متاحة للانضمام إليها الآن. يجب عليك التحدث إلى المسؤول لإضافة مجموعة جديدة';
 
   @override
   String? thisHatimIsCompleted = 'هذا الختم مكتمل';
@@ -480,10 +495,12 @@ class ARText implements Localization {
   String? yes = 'نعم';
 
   @override
-  String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim = 'يجب عليك إكمال هذا الختم لتتمكن من الانتقال إلى الختم التالي';
+  String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim =
+      'يجب عليك إكمال هذا الختم لتتمكن من الانتقال إلى الختم التالي';
 
   @override
-  String? theGroupIsNotActiveYetPleaseWaitUntilTheAppMembersJoin = 'المجموعة ليست نشطة بعد. يرجى الانتظار حتى ينضم جميع الاعضاء ';
+  String? theGroupIsNotActiveYetPleaseWaitUntilTheAppMembersJoin =
+      'المجموعة ليست نشطة بعد. يرجى الانتظار حتى ينضم جميع الاعضاء ';
 
   @override
   String? groupStatus = 'حالة المجموعة';
@@ -495,19 +512,28 @@ class ARText implements Localization {
   String? theHatimWillStartAtThatDate = 'الختم سيبدأ في ذلك التاريخ';
 
   @override
-  String Function({required String hatim, required int chapter})? youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter = ({required hatim, required chapter}) => 'أنت الآن في الختم $hatim وتحتاج إلى قراءة هذا الفصل $chapter';
+  String Function({required String hatim, required int chapter})?
+  youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter =
+      ({required hatim, required chapter}) =>
+          'أنت الآن في الختم $hatim وتحتاج إلى قراءة هذا الفصل $chapter';
 
   @override
-  String? youNeedToCompleteTheHatimBeforeThatDate = 'يجب عليك إكمال الختم قبل ذلك التاريخ';
+  String? youNeedToCompleteTheHatimBeforeThatDate =
+      'يجب عليك إكمال الختم قبل ذلك التاريخ';
 
   @override
-  String Function({required int chapter})? didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound = ({required chapter}) => 'هل قرأت الفصل $chapter؟ إذا كانت الإجابة نعم ، فاضغط على نعم لتحديث جولة الختم الخاصة بك';
+  String Function({required int chapter})?
+  didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound =
+      ({required chapter}) =>
+          'هل قرأت الفصل $chapter؟ إذا كانت الإجابة نعم ، فاضغط على نعم لتحديث جولة الختم الخاصة بك';
 
   @override
   String? myCurrentHatim = 'ختمي الحالي';
 
   @override
-  String Function({required String group})? youCanFollowAllTheUsersHatimsOfThatXGroupFromHere = ({required group}) => 'يمكنك متابعة جميع ختمات المستخدمين في تلك المجموعة $group من هنا';
+  String Function({required String group})?
+  youCanFollowAllTheUsersHatimsOfThatXGroupFromHere = ({required group}) =>
+      'يمكنك متابعة جميع ختمات المستخدمين في تلك المجموعة $group من هنا';
 
   @override
   String? hatimEndDate = 'تاريخ نهاية الختم';
@@ -516,7 +542,8 @@ class ARText implements Localization {
   String? hatimWillEndAt = 'سينتهي الختم في';
 
   @override
-  String? toSeeMoreDetailsAboutTheHatimPressOnTheHatim = 'لرؤية المزيد من التفاصيل حول الختم ، اضغط على الختم';
+  String? toSeeMoreDetailsAboutTheHatimPressOnTheHatim =
+      'لرؤية المزيد من التفاصيل حول الختم ، اضغط على الختم';
 
   @override
   String? week = 'اسبوع';
@@ -561,6 +588,298 @@ class ARText implements Localization {
   String? addWithRandomID = 'إضافة برقم عشوائي';
 
   @override
-  String? groupNameAlreadyExists = 'اسم المجموعة موجود بالفعل، يرجى إنشاء واحد جديد';
+  String? groupNameAlreadyExists =
+      'اسم المجموعة موجود بالفعل، يرجى إنشاء واحد جديد';
 
+  @override
+  String? groupNameHelperText = 'سيتم عرض هذا الاسم للمستخدمين';
+
+  @override
+  String? groupIDLabel = 'معرف المجموعة';
+
+  @override
+  String? groupIDHelperText = 'المعرف الرقمي الفريد للمجموعة';
+
+  @override
+  String? groupIDMustBe6Digits =
+      'يجب أن يكون معرف المجموعة مكوناً من 6 أرقام بالضبط';
+
+  @override
+  String? groupIDMustContainOnlyNumbers =
+      'يجب أن يحتوي معرف المجموعة على أرقام فقط';
+
+  @override
+  String? groupDateTypeLabel = 'نوع تاريخ المجموعة';
+
+  @override
+  String? hatimStyleLabel = 'نمط الحتم';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatim = 'الكل معاً في ختم واحد';
+
+  @override
+  String? hatimStyleByRounds = 'ختم بالاجزاء';
+
+  @override
+  String? hatimStyleByChallenge = 'حسب التحدي';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatimDescription =
+      'جميع أعضاء المجموعة يقرؤون نفس الختم معاً. يجب أن تحتوي المجموعة على 30 عضواً بالضبط.';
+
+  @override
+  String? hatimStyleByRoundsDescription =
+      'أعضاء المجموعة يقرؤون الختم في جولات. كل جولة لها توزيع مختلف.';
+
+  @override
+  String? hatimStyleByChallengeDescription =
+      'أعضاء المجموعة يقرؤون الختم في شكل تحدٍ. يوفر توزيعاً أكثر مرونة.';
+
+  @override
+  String? failedToGenerateRandomID = 'فشل في إنشاء معرف عشوائي';
+
+  @override
+  String? failedToCreateGroup = 'فشل في إنشاء المجموعة';
+
+  @override
+  String? unexpectedErrorOccurred = 'حدث خطأ غير متوقع';
+
+  @override
+  String? allTogetherInOneHatimMustBe30 =
+      'يجب أن يحتوي "الكل معاً في ختم واحد" على 30 شخصاً بالضبط';
+
+  @override
+  String? allTogetherInOneHatimMustBe30Description =
+      'بالنسبة لنمط "الكل معاً في ختم واحد"، يجب أن تحتوي المجموعة على 30 عضواً بالضبط. يرجى تعيين العدد إلى 30.';
+
+  @override
+  String? otherStylesCanBeFlexible =
+      'الأنماط الأخرى يمكن أن يكون لها عدد أعضاء مرن (1-100)';
+
+  @override
+  String? deleteGroup = 'حذف المجموعة';
+
+  @override
+  String? deleteGroupConfirmation = 'هل أنت متأكد أنك تريد حذف هذه المجموعة';
+
+  @override
+  String? deleteButton = 'حذف';
+
+  @override
+  String? groupDeletedSuccessfully = 'تم حذف المجموعة بنجاح';
+
+  @override
+  String? userRemovedSuccessfully = 'تمت إزالة المستخدم بنجاح';
+
+  @override
+  String? youAreNotAnAdmin = 'أنت لست مسؤولاً';
+
+  @override
+  String? youHaveNotCreatedAnyGroupsYet = 'لم تقم بإنشاء أي مجموعات بعد';
+
+  @override
+  String? statusLabel = 'الحالة:';
+
+  @override
+  String? usersLabel = 'المستخدمون:';
+
+  @override
+  String? adminDashboard = 'لوحة تحكم المسؤول';
+
+  @override
+  String? preferences = 'التفضيلات';
+
+  @override
+  String? appearance = 'المظهر';
+
+  @override
+  String? hatimTab = 'ختمة';
+
+  @override
+  String? zikirTab = 'ذكر';
+
+  @override
+  String? programsTab = 'برامج';
+
+  @override
+  String? profileTab = 'الملف الشخصي';
+
+  @override
+  String? myHatimProgramTab = 'برنامج ختمتي';
+
+  @override
+  String? myZikirTab = 'أذكاري';
+
+  @override
+  String? myProgramsTab = 'برامجي';
+
+  @override
+  String? myUsersTab = 'مستخدميني';
+
+  @override
+  String? groupDetailsSection = 'تفاصيل المجموعة';
+
+  @override
+  String? groupIdentificationSection = 'معرف المجموعة';
+
+  @override
+  String? hatimConfigurationSection = 'إعدادات الختم';
+
+  @override
+  String? durationTypeHelperText =
+      'اختر المدة التي يجب على الأعضاء إكمال أجزائهم فيها';
+
+  @override
+  String? groupDateTypeWeek = 'أسبوع';
+
+  @override
+  String? groupDateTypeDay = 'يوم';
+
+  @override
+  String? referenceCode = 'رمز الاحالة';
+
+  @override
+  String? referenceCodeHint = 'أدخل رمز الاحالة';
+
+  @override
+  String? referenceCodeOptional = 'رمز الاحالة (اختياري)';
+
+  @override
+  String? referredUsers = 'المستخدمون المحالون';
+
+  @override
+  String? generateReferenceCode = 'إنشاء رمز الاحالة';
+
+  @override
+  String? selectUsersToAdd = 'اختر المستخدمين للإضافة';
+
+  @override
+  String? noReferredUsersFound = 'لم يتم العثور على مستخدمين محالين';
+
+  @override
+  String? userAlreadyInGroup = 'المستخدم موجود بالفعل في المجموعة';
+
+  @override
+  String? deleteCode = 'حذف الرمز';
+
+  @override
+  String? areYouSureYouWantToDeleteThisCode =
+      'هل أنت متأكد أنك تريد حذف هذا الرمز؟';
+
+  @override
+  String? cancel = 'إلغاء';
+
+  @override
+  String? delete = 'حذف';
+
+  @override
+  String? remove = 'إزالة';
+
+  @override
+  String? removeUserFromReferrals = 'إزالة من الإحالات';
+
+  @override
+  String? areYouSureYouWantToRemoveThisUserFromYourReferrals =
+      'هل أنت متأكد أنك تريد إزالة هذا المستخدم من إحالاتك؟';
+
+  @override
+  String? get createReferenceCode => 'إنشاء رمز الاحالة';
+
+  @override
+  String? get customCode => 'رمز مخصص';
+
+  @override
+  String? get randomCode => 'رمز عشوائي';
+
+  @override
+  String? get enterCustomCode => 'أدخل رمزاً مخصصاً';
+
+  @override
+  String? get codeAlreadyExists => 'هذا الرمز موجود بالفعل';
+
+  @override
+  String? get referenceCodeCreatedSuccessfully => 'تم إنشاء رمز الاحالة بنجاح';
+
+  // App Info Dialog
+  @override
+  String? get infoButtonTooltip => 'معلومات التطبيق';
+
+  @override
+  String? get appInfoTitle => 'معلومات التطبيق';
+
+  @override
+  String? get aboutAppTitle => 'عن التطبيق';
+
+  @override
+  String? get aboutAppDescription =>
+      'هذا التطبيق يساعدك على تنظيم وتتبع برامج الختم بكفاءة.';
+
+  @override
+  String? get whyWeMadeAppTitle => 'لماذا صنعنا هذا التطبيق';
+
+  @override
+  String? get whyWeMadeAppDescription =>
+      'لتسهيل تنسيق دوائر قراءة القرآن وجعل الأمر أسهل للمجموعات لإكمال الختمات معاً.';
+
+  @override
+  String? get supporterCommunitiesTitle => 'المجتمعات الداعمة';
+
+  @override
+  String? get supporterCommunitiesList =>
+      '1. زوجتي\n2. Yavuz Selim Vakıf İstanbul';
+
+  @override
+  String? get contactSupportTitle => 'تواصل للدعم';
+
+  @override
+  String? get contactSupportDescription =>
+      'إذا كنت ترغب في الدعم، يمكنك التواصل مع:';
+
+  @override
+  String? get supportPhoneNumber => '+905551234567';
+
+  @override
+  String? get comingSoon => 'قريباً';
+
+  // Profile Page - Statistics & Support
+  @override
+  String? get statistics => 'الإحصائيات';
+  @override
+  String? get score => 'النقاط';
+  @override
+  String? get completedHatims => 'الختمات المكتملة';
+  @override
+  String? get completedChapters => 'الأجزاء المكتملة';
+  @override
+  String? get security => 'الأمان';
+  @override
+  String? get changePassword => 'تغيير كلمة المرور';
+  @override
+  String? get setPassword => 'تعيين كلمة المرور';
+  @override
+  String? get updatePasswordDescription => 'تحديث كلمة مرور تسجيل الدخول';
+  @override
+  String? get setPasswordDescription => 'إضافة حماية بكلمة مرور لحسابك';
+  @override
+  String? get passwordResetNote =>
+      'ملاحظة: إذا نسيت كلمة المرور، اتصل بالدعم على +095388902129 لإعادة تعيينها.';
+  @override
+  String? get support => 'الدعم';
+  @override
+  String? get supportContact => 'اتصل بالدعم';
+  @override
+  String? get whatsAppSupport => 'دعم واتساب';
+  @override
+  String? get chatWithUs => 'دردش معنا';
+  @override
+  String? get callSupportError => 'لا يمكن إجراء المكالمة إلى';
+  @override
+  String? get whatsAppSupportError => 'لا يمكن فتح واتساب';
+  @override
+  String? get callSupport => 'اتصل للدعم';
+    @override
+  String get whoMadeThisAppDescription => 'هذا التطبيق تم تطويره من قبل محمد السعيد و روضة نور ارمغان السعيد .';
+  
+  @override
+  String get whoMadeThisAppTitle => 'من صنع هذا التطبيق';
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
+import 'package:hatim_program/page/dialogs/app_info_dialog.dart';
+import 'package:hatim_program/page/dialogs/settings_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
 import '../page_route.dart';
-import 'dialogs/admin_password_dialog.dart';
+import 'dialogs/user_password_dialog.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -32,6 +34,29 @@ class LoginPage extends StatelessWidget {
 
       appBar: AppBar(
         title: Text('${lang.login!} ${lang.page!}'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  tooltip: lang.infoButtonTooltip ?? 'Info',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const AppInfoDialog(),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  tooltip: lang.settings ?? 'Settings',
+                  onPressed: () => SettingsDialog.show(
+                    context,
+                    onLogout: () {},
+                    showLogoutButton: false,
+                  ),
+                ),
+        
+        ],
       ),
       body: SizedBox(
         height: double.infinity,
@@ -45,7 +70,15 @@ class LoginPage extends StatelessWidget {
                 bottom: 3,
                 right: 8,
                 //App version
-                child: Text('${lang.version!} 1.1.1'),
+                child: FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text('${lang.version!} ${snapshot.data!.version}');
+                    }
+                    return Text('${lang.version!} ...');
+                  },
+                ),
               ),
 
             Form(
@@ -156,29 +189,44 @@ class LoginPage extends StatelessWidget {
                                         }
                                       }
                                       
-                                      // Check if user is admin and has password
-                                      if (value.isAdmin && value.adminPassword != null && value.adminPassword!.isNotEmpty) {
+                                      // Check if user has password (admin or regular user)
+                                      if ((value.isAdmin && value.adminPassword != null && value.adminPassword!.isNotEmpty) ||
+                                          (!value.isAdmin && value.password != null && value.password!.isNotEmpty)) {
                                         if (kDebugMode) {
-                                          print('Showing admin password dialog');
+                                          print('Showing password dialog for user: ${value.isAdmin ? 'admin' : 'regular user'}');
                                         }
-                                        // Show password dialog for admin
+
+                                        String dialogTitle = value.isAdmin ? 'Admin Authentication' : 'Enter Password';
+                                        String dialogDescription = value.isAdmin
+                                            ? 'Please enter your admin password to continue.'
+                                            : 'Please enter your password to continue.';
+                                        String? storedPassword = value.isAdmin ? value.adminPassword : value.password;
+
+                                        // Show password dialog
                                         final passwordVerified = await showDialog<bool>(
                                           context: context,
                                           barrierDismissible: false,
-                                          builder: (context) => AdminPasswordDialog(
-                                            storedPassword: value.adminPassword!,
+                                          builder: (context) => UserPasswordDialog(
+                                            storedPassword: storedPassword,
+                                            isForVerification: true,
+                                            title: dialogTitle,
+                                            description: dialogDescription,
                                           ),
                                         );
-                                        
+
                                         if (kDebugMode) {
                                           print('Password verified result: $passwordVerified');
                                         }
 
                                         if (passwordVerified == true) {
-                                          // Password verified, set flag and proceed to home
+                                          // Password verified, proceed to home
                                           if (context.mounted) {
                                             final userController = context.read<UserController>();
-                                            userController.setAdminPasswordVerified = true;
+                                            if (value.isAdmin) {
+                                              userController.setAdminPasswordVerified = true;
+                                            } else {
+                                              userController.clearAdminPasswordVerification();
+                                            }
                                             userController.userModel = value;
                                             AppRoutes.goToHome(context);
                                           }
@@ -194,7 +242,7 @@ class LoginPage extends StatelessWidget {
                                           }
                                         }
                                       } else {
-                                        // Not admin or no password, proceed normally
+                                        // No password set, proceed normally
                                         final userController = context.read<UserController>();
                                         userController.clearAdminPasswordVerification();
                                         userController.userModel = value;

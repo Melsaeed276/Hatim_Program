@@ -1,217 +1,82 @@
-import 'dart:collection';
 import 'dart:core';
 
 import 'package:hatim_program/models/group_model.dart';
 
 class HatimRoundModel {
-
   ///The roundID is a unique identifier for the hatim round. also
   ///It is used to calculate the start and end dates of the round.
   final int roundID;
+  final List<String> completedUserIDs;
 
-  final List<String> userList;
+  HatimRoundModel({required this.roundID, this.completedUserIDs = const []});
 
-  /// the 'user ID' : 'hatim chapter number'
-  Map<String, int> userHatim = {};
+  /// Ensures the Juz number is always between 1 and 30
+  static int giveChapterNumber(int value) {
+    int result = value % 30;
+    return result == 0 ? 30 : result;
+  }
 
-  /// the 'user ID' : 'is completed that chapter'
-  Map<String, bool> userHatimCompleted = {};
+  /// Calculates the Juz number for a specific user in this round
+  int getJuzForUser(String userId, List<String> groupUsers, HatimStyle style) {
+    if (style == HatimStyle.byRounds) return giveChapterNumber(roundID);
+    int index = groupUsers.indexOf(userId);
+    if (index == -1) return 0;
+    return giveChapterNumber(index + roundID);
+  }
 
-  ///Start date of the hatim round
-  ///it will be assigned when the round is created by multiple the roundID
-  late DateTime startDate;
-
-  ///end date of the hatim round
-  ///it will be assigned  as 1 week from the start date of the round
-late DateTime endDate;
-
-HatimStyle hatimStyle;
-
-late final GroupDateType dateType;
-
-
-  HatimRoundModel({required this.roundID, required this.userList,required this.dateType,required this.hatimStyle}) {
-    ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
-
-    // String dateString = "2024-04-25";
-    // DateTime dateTime = DateTime.parse(dateString);
-
+  /// Calculates the start date for this round based on group activation
+  DateTime getStartDate(DateTime groupStartDate, GroupDateType dateType) {
     switch (dateType) {
       case GroupDateType.week:
-        startDate = DateTime.now().add(Duration(days: (roundID - 1) * 7));
-        ///The endDate is calculated by adding 7 days to the startDate.
-        endDate = startDate.add(const Duration(days: 7));
-        break;
+        return groupStartDate.add(Duration(days: (roundID - 1) * 7));
       case GroupDateType.day:
-        startDate = DateTime.now().add(Duration(days: (roundID - 1) ));
-        ///The endDate is calculated by adding 1 days to the startDate.
-        endDate = startDate.add(const Duration(days: 1));
-        break;
+        return groupStartDate.add(Duration(days: (roundID - 1)));
     }
-
-
-
-
-
-
-    ///
-    _assignHatim();
   }
 
-
-  HatimRoundModel.withStartDateTime({required this.roundID, required this.userList,required this.startDate,required this.dateType,required this.hatimStyle}){
-    ///The Duration class in Dart does not have a named parameter weeks. Instead, you can calculate the number of days in a week and use the days parameter. There are 7 days in a week, so you can multiply the roundID - 1 by 7 to get the equivalent number of days.
-
-    // String dateString = "2024-04-25";
-    // DateTime dateTime = DateTime.parse(dateString);
-
+  /// Calculates the end date for this round based on group activation
+  DateTime getEndDate(DateTime groupStartDate, GroupDateType dateType) {
+    final start = getStartDate(groupStartDate, dateType);
     switch (dateType) {
       case GroupDateType.week:
-        startDate = startDate.add(Duration(days: (roundID - 1) * 7));
-        ///The endDate is calculated by adding 7 days to the startDate.
-        endDate = startDate.add(const Duration(days: 7));
-        break;
+        return start.add(const Duration(days: 7));
       case GroupDateType.day:
-        startDate = startDate.add(Duration(days: (roundID - 1) ));
-        ///The endDate is calculated by adding 1 days to the startDate.
-        endDate = startDate.add(const Duration(days: 1));
-        break;
-    }
-    ///
-    _assignHatim();
-  }
-
- void _assignHatim() {
-    // Iterate over each user in the userList
-    for (var element in userList) {
-      // Get the index of the current user
-      int index = userList.indexOf(element);
-      // Assign a chapter number to the user based on the index and roundID
-      if (hatimStyle == HatimStyle.allTogetherInOneHatim) {
-        userHatim[element] = giveChapterNumber(index + roundID);
-      } else {
-        userHatim[element] = giveChapterNumber(roundID);
-      }
-      // Mark the user's hatim as not completed
-      userHatimCompleted[element] = false;
+        return start.add(const Duration(days: 1));
     }
   }
 
-  // update
-  void updateHatim(String userID) {
-    if (userHatimCompleted[userID] == false) {
-      userHatimCompleted[userID] = true;
-    }
-  }
+  bool isHatimCompleted(String userID) => completedUserIDs.contains(userID);
 
-  // get user data map<hatimID,isCompleted > of that user
-  Map<String, bool> userHatimData(String userID) {
-    return {userHatim[userID].toString(): userHatimCompleted[userID]!};
-  }
+  bool isAllUserCompleted(int totalUsers) =>
+      completedUserIDs.length == totalUsers;
 
+  int howManyUserCompleted() => completedUserIDs.length;
 
-  //get the current hatim chapter of the user
-  int getCurrentHatimChapterOfUser(String userID) {
-    return userHatim[userID]?? 0;
-  }
-
-  //sort the userHatim by who completed the hatim it will return List<String> of userID
-  List<String> sortByWhoCompletedHatim() {
-    List<String> userList = [];
-
-    var competed =  userHatimCompleted.keys.where((element) => userHatimCompleted[element] == true).toList();
-
-    var notCompeted =  userHatimCompleted.keys.where((element) => userHatimCompleted[element] == false).toList();
-
-    userList.addAll(competed);
-    userList.addAll(notCompeted);
-
-    return userList;
-  }
-
-
-
-  //did all users complete the hatim
-  bool isAllUserCompleted() {
-    return userHatimCompleted.values.every((element) => element == true);
-  }
-
-  //how many users completed the hatim
-  int howManyUserCompleted() {
-    return userHatimCompleted.values.where((element) => element == true).length;
-  }
-
-  //did user complete the hatim
-  bool isHatimCompleted(String userID) {
-    return userHatimCompleted[userID]?? false;
-  }
-
-  int giveChapterNumber(int index) {
-    if (index > 30) {
-      return index - 30;
-    } else {
-      return index;
-    }
-  }
-
-  ///To json
+  /// To json (Lean Storage: only persist roundID and who is done)
   Map<String, dynamic> toJson() {
-    return {
-      'roundID': roundID,
-      'userList': userList,
-      'userHatim': userHatim,
-      'userHatimCompleted': userHatimCompleted,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-      'dateType': dateType.index,
-      'hatimStyle': hatimStyle.index,
-    };
+    return {'roundID': roundID, 'completedUserIDs': completedUserIDs};
   }
 
-  ///From json
+  /// From json
   factory HatimRoundModel.fromJson(Map<String, dynamic> json) {
-    final dateType = (json['dateType'] != null && json['dateType'] >= 0 && json['dateType'] < GroupDateType.values.length)
-        ? GroupDateType.values[json['dateType']]
-        : GroupDateType.week;
-    final hatimStyle = HatimStyleExtension.fromJson(json['hatimStyle']) ?? HatimStyle.allTogetherInOneHatim;
-    
     return HatimRoundModel(
       roundID: json['roundID'],
-      userList: List<String>.from(json['userList']),
-      dateType: dateType,
-      hatimStyle: hatimStyle,
-    )..userHatim = LinkedHashMap<String, int>.from(json['userHatim'])
-      ..userHatimCompleted = LinkedHashMap<String, bool>.from(json['userHatimCompleted'])
-      ..startDate = DateTime.parse(json['startDate'])
-      ..endDate = DateTime.parse(json['endDate']);
+      completedUserIDs: List<String>.from(json['completedUserIDs'] ?? []),
+    );
   }
 
   //is equal
-  //check all the filed of the object if it is equal
   bool isEqual(HatimRoundModel hatimRoundModel) {
     return hatimRoundModel.roundID == roundID &&
-        hatimRoundModel.userList == userList &&
-        hatimRoundModel.userHatim == userHatim &&
-        hatimRoundModel.userHatimCompleted == userHatimCompleted &&
-        hatimRoundModel.startDate == startDate &&
-        hatimRoundModel.endDate == endDate;
+        hatimRoundModel.completedUserIDs.length == completedUserIDs.length &&
+        hatimRoundModel.completedUserIDs.every(
+          (id) => completedUserIDs.contains(id),
+        );
   }
 
   //To string
   @override
   String toString() {
-    return '''
-  HatimRoundModel{
-  roundID: $roundID,
-  
-  startDate: $startDate,
-  endDate: $endDate,
-  
-  userHatim: $userHatim,
-  userHatimCompleted: $userHatimCompleted,
- 
-}'''; // Note the triple quotes for multi-line strings
+    return 'HatimRoundModel{roundID: $roundID, completedUserIDsCount: ${completedUserIDs.length}}';
   }
 }
-
-

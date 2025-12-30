@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,16 +16,13 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (kIsWeb) {
     await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
     // web is not supported in path provider
     await Hive.initFlutter();
   } else {
-
     final Directory dir = await getApplicationDocumentsDirectory();
     await Hive.initFlutter(dir.path);
   }
@@ -39,7 +35,6 @@ void main() async {
     debugPrint = (String? message, {int? wrapWidth}) {};
   }
 
-
   runApp(
     MultiProvider(
       providers: [
@@ -48,10 +43,10 @@ void main() async {
         ChangeNotifierProvider(create: (context) => UserController()),
         ChangeNotifierProvider(create: (context) => AuthController()),
         ChangeNotifierProvider(create: (context) => GroupController()),
-
+        ChangeNotifierProvider(create: (context) => AdminReferralController()),
+        ChangeNotifierProvider(create: (context) => ThemeController()),
       ],
       child: const App(),
     ),
   );
 }
-

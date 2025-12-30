@@ -1,18 +1,30 @@
-# hatim_program
+# Hatim Program
 
-A new Flutter project.
+A comprehensive Flutter application designed to facilitate the coordination of Quran reading circles (Hatims). This app helps groups and individuals organize, track, and complete Hatims efficiently.
+
+## Features
+
+*   **Group Management**: Create and join groups for collective Hatim readings.
+*   **Hatim Tracking**: Track individual and group progress through Juz (parts).
+*   **Admin Panel**: Tools for administrators to manage users and settings.
+*   **Localization**: Support for English, Turkish, and Arabic languages.
+*   **Cross-Platform**: Available on Web and Mobile.
+
+## Live Demo
+
+Check out the live website: [https://hatim-program.web.app/](https://hatim-program.web.app/)
+
+## Supporters
+
+A special thank you to our supporters who made this project possible:
+
+1.  **My wife** - For her unwavering support and patience.
+2.  **Yavuz Selim Vakıf İstanbul** - For their community support and inspiration.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is built with Flutter. To run it locally:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-link of the website https://hatim-program.web.app/
+1.  Clone the repo.
+2.  Run `flutter pub get`.
+3.  Run `flutter run`.

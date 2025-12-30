@@ -21,8 +21,9 @@ class UserServices extends ServicesBase {
   // check user by phone number return true or false
   Future<bool> checkUserByPhoneNumber(String phoneNumber) async {
     try {
-      var data =
-          await userDb.where("phoneNumber", isEqualTo: phoneNumber).get();
+      var data = await userDb
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
       return data.docs.isNotEmpty;
     } catch (e) {
       return false;
@@ -37,15 +38,19 @@ class UserServices extends ServicesBase {
           .doc(UserModel.processPhoneNumber(phoneNumber))
           .get()
           .then((value) {
-        return value;
-      });
+            return value;
+          });
 
       if (kDebugMode) {
         final firestoreData = data.data()!;
         print("from server data is ${UserModel.fromJson(firestoreData)}");
         print("Firestore raw data: $firestoreData");
-        print("adminPassword field in Firestore: ${firestoreData['adminPassword']}");
-        print("adminPassword type: ${firestoreData['adminPassword'].runtimeType}");
+        print(
+          "adminPassword field in Firestore: ${firestoreData['adminPassword']}",
+        );
+        print(
+          "adminPassword type: ${firestoreData['adminPassword'].runtimeType}",
+        );
       }
       return UserModel.fromJson(data.data()!);
     } catch (e) {
@@ -103,6 +108,19 @@ class UserServices extends ServicesBase {
       if (kDebugMode) {
         print(e);
       }
+    }
+  }
+
+  // remove user from referrals
+  Future<bool> removeUserFromReferrals(String userId) async {
+    try {
+      await userDb.doc(userId).update({'joinedByAdminId': null});
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error removing user from referrals: $e');
+      }
+      return false;
     }
   }
 }

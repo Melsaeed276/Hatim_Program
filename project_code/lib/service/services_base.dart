@@ -9,6 +9,7 @@ class ServicesBase {
 
   // User DB
   final userDb = FirebaseFirestore.instance.collection("users");
+
   /// Hatim DB
   /// It will hold the hatim groups data in the database
   ///  each group will have a unique id
@@ -16,6 +17,7 @@ class ServicesBase {
   ///  each user will have a list of 30 chapters
   ///  it will show if the person has read the chapter or not
   final groupsDb = FirebaseFirestore.instance.collection("groups");
-
-
+  final referenceCodesDb = FirebaseFirestore.instance.collection(
+    "reference_codes",
+  );
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProgressIndicatorWithNumber extends StatelessWidget {
   final int currentValue;
-  final int totalValue = 30;
+  final int totalValue;
 
   late final IconData? icon;
   late final String? textData;
@@ -10,6 +10,7 @@ class ProgressIndicatorWithNumber extends StatelessWidget {
   ProgressIndicatorWithNumber(
       {super.key,
       required this.currentValue,
+      required this.totalValue,
       IconData? icon,
       String? textData}) {
     if (icon != null) {

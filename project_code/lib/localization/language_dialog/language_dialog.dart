@@ -13,6 +13,7 @@ class LanguageDialog extends StatelessWidget {
     final lang = Provider.of<LocalizationController>(context, listen: true);
     final theme = Theme.of(context);
     final scrollController = ScrollController();
+    final languageEntries = lang.getLanguageTitles().entries.toList();
     return Dialog(
       // insetAnimationDuration: const Duration(seconds: 2),
 
@@ -57,37 +58,29 @@ class LanguageDialog extends StatelessWidget {
                 child: ListView.builder(
                   shrinkWrap: true,
                   controller: scrollController,
-                  itemCount: lang.getLanguageTitles().length,
+                  itemCount: languageEntries.length,
                   itemBuilder: (context, index) => SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: DialogButton(
                       langDirection: lang.getLangDirection(),
-                      isSelected: lang.getLanguageTitle() ==
-                          lang.getLanguageTitles().values.elementAt(index),
-                      buttonText:
-                          lang.getLanguageTitles().values.elementAt(index),
+                      isSelected: lang.getAppLang == languageEntries[index].key,
+                      buttonText: languageEntries[index].value,
                       theme: theme,
-                      backgroundColor: lang.getLanguageTitle() ==
-                              lang.getLanguageTitles().values.elementAt(index)
+                      backgroundColor: lang.getAppLang == languageEntries[index].key
                           ? WidgetStateProperty.all(
                               theme.colorScheme.secondaryContainer)
                           : WidgetStateProperty.all(Colors.transparent),
-                      textColor: lang.getLanguageTitle() ==
-                              lang.getLanguageTitles().values.elementAt(index)
+                      textColor: lang.getAppLang == languageEntries[index].key
                           ? theme.colorScheme.primary
                           : theme.colorScheme.onSurface,
-                      onPressed: lang.getLanguageTitle() ==
-                              lang.getLanguageTitles().values.elementAt(index)
-                          ? () {
-                              Navigator.pop(context);
-                            }
+                      onPressed: lang.getAppLang == languageEntries[index].key
+                          ? () => Navigator.pop(context)
                           : () {
-                              lang.setAppLang =
-                                  lang.languages.keys.elementAt(index);
-                            //delay then pop
-                            Future.delayed(const Duration(milliseconds: 250), () {
-                              Navigator.pop(context);
-                            });
+                              lang.setAppLang = languageEntries[index].key;
+                              // delay then pop (so user sees the selection flash)
+                              Future.delayed(const Duration(milliseconds: 250), () {
+                                Navigator.pop(context);
+                              });
                             },
                     ),
                   ),

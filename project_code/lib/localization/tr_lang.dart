@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 
 import 'localization.dart';
@@ -10,8 +8,7 @@ class TRText implements Localization {
 
   // App
   @override
-  String? appDescription =
-      'Bu program hatim takip çizelgesidir. ';
+  String? appDescription = 'Bu program hatim takip çizelgesidir. ';
 
   @override
   String? appTitle = 'YAVUZ SELİM VAKFI HATİM ÇİZELGE TAKİP FORMU';
@@ -30,7 +27,7 @@ class TRText implements Localization {
   String? pleaseEnterValidEmail = 'Lütfen geçerli bir e-posta giriniz';
 
   @override
-  String? emailAlreadyExist =  'Bu e-posta zaten mevcuttur';
+  String? emailAlreadyExist = 'Bu e-posta zaten mevcuttur';
 
   @override
   String? emailNotValid = 'E-posta geçerli değildir';
@@ -43,13 +40,13 @@ class TRText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'Lütfen şifrenizi giriniz';
-  
+
   @override
   String? adminPasswordPrompt = 'Devam etmek için lütfen admin şifrenizi girin';
-  
+
   @override
   String? adminPasswordRequired = 'Admin şifresi gereklidir';
-  
+
   @override
   String? adminPasswordIncorrect = 'Yanlış şifre. Lütfen tekrar deneyin.';
 
@@ -134,7 +131,6 @@ class TRText implements Localization {
   @override
   String? allCategoriesErrorMessage = 'Bir hata oluştu!';
 
-
   @override
   String? addCategoryToDatabaseSuccessMessage =
       'Yeni bir kategori başarıyla eklendi!';
@@ -159,7 +155,7 @@ class TRText implements Localization {
   String? largeWebViewError =
       "Bu cihaz desteklenmiyor. Lütfen bu uygulamaya sadece mobil tarayıcıda giriniz.";
 
-// Main Menu
+  // Main Menu
   @override
   String? homePageTitle = 'Ana Menü';
 
@@ -196,6 +192,9 @@ class TRText implements Localization {
   String? theme = 'Tema';
 
   @override
+  String? settings = 'Ayarlar';
+
+  @override
   String? dark = 'karanlık';
 
   @override
@@ -209,7 +208,6 @@ class TRText implements Localization {
 
   @override
   String? done = 'Tamamlandı';
-
 
   // Voting Dialog
 
@@ -238,7 +236,6 @@ class TRText implements Localization {
   @override
   String? votingStalemateText =
       "Gizli kişiye karar veremediniz. Devam etmek için devam edin ya da en baştan tekrar oy verin.";
-
 
   // Exit Dialog
   @override
@@ -300,7 +297,6 @@ class TRText implements Localization {
   @override
   String? show = 'Göster';
 
-
   @override
   String? skip = 'Atla';
 
@@ -308,7 +304,8 @@ class TRText implements Localization {
   String? applicationColor = 'Uygulama Rengi';
 
   @override
-  String? pleaseEnterYourPhoneNumber = 'Lütfen telefon numarası ile giriş yapınız. ';
+  String? pleaseEnterYourPhoneNumber =
+      'Lütfen telefon numarası ile giriş yapınız. ';
 
   @override
   String? phoneNumber = 'Telefon numarası';
@@ -341,7 +338,8 @@ class TRText implements Localization {
   String? pleaseEnterYourName = 'Lütfen isminizi giriniz';
 
   @override
-  String? nameShouldNotContainNumbers = 'Lütfen sadece isminizi giriniz, rakam içermemelidir';
+  String? nameShouldNotContainNumbers =
+      'Lütfen sadece isminizi giriniz, rakam içermemelidir';
 
   @override
   String? somethingWentWrong = 'Hata oluştu';
@@ -365,7 +363,7 @@ class TRText implements Localization {
   String? groupIsStarted = 'Grup başlatıldı';
 
   @override
-  String? groupName = 'Grup numarası';
+  String? groupName = 'Grup adı';
 
   @override
   String? groupNameIsEmpty = 'Grup adı boş';
@@ -411,6 +409,9 @@ class TRText implements Localization {
   String? joinGroup = 'Gruba Katıl';
 
   @override
+  String? myCreatedGroups = 'Oluşturduğum Gruplar';
+
+  @override
   String Function({required String hatimName})? theCurrentHatimIsX =
       ({required hatimName}) => 'Mevcut hatim $hatimName';
 
@@ -419,16 +420,18 @@ class TRText implements Localization {
       ({required week}) => 'Bu, Hatim\'in $week. haftasıdır';
 
   @override
-  String? newText  = 'Yeni';
+  String? newText = 'Yeni';
 
   @override
-  String? youCanFollowYourHatimAndUpdateItFromHere = 'Hatminizi burdan takip edebilir ve güncelleyebilirsiniz';
+  String? youCanFollowYourHatimAndUpdateItFromHere =
+      'Hatminizi burdan takip edebilir ve güncelleyebilirsiniz';
 
   @override
   String? join = 'Katıl';
 
   @override
-  String? areYouSureThatYouCompletedTheHatim = 'Bu haftaki hatmin cüzünü tamamladığınıza emin misiniz?';
+  String? areYouSureThatYouCompletedTheHatim =
+      'Bu haftaki hatmin cüzünü tamamladığınıza emin misiniz?';
 
   @override
   String? didYouCompleteTheHatim = 'Cüzünüzü tamamladınız mı?';
@@ -466,7 +469,8 @@ class TRText implements Localization {
   String? theHatimIsNotCompleted = 'Hatim cüzü tamamlanmadı';
 
   @override
-  String? thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup =
+  String?
+  thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup =
       'Şu anda katılabileceğiniz uygun grup yok. Yeni bir grup eklemek için yöneticiyle konuşmanız gerekmektedir';
 
   @override
@@ -499,17 +503,18 @@ class TRText implements Localization {
   String? theHatimWillStartAtThatDate = 'Hatim o tarihte başlayacak';
 
   @override
-  String Function({required String hatim, required int chapter})? youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter =
+  String Function({required String hatim, required int chapter})?
+  youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter =
       ({required hatim, required chapter}) =>
           'Bu $hatim. hatim haftasıdır ve bu hafta $chapter. cüzü okumanız gerekmektedir';
-
 
   @override
   String? youNeedToCompleteTheHatimBeforeThatDate =
       'Haftalık hatim cüzünüzü aşağıda yer alan tarihten önce tamamlamanız gerekmektedir';
 
   @override
-  String Function({required int chapter})? didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound =
+  String Function({required int chapter})?
+  didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound =
       ({required chapter}) =>
           '$chapter. cüzü okudunuz mu? Eğer evet ise, Hatim\'inizi güncellemek için Evet\'e basınız';
 
@@ -517,8 +522,9 @@ class TRText implements Localization {
   String? myCurrentHatim = 'Bu hafta kaldığım cüz';
 
   @override
-  String Function({required String group})? youCanFollowAllTheUsersHatimsOfThatXGroupFromHere =
-      ({required group}) => '$group grubundaki tüm kullanıcıların Hatimlerini buradan takip edebilirsiniz';
+  String Function({required String group})?
+  youCanFollowAllTheUsersHatimsOfThatXGroupFromHere = ({required group}) =>
+      '$group grubundaki tüm kullanıcıların Hatimlerini buradan takip edebilirsiniz';
 
   @override
   String? hatimEndDate = 'Hatim bitiş tarihi';
@@ -567,12 +573,307 @@ class TRText implements Localization {
   String? pleaseEnterValidNumber = 'Lütfen geçerli bir sayı giriniz';
 
   @override
-  String? pleaseEnterNumberLessThan100 = 'Lütfen 100\'den küçük bir sayı giriniz';
+  String? pleaseEnterNumberLessThan100 =
+      'Lütfen 100\'den küçük bir sayı giriniz';
 
   @override
   String? addWithRandomID = 'Rastgele ID ile ekle';
 
   @override
-  String? groupNameAlreadyExists = 'Grup adı zaten mevcut, lütfen yeni bir tane oluşturun';
+  String? groupNameAlreadyExists =
+      'Grup adı zaten mevcut, lütfen yeni bir tane oluşturun';
 
+  @override
+  String? groupNameHelperText = 'Bu isim kullanıcılara gösterilecek';
+
+  @override
+  String? groupIDLabel = 'Grup ID';
+
+  @override
+  String? groupIDHelperText = 'Grubun benzersiz sayısal kimliği';
+
+  @override
+  String? groupIDMustBe6Digits = 'Grup ID\'si tam olarak 6 haneli olmalıdır';
+
+  @override
+  String? groupIDMustContainOnlyNumbers =
+      'Grup ID\'si sadece rakamlardan oluşmalıdır';
+
+  @override
+  String? groupDateTypeLabel = 'Grup tarih türü';
+
+  @override
+  String? hatimStyleLabel = 'Hatim stili';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatim = 'Hep Birlikte Tek Hatim';
+
+  @override
+  String? hatimStyleByRounds = "Kur'an'ın bölümlerini tamamlayın.";
+
+  @override
+  String? hatimStyleByChallenge = 'Meydan Okuma Bazlı';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatimDescription =
+      'Tüm grup üyeleri birlikte aynı hatmi okur. Grup tam olarak 30 üyeden oluşmalıdır.';
+
+  @override
+  String? hatimStyleByRoundsDescription =
+      'Grup üyeleri tur bazlı olarak hatim okur. Her turda farklı bir dağılım yapılır.';
+
+  @override
+  String? hatimStyleByChallengeDescription =
+      'Grup üyeleri meydan okuma formatında hatim okur. Daha esnek bir dağılım sağlar.';
+
+  @override
+  String? failedToGenerateRandomID = 'Rastgele ID oluşturulamadı';
+
+  @override
+  String? failedToCreateGroup = 'Grup oluşturulamadı';
+
+  @override
+  String? unexpectedErrorOccurred = 'Beklenmeyen bir hata oluştu';
+
+  @override
+  String? allTogetherInOneHatimMustBe30 =
+      'Hep Birlikte Tek Hatimde tam olarak 30 kişi olmalıdır';
+
+  @override
+  String? allTogetherInOneHatimMustBe30Description =
+      '"Hep Birlikte Tek Hatim" stili için, grup tam olarak 30 üyeye sahip olmalıdır. Lütfen sayıyı 30 olarak ayarlayın.';
+
+  @override
+  String? otherStylesCanBeFlexible =
+      'Diğer stiller esnek üye sayısına sahip olabilir (1-100)';
+
+  @override
+  String? deleteGroup = 'Grubu Sil';
+
+  @override
+  String? deleteGroupConfirmation =
+      'Bu grubu silmek istediğinize emin misiniz?';
+
+  @override
+  String? deleteButton = 'Sil';
+
+  @override
+  String? groupDeletedSuccessfully = 'Grup başarıyla silindi';
+
+  @override
+  String? youAreNotAnAdmin = 'Bir yönetici değilsiniz';
+
+  @override
+  String? youHaveNotCreatedAnyGroupsYet = 'Henüz hiç grup oluşturmadınız';
+
+  @override
+  String? statusLabel = 'Durum:';
+
+  @override
+  String? usersLabel = 'Kullanıcılar:';
+
+  @override
+  String? adminDashboard = 'Yönetici Paneli';
+
+  @override
+  String? preferences = 'Tercihler';
+
+  @override
+  String? appearance = 'Görünüm';
+
+  @override
+  String? hatimTab = 'Hatim';
+
+  @override
+  String? zikirTab = 'Zikir';
+
+  @override
+  String? programsTab = 'Programlar';
+
+  @override
+  String? profileTab = 'Profil';
+
+  @override
+  String? myHatimProgramTab = 'Hatim Programım';
+
+  @override
+  String? myZikirTab = 'Zikirlerim';
+
+  @override
+  String? myProgramsTab = 'Programlarım';
+
+  @override
+  String? myUsersTab = 'Davetlilerim';
+
+  @override
+  String? groupDetailsSection = 'Grup Detayları';
+
+  @override
+  String? groupIdentificationSection = 'Grup Kimliği';
+
+  @override
+  String? hatimConfigurationSection = 'Hatim Yapılandırması';
+
+  @override
+  String? durationTypeHelperText =
+      'Üyelerin bölümlerini tamamlamaları için ne kadar süreleri olduğunu seçin';
+
+  @override
+  String? groupDateTypeWeek = 'Hafta';
+
+  @override
+  String? groupDateTypeDay = 'Gün';
+
+  @override
+  String? referenceCode = 'Referans Kodu';
+
+  @override
+  String? referenceCodeHint = 'Referans kodunu girin';
+
+  @override
+  String? referenceCodeOptional = 'Referans Kodu (İsteğe bağlı)';
+
+  @override
+  String? referredUsers = 'Yönlendirilen Kullanıcılar';
+
+  @override
+  String? generateReferenceCode = 'Referans Kodu Oluştur';
+
+  @override
+  String? selectUsersToAdd = 'Eklenecek Kullanıcıları Seçin';
+
+  @override
+  String? noReferredUsersFound = 'Yönlendirilen kullanıcı bulunamadı';
+
+  @override
+  String? userAlreadyInGroup = 'Kullanıcı zaten grupta';
+
+  @override
+  String? deleteCode = 'Kodu Sil';
+
+  @override
+  String? areYouSureYouWantToDeleteThisCode =
+      'Bu kodu silmek istediğinizden emin misiniz?';
+
+  @override
+  String? cancel = 'İptal';
+
+  @override
+  String? delete = 'Sil';
+
+  @override
+  String? remove = 'Kaldır';
+
+  @override
+  String? removeUserFromReferrals = 'Referanslardan Kaldır';
+
+  @override
+  String? areYouSureYouWantToRemoveThisUserFromYourReferrals =
+      'Bu kullanıcıyı referanslarınızdan kaldırmak istediğinizden emin misiniz?';
+
+  @override
+  String? userRemovedSuccessfully = 'Kullanıcı başarıyla kaldırıldı';
+
+  @override
+  String? get createReferenceCode => 'Referans Kodu Oluştur';
+
+  @override
+  String? get customCode => 'Özel Kod';
+
+  @override
+  String? get randomCode => 'Rastgele Kod';
+
+  @override
+  String? get enterCustomCode => 'Özel kod girin';
+
+  @override
+  String? get codeAlreadyExists => 'Bu kod zaten mevcut';
+
+  @override
+  String? get referenceCodeCreatedSuccessfully =>
+      'Referans kodu başarıyla oluşturuldu';
+
+  // App Info Dialog
+  @override
+  String? get infoButtonTooltip => 'Uygulama Bilgisi';
+
+  @override
+  String? get appInfoTitle => 'Uygulama Bilgisi';
+
+  @override
+  String? get aboutAppTitle => 'Uygulama Hakkında';
+
+  @override
+  String? get aboutAppDescription =>
+      'Bu uygulama, Hatim programlarını verimli bir şekilde organize etmenize ve takip etmenize yardımcı olur.';
+
+  @override
+  String? get whyWeMadeAppTitle => 'Bu uygulamayı neden yaptık';
+
+  @override
+  String? get whyWeMadeAppDescription =>
+      'Kuran okuma halkalarının koordinasyonunu kolaylaştırmak ve grupların Hatimleri birlikte tamamlamasını sağlamak için.';
+
+  @override
+  String? get supporterCommunitiesTitle => 'Destekleyen Topluluklar';
+
+  @override
+  String? get supporterCommunitiesList =>
+      '1. Eşim\n2. Yavuz Selim Vakıf İstanbul';
+
+  @override
+  String? get contactSupportTitle => 'Destek için İletişim';
+
+  @override
+  String? get contactSupportDescription =>
+      'Destek olmak istiyorsanız, iletişime geçebilirsiniz:';
+
+  @override
+  String? get supportPhoneNumber => '+905551234567';
+
+  @override
+  String? get comingSoon => 'Çok Yakında';
+
+  // Profile Page - Statistics & Support
+  @override
+  String? get statistics => 'İstatistikler';
+  @override
+  String? get score => 'Puan';
+  @override
+  String? get completedHatims => 'Tamamlanan Hatimler';
+  @override
+  String? get completedChapters => 'Tamamlanan Cüzler';
+  @override
+  String? get security => 'Güvenlik';
+  @override
+  String? get changePassword => 'Şifreyi Değiştir';
+  @override
+  String? get setPassword => 'Şifre Belirle';
+  @override
+  String? get updatePasswordDescription => 'Giriş şifrenizi güncelleyin';
+  @override
+  String? get setPasswordDescription => 'Hesabınıza şifre koruması ekleyin';
+  @override
+  String? get passwordResetNote =>
+      'Not: Şifrenizi unutursanız sıfırlamak için +095388902129 numaralı telefondan destek ekibiyle iletişime geçin.';
+  @override
+  String? get support => 'Destek';
+  @override
+  String? get supportContact => 'Destek İletişim';
+  @override
+  String? get whatsAppSupport => 'WhatsApp Destek';
+  @override
+  String? get chatWithUs => 'Bizimle sohbet edin';
+  @override
+  String? get callSupportError => 'Arama başlatılamadı';
+  @override
+  String? get whatsAppSupportError => 'WhatsApp başlatılamadı';
+  @override
+  String? get callSupport => 'Destek için ara';
+  
+  @override
+  String get whoMadeThisAppDescription => 'Bu uygulama Muhammed Elsaeed Ve Ravzanur Armağan Elsaeed tarafından geliştirilmiştir.';
+  
+  @override
+  String get whoMadeThisAppTitle => 'Bu uygulamayı kim yaptı';
 }

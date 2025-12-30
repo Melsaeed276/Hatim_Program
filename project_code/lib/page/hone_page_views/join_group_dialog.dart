@@ -21,24 +21,32 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
   final ScrollController _scrollController = ScrollController();
 
   //future to get the available groups for the user
-  late  final Future<List<GroupModel>> _getAllAvailableGroupsForUser;
+  late final Future<List<GroupModel>> _getAllAvailableGroupsForUser;
   @override
   void initState() {
     // TODO: implement initState
-    final groupController = Provider.of<GroupController>(context, listen: false);
-    _getAllAvailableGroupsForUser = groupController.getAvailableGroupsForUser(userID: widget.userID);
+    final groupController = Provider.of<GroupController>(
+      context,
+      listen: false,
+    );
+    _getAllAvailableGroupsForUser = groupController.getAvailableGroupsForUser(
+      userID: widget.userID,
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<LocalizationController>(context, listen: false)
-        .getLanguage();
-
+    final lang = Provider.of<LocalizationController>(
+      context,
+      listen: false,
+    ).getLanguage();
 
     return AlertDialog(
-      title: Text(lang.pleaseJoinAGroupYouNeedToPressOnJoinButton!,
-          style: Theme.of(context).textTheme.titleMedium),
+      title: Text(
+        lang.pleaseJoinAGroupYouNeedToPressOnJoinButton!,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       content: FutureBuilder<List<GroupModel>>(
         future: _getAllAvailableGroupsForUser,
         builder: (context, snapshot) {
@@ -70,39 +78,61 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
                         for (var groupData in snapshot.data!)
                           Card(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 8.0,
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${lang.groupName!}: ${groupData.groupID}',
+                                          '${lang.groupName!}: ${groupData.name}',
                                           textAlign: TextAlign.start,
                                         ),
                                         Text(
-                                            lang.thereIsStillXPlaceInTheGroupToStart!(
-                                              count: groupData
-                                                  .getHowMuchLeftPlaceInTheGroup(),
-                                            ),
+                                          lang.thereIsStillXPlaceInTheGroupToStart!(
+                                            count: groupData
+                                                .getHowMuchLeftPlaceInTheGroup(),
+                                          ),
                                           maxLines: 3,
                                         ),
                                       ],
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () {
-                                      context
+                                    onTap: () async {
+                                      final success = await context
                                           .read<UserController>()
                                           .addUserGroup(groupData.groupID);
-                                      Navigator.of(context).pop();
+                                      if (mounted) {
+                                        if (success) {
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                lang.somethingWentWrong ??
+                                                    'Failed to join group',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
                                     },
                                     child: ProgressIndicatorWithNumber(
                                       currentValue: groupData
                                           .getHowMuchLeftPlaceInTheGroup(),
+                                      totalValue: groupData.userCount,
                                       icon: Icons.person_add_outlined,
                                       textData: lang.join!,
                                     ),
@@ -169,7 +199,11 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
       actions: [
         Padding(
           padding: const EdgeInsets.only(
-              bottom: 12.0, right: 12, left: 12.0, top: 8.0),
+            bottom: 12.0,
+            right: 12,
+            left: 12.0,
+            top: 8.0,
+          ),
           child: SizedBox(
             width: double.infinity,
             child: TextButton(
@@ -189,6 +223,5 @@ class _JoinGroupDialogState extends State<JoinGroupDialog> {
         ),
       ],
     );
-
   }
 }

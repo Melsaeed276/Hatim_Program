@@ -10,6 +10,12 @@ class UserModel {
   String phoneNumber;
   final bool isAdmin;
   final String? adminPassword; // Password for admin verification
+  String? password; // Password for regular user login
+  int totalCompletedHatim = 0; // Total completed hatims, default 0
+  int totalCompletedChapters = 0; // Total completed chapters, default 0
+  double score = 0; // User score, default 0
+  String? joinedByAdminId; // ID of the admin who provided the reference code
+  DateTime? joinedAt; // Date when the user joined via reference code
   // map of groupsID and int of the current chapter
   List<String> groups = [];
 
@@ -18,17 +24,31 @@ class UserModel {
     required this.phoneNumber,
     this.isAdmin = false,
     this.adminPassword,
+    this.password,
+    this.totalCompletedHatim = 0,
+    this.totalCompletedChapters = 0,
+    this.score = 0.0,
+    this.joinedByAdminId,
+    this.joinedAt,
   }) {
     id = processPhoneNumber(phoneNumber);
   }
 
   UserModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        phoneNumber = json['phoneNumber'],
-        isAdmin = json['isAdmin'] ?? false,
-        adminPassword = json['adminPassword']?.toString(),
-        groups = List<String>.from(json['groups'].map((x) => x.toString()));
+    : id = json['id'],
+      name = json['name'],
+      phoneNumber = json['phoneNumber'],
+      isAdmin = json['isAdmin'] ?? false,
+      adminPassword = json['adminPassword']?.toString(),
+      password = json['password']?.toString(),
+      totalCompletedHatim = json['totalCompletedHatim'] ?? 0,
+      totalCompletedChapters = json['totalCompletedChapters'] ?? 0,
+      score = (json['score'] ?? 0).toDouble(),
+      joinedByAdminId = json['joinedByAdminId']?.toString(),
+      joinedAt = json['joinedAt'] != null
+          ? DateTime.parse(json['joinedAt'])
+          : null,
+      groups = List<String>.from(json['groups'].map((x) => x.toString()));
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -39,14 +59,26 @@ class UserModel {
     if (adminPassword != null) {
       data['adminPassword'] = adminPassword;
     }
+    if (password != null) {
+      data['password'] = password;
+    }
+    data['totalCompletedHatim'] = totalCompletedHatim;
+    data['totalCompletedChapters'] = totalCompletedChapters;
+    data['score'] = score;
+    if (joinedByAdminId != null) {
+      data['joinedByAdminId'] = joinedByAdminId;
+    }
+    if (joinedAt != null) {
+      data['joinedAt'] = joinedAt!.toIso8601String();
+    }
     data['groups'] = groups;
     return data;
   }
 
   // process phone number static function
   static String processPhoneNumber(String phoneNumber) {
-    // Remove all spaces, "+" and "-" characters
-    String processedNumber = phoneNumber.replaceAll(RegExp(r"[\s+-]"), "");
+    // Remove all spaces, "+", "-" and non-digits
+    String processedNumber = phoneNumber.replaceAll(RegExp(r"\D"), "");
 
     // Remove leading "0" if it exists
     if (processedNumber.startsWith("0")) {

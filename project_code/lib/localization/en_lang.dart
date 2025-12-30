@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 
 import 'localization.dart';
@@ -43,16 +41,16 @@ class ENText implements Localization {
 
   @override
   String? pleaseEnterYourPassword = 'Please Enter Your Password';
-  
+
   @override
   String? adminPasswordPrompt = 'Please enter your admin password to continue';
-  
+
   @override
   String? adminPasswordRequired = 'Admin password is required';
-  
+
   @override
   String? adminPasswordIncorrect = 'Incorrect password. Please try again.';
-  
+
   @override
   String? logOut = 'Sign Out';
 
@@ -133,8 +131,6 @@ class ENText implements Localization {
   @override
   String? allCategoriesErrorMessage = 'An error occurred!';
 
-
-
   @override
   String? addCategoryToDatabaseSuccessMessage =
       'A new category has been added successfully!';
@@ -199,6 +195,9 @@ class ENText implements Localization {
   String? theme = 'Theme';
 
   @override
+  String? settings = 'Settings';
+
+  @override
   String? dark = 'Dark';
 
   @override
@@ -214,8 +213,6 @@ class ENText implements Localization {
   String? done = 'Done';
 
   //Add Player
-
-
 
   // Voting Dialog
   @override
@@ -304,7 +301,6 @@ class ENText implements Localization {
   @override
   String? show = 'Show';
 
-
   @override
   String? skip = 'Skip';
 
@@ -342,10 +338,11 @@ class ENText implements Localization {
   String? nameIsEmpty = 'Name is empty';
 
   @override
-  String? pleaseEnterYourName= 'Please Enter Your Name';
+  String? pleaseEnterYourName = 'Please Enter Your Name';
 
   @override
-  String? nameShouldNotContainNumbers = 'Please enter only your name without any numbers';
+  String? nameShouldNotContainNumbers =
+      'Please enter only your name without any numbers';
 
   @override
   String? somethingWentWrong = 'Error something went wrong';
@@ -360,7 +357,7 @@ class ENText implements Localization {
   String? groupIsFull = 'Group is full';
 
   @override
-  String? groupIsNotFull  = 'Group is not full';
+  String? groupIsNotFull = 'Group is not full';
 
   @override
   String? groupIsNotStated = 'Group is not started yet';
@@ -381,7 +378,8 @@ class ENText implements Localization {
   String? pleaseEnterYourGroupName = 'Please enter your group name';
 
   @override
-  String? pleaseJoinAGroupYouNeedToPressOnJoinButton = 'Please join a group you need to press on the join button';
+  String? pleaseJoinAGroupYouNeedToPressOnJoinButton =
+      'Please join a group you need to press on the join button';
 
   @override
   String? theGroupIsAvailable = 'The group is available';
@@ -390,13 +388,16 @@ class ENText implements Localization {
   String? theGroupIsNotAvailable = 'The group is not available';
 
   @override
-  String Function({required int count})? thereIsStillXPlaceInTheGroupToStart = ({required count}) => 'There is still $count place in the group to start';
+  String Function({required int count})? thereIsStillXPlaceInTheGroupToStart =
+      ({required count}) => 'There is still $count place in the group to start';
 
   @override
-  String Function({required int count})? xPersonAreInTheGroup = ({required count}) => '$count person are in the group';
+  String Function({required int count})? xPersonAreInTheGroup =
+      ({required count}) => '$count person are in the group';
 
   @override
-  String? youCanJoinTheGroupByPressingOnThePlusButton = 'You can join the group by pressing on the plus button';
+  String? youCanJoinTheGroupByPressingOnThePlusButton =
+      'You can join the group by pressing on the plus button';
 
   @override
   String? youDoNotHaveGroupYet = 'You do not have group yet';
@@ -413,22 +414,29 @@ class ENText implements Localization {
   String? joinGroup = 'Join Group';
 
   @override
-  String Function({required String hatimName})? theCurrentHatimIsX = ({required hatimName}) => 'The current hatim is $hatimName';
+  String? myCreatedGroups = 'My Created Groups';
 
   @override
-  String Function({required String week})? thisIsTheWeekXOfTheHatim = ({required week}) => 'This is the week $week of the Hatim';
+  String Function({required String hatimName})? theCurrentHatimIsX =
+      ({required hatimName}) => 'The current hatim is $hatimName';
+
+  @override
+  String Function({required String week})? thisIsTheWeekXOfTheHatim =
+      ({required week}) => 'This is the week $week of the Hatim';
 
   @override
   String? newText = 'New';
 
   @override
-  String? youCanFollowYourHatimAndUpdateItFromHere = 'You can follow your hatim and update it from here';
+  String? youCanFollowYourHatimAndUpdateItFromHere =
+      'You can follow your hatim and update it from here';
 
   @override
   String? join = 'Join';
 
   @override
-  String? areYouSureThatYouCompletedTheHatim = 'Are you sure that you completed the hatim?';
+  String? areYouSureThatYouCompletedTheHatim =
+      'Are you sure that you completed the hatim?';
 
   @override
   String? didYouCompleteTheHatim = 'Did you complete the hatim?';
@@ -443,25 +451,30 @@ class ENText implements Localization {
   String? hatimChapterNumber = 'Hatim Chapter Number';
 
   @override
-  String? ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound = 'If you complete the hatim you need to press on the hatim to update your hatim round';
+  String? ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound =
+      'If you complete the hatim you need to press on the hatim to update your hatim round';
 
   @override
   String? no = 'No';
 
   @override
-  String? theCurrentHatimIsAboutToOverPleaseUpdateYourHatim = 'The current hatim is about to over please update your hatim';
+  String? theCurrentHatimIsAboutToOverPleaseUpdateYourHatim =
+      'The current hatim is about to over please update your hatim';
 
   @override
   String? theHatimIsCompleted = 'The hatim is completed';
 
   @override
-  String? theHatimIsCompletedSuccessfully = 'The hatim is completed successfully';
+  String? theHatimIsCompletedSuccessfully =
+      'The hatim is completed successfully';
 
   @override
   String? theHatimIsNotCompleted = 'The hatim is not completed';
 
   @override
-  String? thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup = 'There is no available groups for you to join right now you need to talk to the admin to add new group';
+  String?
+  thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup =
+      'There is no available groups for you to join right now you need to talk to the admin to add new group';
 
   @override
   String? thisHatimIsCompleted = 'This hatim is completed';
@@ -476,13 +489,15 @@ class ENText implements Localization {
   String? yes = 'Yes';
 
   @override
-  String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim = 'You need to complete this hatim to be able to go to the next hatim';
+  String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim =
+      'You need to complete this hatim to be able to go to the next hatim';
 
   @override
   String? myHatimsOfThisGroup = 'My hatims of this group';
 
   @override
-  String? theGroupIsNotActiveYetPleaseWaitUntilTheAppMembersJoin = 'The group is not active yet please wait until the app members join';
+  String? theGroupIsNotActiveYetPleaseWaitUntilTheAppMembersJoin =
+      'The group is not active yet please wait until the app members join';
 
   @override
   String? groupStatus = 'Group Status';
@@ -494,19 +509,28 @@ class ENText implements Localization {
   String? theHatimWillStartAtThatDate = 'The Hatim will start at that Date';
 
   @override
-  String Function({required String hatim, required int chapter})? youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter = ({required hatim, required chapter}) => 'You are right now at that $hatim hatim and you need to read this $chapter chapter';
+  String Function({required String hatim, required int chapter})?
+  youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter =
+      ({required hatim, required chapter}) =>
+          'You are right now at that $hatim hatim and you need to read this $chapter chapter';
 
   @override
-  String? youNeedToCompleteTheHatimBeforeThatDate = 'You need to complete the hatim before that date';
+  String? youNeedToCompleteTheHatimBeforeThatDate =
+      'You need to complete the hatim before that date';
 
   @override
-  String Function({required int chapter})? didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound = ({required chapter}) => 'Did you read the $chapter chapter? if yes then press on yes to update your hatim round';
+  String Function({required int chapter})?
+  didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound =
+      ({required chapter}) =>
+          'Did you read the $chapter chapter? if yes then press on yes to update your hatim round';
 
   @override
   String? myCurrentHatim = 'My current';
 
   @override
-  String Function({required String group})? youCanFollowAllTheUsersHatimsOfThatXGroupFromHere = ({required group}) => 'You can follow all the users hatims of that $group group from here';
+  String Function({required String group})?
+  youCanFollowAllTheUsersHatimsOfThatXGroupFromHere = ({required group}) =>
+      'You can follow all the users hatims of that $group group from here';
 
   @override
   String? hatimEndDate = 'Hatim end date';
@@ -515,7 +539,8 @@ class ENText implements Localization {
   String? hatimWillEndAt = 'hatim will end at: ';
 
   @override
-  String? toSeeMoreDetailsAboutTheHatimPressOnTheHatim = 'to see more details about the hatim press on the hatim';
+  String? toSeeMoreDetailsAboutTheHatimPressOnTheHatim =
+      'to see more details about the hatim press on the hatim';
 
   @override
   String? week = 'week';
@@ -560,6 +585,300 @@ class ENText implements Localization {
   String? addWithRandomID = 'Add with random ID';
 
   @override
-  String? groupNameAlreadyExists = 'The group name already exists please generate a new one';
+  String? groupNameAlreadyExists =
+      'The group name already exists please generate a new one';
 
-  }
+  @override
+  String? groupNameHelperText = 'This name will be shown to users';
+
+  @override
+  String? groupIDLabel = 'Group ID';
+
+  @override
+  String? groupIDHelperText = 'Unique numeric ID for the group';
+
+  @override
+  String? groupIDMustBe6Digits = 'Group ID must be exactly 6 digits';
+
+  @override
+  String? groupIDMustContainOnlyNumbers = 'Group ID must contain only numbers';
+
+  @override
+  String? groupDateTypeLabel = 'Group date type';
+
+  @override
+  String? hatimStyleLabel = 'Hatim style';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatim = 'All Together in One Hatim';
+
+  @override
+  String? hatimStyleByRounds = 'By Rounds';
+
+  @override
+  String? hatimStyleByChallenge = 'By Challenge';
+
+  @override
+  String? hatimStyleAllTogetherInOneHatimDescription =
+      'All group members read the same hatim together. The group must have exactly 30 members.';
+
+  @override
+  String? hatimStyleByRoundsDescription =
+      'Group members read hatim in rounds. Each round has a different distribution.';
+
+  @override
+  String? hatimStyleByChallengeDescription =
+      'Group members read hatim in a challenge format. Provides a more flexible distribution.';
+
+  @override
+  String? failedToGenerateRandomID = 'Failed to generate random ID';
+
+  @override
+  String? failedToCreateGroup = 'Failed to create group';
+
+  @override
+  String? unexpectedErrorOccurred = 'An unexpected error occurred';
+
+  @override
+  String? allTogetherInOneHatimMustBe30 =
+      'All Together in One Hatim must have exactly 30 people';
+
+  @override
+  String? allTogetherInOneHatimMustBe30Description =
+      'For "All Together in One Hatim" style, the group must have exactly 30 members. Please set the count to 30.';
+
+  @override
+  String? otherStylesCanBeFlexible =
+      'Other styles can have flexible member counts (1-100)';
+
+  @override
+  String? deleteGroup = 'Delete Group';
+
+  @override
+  String? deleteGroupConfirmation =
+      'Are you sure you want to delete this group';
+
+  @override
+  String? deleteButton = 'Delete';
+
+  @override
+  String? groupDeletedSuccessfully = 'Group deleted successfully';
+
+  @override
+  String? youAreNotAnAdmin = 'You are not an admin';
+
+  @override
+  String? youHaveNotCreatedAnyGroupsYet = 'You have not created any groups yet';
+
+  @override
+  String? statusLabel = 'Status:';
+
+  @override
+  String? usersLabel = 'Users:';
+
+  @override
+  String? adminDashboard = 'Admin Dashboard';
+
+  @override
+  String? preferences = 'Preferences';
+
+  @override
+  String? appearance = 'Appearance';
+
+  @override
+  String? hatimTab = 'Hatim Program';
+
+  @override
+  String? zikirTab = 'Zikir';
+
+  @override
+  String? programsTab = 'Programs';
+
+  @override
+  String? profileTab = 'Profile';
+
+  @override
+  String? myHatimProgramTab = 'My Hatim Program';
+
+  @override
+  String? myZikirTab = 'My Zikir';
+
+  @override
+  String? myProgramsTab = 'My Programs';
+
+  @override
+  String? myUsersTab = 'My Users';
+
+  @override
+  String? groupDetailsSection = 'Group Details';
+
+  @override
+  String? groupIdentificationSection = 'Group Identification';
+
+  @override
+  String? hatimConfigurationSection = 'Hatim Configuration';
+
+  @override
+  String? durationTypeHelperText =
+      'Choose how long members have to complete their portions';
+
+  @override
+  String? groupDateTypeWeek = 'Week';
+
+  @override
+  String? groupDateTypeDay = 'Day';
+
+  @override
+  String? referenceCode = 'Reference Code';
+
+  @override
+  String? referenceCodeHint = 'Enter reference code';
+
+  @override
+  String? referenceCodeOptional = 'Reference Code (Optional)';
+
+  @override
+  String? referredUsers = 'Referred Users';
+
+  @override
+  String? generateReferenceCode = 'Generate Reference Code';
+
+  @override
+  String? selectUsersToAdd = 'Select Users to Add';
+
+  @override
+  String? noReferredUsersFound = 'No referred users found';
+
+  @override
+  String? userAlreadyInGroup = 'User already in group';
+
+  @override
+  String? deleteCode = 'Delete Code';
+
+  @override
+  String? areYouSureYouWantToDeleteThisCode =
+      'Are you sure you want to delete this code?';
+
+  @override
+  String? cancel = 'Cancel';
+
+  @override
+  String? delete = 'Delete';
+
+  @override
+  String? remove = 'Remove';
+
+  @override
+  String? removeUserFromReferrals = 'Remove from Referrals';
+
+  @override
+  String? areYouSureYouWantToRemoveThisUserFromYourReferrals =
+      'Are you sure you want to remove this user from your referrals?';
+
+  @override
+  String? get userRemovedSuccessfully => 'User removed successfully';
+
+  @override
+  String? get createReferenceCode => 'Create Reference Code';
+
+  @override
+  String? get customCode => 'Custom Code';
+
+  @override
+  String? get randomCode => 'Random Code';
+
+  @override
+  String? get enterCustomCode => 'Enter custom code';
+
+  @override
+  String? get codeAlreadyExists => 'Code already exists';
+
+  @override
+  String? get referenceCodeCreatedSuccessfully =>
+      'Reference code created successfully';
+
+  // App Info Dialog
+  @override
+  String? get infoButtonTooltip => 'App Information';
+
+  @override
+  String? get appInfoTitle => 'App Information';
+
+  @override
+  String? get aboutAppTitle => 'About App';
+
+  @override
+  String? get aboutAppDescription =>
+      'This app helps you organize and track Hatim programs efficiently.';
+
+  @override
+  String? get whyWeMadeAppTitle => 'Why we made this app';
+
+  @override
+  String? get whyWeMadeAppDescription =>
+      'To facilitate the coordination of Quran reading circles and make it easier for groups to complete Hatims together.';
+
+  @override
+  String? get supporterCommunitiesTitle => 'Supporter Communities';
+
+  @override
+  String? get supporterCommunitiesList =>
+      '1. My wife\n2. Yavuz Selim Vakıf İstanbul';
+
+  @override
+  String? get contactSupportTitle => 'Contact Support';
+
+  @override
+  String? get contactSupportDescription =>
+      'If you want to support, you can contact:';
+
+  @override
+  String? get supportPhoneNumber => '+905551234567'; // Placeholder
+
+  @override
+  String? get comingSoon => 'Coming Soon';
+
+  // Profile Page - Statistics & Support
+  @override
+  String? get statistics => 'Statistics';
+  @override
+  String? get score => 'Score';
+  @override
+  String? get completedHatims => 'Completed Hatims';
+  @override
+  String? get completedChapters => 'Completed Chapters';
+  @override
+  String? get security => 'Security';
+  @override
+  String? get changePassword => 'Change Password';
+  @override
+  String? get setPassword => 'Set Password';
+  @override
+  String? get updatePasswordDescription => 'Update your login password';
+  @override
+  String? get setPasswordDescription =>
+      'Add password protection to your account';
+  @override
+  String? get passwordResetNote =>
+      'Note: If you forget your password, contact support at +095388902129 to reset it.';
+  @override
+  String? get support => 'Support';
+  @override
+  String? get supportContact => 'Support Contact';
+  @override
+  String? get whatsAppSupport => 'WhatsApp Support';
+  @override
+  String? get chatWithUs => 'Chat with us';
+  @override
+  String? get callSupportError => 'Could not launch phone call to';
+  @override
+  String? get whatsAppSupportError => 'Could not launch WhatsApp';
+  @override
+  String? get callSupport => 'Call for support';
+
+    @override
+  String get whoMadeThisAppDescription => 'This app was developed by Muhammed Elsaeed and Ravzanur Armağan Elsaeed.';
+  
+  @override
+  String get whoMadeThisAppTitle => 'Who made this app';
+}

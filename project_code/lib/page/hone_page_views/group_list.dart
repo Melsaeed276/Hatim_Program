@@ -19,7 +19,13 @@ class GroupList extends StatelessWidget {
     final languageController = Provider.of<LocalizationController>(context, listen: false);
 
     final userController = Provider.of<UserController>(context, listen: false);
-    final isAdmin = userController.userModel!.isAdmin;
+    final currentUserId = userController.getCurrentUserID;
+    // Admin-only features are only available to the creator of the group
+    bool isOwnerAdmin(GroupModel group) {
+      return userController.userModel!.isAdmin && 
+             group.adminId != null && 
+             group.adminId == currentUserId;
+    }
 
     final theme = Theme.of(context);
     final themeColor = Theme.of(context).colorScheme;
@@ -38,7 +44,7 @@ class GroupList extends StatelessWidget {
 
 
               if (group.usersID.length < group.userCount){
-                if(isAdmin){
+                if(isOwnerAdmin(group)){
                   //show Dialog of the users
                   // input the user list
                   showDialog(
@@ -80,13 +86,13 @@ class GroupList extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${lang.groupName!}: ${group.groupID}',
+                          Text('${lang.groupName!}: ${group.name}',
                               style: theme.textTheme.titleMedium
                           ),
                           Text(
                             languageController.groupSubtitleText(
                                 isGroupActive: group.status == GroupStatus.active,
-                                number:isAdmin ? group.getCurrentHatim() : group.getCurrentHatimOfUser(userID)),
+                                number:isOwnerAdmin(group) ? group.getCurrentHatim() : group.getCurrentHatimOfUser(userID)),
 
                             maxLines: 3,
                             style: theme.textTheme.bodyMedium!.copyWith(
@@ -102,14 +108,16 @@ class GroupList extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ProgressIndicatorWithNumber(
                           icon: group.status == GroupStatus.waiting
-                              ? isAdmin
-                              ? Icons.access_time_rounded : null
+                              ? Icons.access_time_rounded
                               : null,
                           currentValue: group.status == GroupStatus.waiting
-                              ? isAdmin? group.usersID.length : 0
-                              : isAdmin
+                              ? group.usersID.length
+                              : isOwnerAdmin(group)
                                   ? group.getCurrentHatim()
                                   : group.getCurrentHatimOfUser(userID),
+                          totalValue: group.status == GroupStatus.waiting
+                              ? group.userCount
+                              : group.groupDateCount,
                       ),
                     ),
 

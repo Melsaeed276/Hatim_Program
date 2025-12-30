@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 
 abstract class Localization {
@@ -80,6 +79,7 @@ abstract class Localization {
   late String? allCategoriesErrorMessage;
   late String? account;
   late String? theme;
+  late String? settings;
   late String? system;
   late String? light;
   late String? dark;
@@ -90,8 +90,6 @@ abstract class Localization {
   late String? addNewCategory;
   late String? topicAlreadyExistErrorMessage;
   late String? topicAlreadyExistInAddedErrorMessage;
-
-
 
   // Voting Dialog
   late String? explanationText;
@@ -115,12 +113,9 @@ abstract class Localization {
 
   // game result
 
-
-
   late String? largeWebViewError;
 
-
- late String? show;
+  late String? show;
 
   late String? skip;
 
@@ -162,7 +157,7 @@ abstract class Localization {
 
   ///Groups
 
-// group
+  // group
   late String? group;
 
   //groups
@@ -213,9 +208,10 @@ abstract class Localization {
   late String Function({required int count})? xPersonAreInTheGroup;
 
   // there is still X place in the group to start
-  late String Function({required int count})? thereIsStillXPlaceInTheGroupToStart;
+  late String Function({required int count})?
+  thereIsStillXPlaceInTheGroupToStart;
 
-// my groups
+  // my groups
   late String? myGroups;
 
   // add group
@@ -223,6 +219,9 @@ abstract class Localization {
 
   //join group
   late String? joinGroup;
+
+  // my created groups
+  late String? myCreatedGroups;
 
   // the Current Hatim is X
   late String Function({required String hatimName})? theCurrentHatimIsX;
@@ -236,7 +235,8 @@ abstract class Localization {
   late String? youCanFollowYourHatimAndUpdateItFromHere;
 
   //you can follow all the users hatims of that X group from here
-  late String Function({required String group})? youCanFollowAllTheUsersHatimsOfThatXGroupFromHere;
+  late String Function({required String group})?
+  youCanFollowAllTheUsersHatimsOfThatXGroupFromHere;
 
   // join
   late String? join;
@@ -269,7 +269,8 @@ abstract class Localization {
   late String? thisIsYourCurrentHatims;
 
   //If you complete the hatim, you need to press on the hatim to update your hatim round
-  late String? ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound;
+  late String?
+  ifYouCompleteTheHatimYouNeedToPressOnTheHatimToUpdateYourHatimRound;
 
   //to see more details about the hatim press on the hatim
   late String? toSeeMoreDetailsAboutTheHatimPressOnTheHatim;
@@ -286,46 +287,49 @@ abstract class Localization {
   // this hatim is completed
   late String? thisHatimIsCompleted;
 
-// this hatim is not completed
-late String? thisHatimIsNotCompleted;
+  // this hatim is not completed
+  late String? thisHatimIsNotCompleted;
 
-// you need to complete this hatim to be able to go to the next hatim
-late String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim;
+  // you need to complete this hatim to be able to go to the next hatim
+  late String? youNeedToCompleteThisHatimToBeAbleToGoToTheNextHatim;
 
-//there is no available groups for you to join right now, you need to talk to the admin to add new group
-late String? thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup;
+  //there is no available groups for you to join right now, you need to talk to the admin to add new group
+  late String?
+  thereIsNoAvailableGroupsForYouToJoinRightNowYouNeedToTalkToTheAdminToAddNewGroup;
 
-// my hatims of this group
-late String? myHatimsOfThisGroup;
+  // my hatims of this group
+  late String? myHatimsOfThisGroup;
 
-// my current hatim
-late String? myCurrentHatim;
+  // my current hatim
+  late String? myCurrentHatim;
 
-//group status
-late String? groupStatus;
+  //group status
+  late String? groupStatus;
 
-// You need to complete the hatim before that date
-late String? youNeedToCompleteTheHatimBeforeThatDate;
+  // You need to complete the hatim before that date
+  late String? youNeedToCompleteTheHatimBeforeThatDate;
 
-// The Hatim is over at that Date
-late String? theHatimIsOverAtThatDate;
+  // The Hatim is over at that Date
+  late String? theHatimIsOverAtThatDate;
 
-//the hatim will start at that date
-late String? theHatimWillStartAtThatDate;
+  //the hatim will start at that date
+  late String? theHatimWillStartAtThatDate;
 
-// You are right now at that X hatim and you need to read this X chapter
-late String Function({required String hatim, required int chapter})? youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter;
+  // You are right now at that X hatim and you need to read this X chapter
+  late String Function({required String hatim, required int chapter})?
+  youAreRightNowAtThatXHatimAndYouNeedToReadThisXChapter;
 
-// did you read the X chapter? if yes then press on yes to update your hatim round
-late String Function({required int chapter})? didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound;
+  // did you read the X chapter? if yes then press on yes to update your hatim round
+  late String Function({required int chapter})?
+  didYouReadTheXChapterIfYesThenPressOnYesToUpdateYourHatimRound;
 
-// Hatim end date
-late String? hatimEndDate;
+  // Hatim end date
+  late String? hatimEndDate;
 
-//hatim will end at:
-late String? hatimWillEndAt;
+  //hatim will end at:
+  late String? hatimWillEndAt;
 
-late String? week;
+  late String? week;
 
   // Additional UI strings
   late String? version;
@@ -342,5 +346,122 @@ late String? week;
   late String? pleaseEnterNumberLessThan100;
   late String? addWithRandomID;
   late String? groupNameAlreadyExists;
-}
+  late String? groupNameHelperText;
+  late String? groupIDLabel;
+  late String? groupIDHelperText;
+  late String? groupIDMustBe6Digits;
+  late String? groupIDMustContainOnlyNumbers;
+  late String? groupDateTypeLabel;
+  late String? hatimStyleLabel;
 
+  // Hatim Style Names
+  late String? hatimStyleAllTogetherInOneHatim;
+  late String? hatimStyleByRounds;
+  late String? hatimStyleByChallenge;
+
+  // Hatim Style Descriptions
+  late String? hatimStyleAllTogetherInOneHatimDescription;
+  late String? hatimStyleByRoundsDescription;
+  late String? hatimStyleByChallengeDescription;
+
+  late String? failedToGenerateRandomID;
+  late String? failedToCreateGroup;
+  late String? unexpectedErrorOccurred;
+  late String? allTogetherInOneHatimMustBe30;
+  late String? allTogetherInOneHatimMustBe30Description;
+  late String? otherStylesCanBeFlexible;
+
+  // Admin Page
+  late String? deleteGroup;
+  late String? deleteGroupConfirmation;
+  late String? deleteButton;
+  late String? groupDeletedSuccessfully;
+  late String? youAreNotAnAdmin;
+  late String? youHaveNotCreatedAnyGroupsYet;
+  late String? statusLabel;
+  late String? usersLabel;
+  late String? adminDashboard;
+
+  // Settings Page
+  late String? preferences;
+  late String? appearance;
+
+  // Navigation Bar
+  late String? hatimTab;
+  late String? zikirTab;
+  late String? programsTab;
+  late String? profileTab;
+  late String? myHatimProgramTab;
+  late String? myZikirTab;
+  late String? myProgramsTab;
+  late String? myUsersTab;
+
+  // Add Group Dialog Section Headers
+  late String? groupDetailsSection;
+  late String? groupIdentificationSection;
+  late String? hatimConfigurationSection;
+  late String? durationTypeHelperText;
+
+  // Group Date Type
+  late String? groupDateTypeWeek;
+  late String? groupDateTypeDay;
+
+  // Reference Code
+  late String? referenceCode;
+  late String? referenceCodeHint;
+  late String? referenceCodeOptional;
+  late String? referredUsers;
+  late String? generateReferenceCode;
+  late String? selectUsersToAdd;
+  late String? noReferredUsersFound;
+  late String? userAlreadyInGroup;
+  late String? deleteCode;
+  late String? areYouSureYouWantToDeleteThisCode;
+  late String? cancel;
+  late String? delete;
+  late String? remove;
+  late String? removeUserFromReferrals;
+  late String? areYouSureYouWantToRemoveThisUserFromYourReferrals;
+  String? get userRemovedSuccessfully;
+
+  String? get createReferenceCode;
+  String? get customCode;
+  String? get randomCode;
+  String? get enterCustomCode;
+  String? get codeAlreadyExists;
+  String? get referenceCodeCreatedSuccessfully;
+
+  String? get infoButtonTooltip;
+  String? get appInfoTitle;
+  String? get aboutAppTitle;
+  String? get aboutAppDescription;
+  String? get whyWeMadeAppTitle;
+  String? get whyWeMadeAppDescription;
+  String? get supporterCommunitiesTitle;
+  String? get supporterCommunitiesList;
+  String? get contactSupportTitle;
+  String? get contactSupportDescription;
+  String? get supportPhoneNumber;
+  String? get comingSoon;
+  String get whoMadeThisAppTitle;
+  String get whoMadeThisAppDescription;
+
+  // Profile Page - Statistics & Support
+  String? get statistics;
+  String? get score;
+  String? get completedHatims;
+  String? get completedChapters;
+  String? get security;
+  String? get changePassword;
+  String? get setPassword;
+  String? get updatePasswordDescription;
+  String? get setPasswordDescription;
+  String? get passwordResetNote;
+  String? get support;
+  String? get supportContact;
+  String? get whatsAppSupport;
+  String? get chatWithUs;
+  String? get callSupportError;
+  String? get whatsAppSupportError;
+  String? get callSupport;
+}

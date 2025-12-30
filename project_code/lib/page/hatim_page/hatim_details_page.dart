@@ -7,15 +7,19 @@ import '../../page_route.dart';
 
 class HatimDetailsPage extends StatefulWidget {
   final HatimRoundModel? hatimRound;
+  final GroupModel? group;
 
-  const HatimDetailsPage({super.key, required this.hatimRound});
+  const HatimDetailsPage({
+    super.key,
+    required this.hatimRound,
+    required this.group,
+  });
 
   @override
   State<HatimDetailsPage> createState() => _HatimDetailsPageState();
 }
 
 class _HatimDetailsPageState extends State<HatimDetailsPage> {
-
   late Future<Map<String, UserModel?>> userMapFuture;
 
   @override
@@ -28,8 +32,8 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
     final userController = Provider.of<UserController>(context, listen: false);
     Map<String, UserModel?> userMap = {};
 
-    if (widget.hatimRound != null) {
-      for (final userID in widget.hatimRound!.userList) {
+    if (widget.hatimRound != null && widget.group != null) {
+      for (final userID in widget.group!.usersID) {
         userMap[userID] = await userController.loadUser(id: userID);
       }
     }
@@ -49,7 +53,10 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
   }
 
   Widget _buildErrorScreen(BuildContext context) {
-    final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
+    final lang = Provider.of<LocalizationController>(
+      context,
+      listen: false,
+    ).getLanguage();
     return Scaffold(
       body: Center(
         child: Column(
@@ -73,22 +80,24 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
   }
 
   Widget _buildHatimDetails(BuildContext context) {
-
-  final theme = Theme.of(context);
+    final theme = Theme.of(context);
     final themeColor = Theme.of(context).colorScheme;
 
-  final lang = Provider.of<LocalizationController>(context, listen: true)
-      .getLanguage();
+    final lang = Provider.of<LocalizationController>(
+      context,
+      listen: true,
+    ).getLanguage();
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(lang.hatimDetails!),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              AppRoutes.goToGroup(context);
-            },
-          )),
+        title: Text(lang.hatimDetails!),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            AppRoutes.goToGroup(context);
+          },
+        ),
+      ),
       body: Column(
         children: [
           Padding(
@@ -98,105 +107,135 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
               style: theme.textTheme.headlineMedium,
             ),
           ),
-        FutureBuilder<Map<String, UserModel?>>(
-        future: userMapFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('${lang.errorLoadingUserData!}${snapshot.error}'));
-          } else {
-            final userMap = snapshot.data!; // User data is now available
-            return Expanded(
-              child: ListView.builder(
-                itemCount: widget.hatimRound!.userList.length,
-                itemBuilder: (context, index) {
-                  final userID = widget.hatimRound!.sortByWhoCompletedHatim()[index];
-                  final userName = userMap[userID]?.name ?? lang.unknown!;
+          FutureBuilder<Map<String, UserModel?>>(
+            future: userMapFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('${lang.errorLoadingUserData!}${snapshot.error}'),
+                );
+              } else {
+                final userMap = snapshot.data!; // User data is now available
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: widget.group!.usersID.length,
+                    itemBuilder: (context, index) {
+                      // In the lean model, we just iterate over group users.
+                      // Sorting by completion can be done by filtering the usersID list.
+                      final completed = widget.group!.usersID
+                          .where(
+                            (id) => widget.hatimRound!.completedUserIDs
+                                .contains(id),
+                          )
+                          .toList();
+                      final notCompleted = widget.group!.usersID
+                          .where(
+                            (id) => !widget.hatimRound!.completedUserIDs
+                                .contains(id),
+                          )
+                          .toList();
+                      final sortedUsers = [...completed, ...notCompleted];
 
-                  bool isHatimCompleted =
-                  widget.hatimRound!.isHatimCompleted(userID);
+                      final userID = sortedUsers[index];
+                      final userName = userMap[userID]?.name ?? lang.unknown!;
 
+                      bool isHatimCompleted = widget.hatimRound!
+                          .isHatimCompleted(userID);
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 0),
-                    child: Card(
-                      color: isHatimCompleted
-                          ? themeColor.primaryContainer.withOpacity(0.7)
-                          : themeColor.errorContainer.withOpacity(0.6),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: themeColor.surfaceContainer,
-                            // if the user is completed the hatim, show a green circle, otherwise show a red circle
-                            child: isHatimCompleted
-                                ? const Icon(Icons.check,
-                                color: Colors.green)
-                                : const Icon(Icons.close,
-                                color: Colors.red),
-                          ),
-                          title: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '${lang.userName}: $userName',
-                                  style: theme.textTheme.titleMedium,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 0,
+                        ),
+                        child: Card(
+                          color: isHatimCompleted
+                              ? themeColor.primaryContainer.withOpacity(0.7)
+                              : themeColor.errorContainer.withOpacity(0.6),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: themeColor.surfaceContainer,
+                                // if the user is completed the hatim, show a green circle, otherwise show a red circle
+                                child: isHatimCompleted
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      )
+                                    : const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                      ),
+                              ),
+                              title: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '${lang.userName}: $userName',
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    TextSpan(
+                                      text: '\t ID:$userID',
+                                      style: theme.textTheme.bodyMedium!
+                                          .copyWith(
+                                            color: themeColor.onSurface
+                                                .withOpacity(0.5),
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: '\t ID:${widget.hatimRound!.userList[index]}',
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: themeColor.onSurface
-                                          .withOpacity(0.5)),
-                                ),
-                              ],
-                            ),
-                          ),
-                          subtitle: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '${lang.hatimChapterNumber}:\t',
-                                  style: theme.textTheme.bodyMedium!
-                                      .copyWith(
-                                      color: themeColor.onSurface.withOpacity(0.5)).copyWith(
-                                      color:isHatimCompleted
-                                          ? themeColor.onSurface
-                                          : themeColor.onErrorContainer.withOpacity(0.6)
-                                  ),
-                                ),
+                              ),
+                              subtitle: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '${lang.hatimChapterNumber}:\t',
+                                      style: theme.textTheme.bodyMedium!
+                                          .copyWith(
+                                            color: themeColor.onSurface
+                                                .withOpacity(0.5),
+                                          )
+                                          .copyWith(
+                                            color: isHatimCompleted
+                                                ? themeColor.onSurface
+                                                : themeColor.onErrorContainer
+                                                      .withOpacity(0.6),
+                                          ),
+                                    ),
 
-                                TextSpan(
-                                  text:
-                                  '${widget.hatimRound!.getCurrentHatimChapterOfUser(userID)}',
-                                  style: theme.textTheme.titleMedium!
-                                      .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                      color:isHatimCompleted
-                                          ? themeColor.primary
-                                          : themeColor.error),
+                                    TextSpan(
+                                      text:
+                                          '${widget.hatimRound!.getJuzForUser(userID, widget.group!.usersID, widget.group!.hatimStyle)}',
+                                      style: theme.textTheme.titleMedium!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: isHatimCompleted
+                                                ? themeColor.primary
+                                                : themeColor.error,
+                                          ),
+                                    ),
+                                  ],
                                 ),
-
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                  // ... (rest of your ListTile code)
-                },
-              ),
-            );
-          }
-        },
-      ),
+                      );
+                      // ... (rest of your ListTile code)
+                    },
+                  ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );
   }
 
-// ... (rest of your code)
+  // ... (rest of your code)
 }
 
   // @override

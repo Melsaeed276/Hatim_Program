@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
+import 'package:hatim_program/page/dialogs/app_info_dialog.dart';
+import 'package:hatim_program/page/dialogs/settings_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
@@ -9,44 +10,46 @@ class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
-  final _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<LocalizationController>(context, listen: true)
-        .getLanguage();
+    final lang = Provider.of<LocalizationController>(
+      context,
+      listen: true,
+    ).getLanguage();
     final userController = Provider.of<AuthController>(context, listen: true);
-
-    //Theme
     final theme = Theme.of(context);
 
-    /// Phone number
-    /// Name
     return Scaffold(
-
       appBar: AppBar(
         title: Text('${lang.register!} ${lang.page!}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             AppRoutes.goBack(context);
-          //    // go to login page with animation from left to right
-          //   Navigator.pushReplacement(
-          //     context,
-          //     PageRouteBuilder(
-          //       pageBuilder: (context, animation1, animation2) => AppRoutes.routes()[AppRoutes.login]!(context),
-          //       transitionDuration: const Duration(milliseconds: 500),
-          //       transitionsBuilder: (context, animation, animationTime, child) {
-          //         animation = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-          //         return SlideTransition(
-          //           position: Tween(begin: const Offset(-1.0, 0.0), end: const Offset(0.0, 0.0)).animate(animation),
-          //           child: child,
-          //         );
-          //       },
-          //     ),
-          //   );
-           },
+          },
         ),
+        actions: [
+          IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  tooltip: lang.infoButtonTooltip ?? 'Info',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const AppInfoDialog(),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  tooltip: lang.settings ?? 'Settings',
+                  onPressed: () => SettingsDialog.show(
+                    context,
+                    onLogout: () {},
+                    showLogoutButton: false,
+                  ),
+                ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -54,12 +57,8 @@ class RegisterPage extends StatelessWidget {
           key: _formKey,
           child: ListView(
             shrinkWrap: true,
-
-            // mainAxisSize: MainAxisSize.max,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
-              // image from internet
+              const SizedBox(height: 20),
               Center(
                 child: Image.network(
                   'https://pbs.twimg.com/profile_images/1361681859516772352/ZyFPaMeQ_400x400.jpg',
@@ -67,49 +66,50 @@ class RegisterPage extends StatelessWidget {
                   height: 250,
                 ),
               ),
-
-              //sized box
-              const SizedBox(
-                height: 20,
-              ),
-              // text
+              const SizedBox(height: 20),
               Center(
                 child: Text(
                   lang.appDescription!,
                   style: theme.textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: TextFormField(
+                  controller: userController.nameController,
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    hintText: lang.pleaseEnterYourName,
+                    labelText: lang.userName,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      return null;
+                    } else {
+                      return '${lang.nameIsEmpty}, ${lang.pleaseEnterYourName}';
+                    }
+                  },
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: TextFormField(
-                    // make the focus to be on the phone number
-                    focusNode: _focusNode,
-                    onTap: () {
-                      _focusNode.requestFocus();
-                    },
-                    controller: userController.nameController,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      hintText: lang.pleaseEnterYourName,
-                      labelText: lang.userName,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                  controller: userController.referenceCodeController,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    hintText: lang.referenceCodeHint,
+                    labelText: lang.referenceCodeOptional,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        // if (user.hasNumbers(value)) {
-                        //   return lang.nameShouldNotContainNumbers;
-                        // } else {
-                          return null;
-
-                      } else {
-                        return '${lang.nameIsEmpty}, ${lang.pleaseEnterYourName}';
-                      }
-                    }),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -117,7 +117,6 @@ class RegisterPage extends StatelessWidget {
                   width: double.infinity,
                   height: 50.0,
                   child: ElevatedButton(
-                    //if the phone number is valid show change the button color if not make it green
                     style: ElevatedButton.styleFrom(
                       foregroundColor: userController.isPhoneNumberValid == true
                           ? theme.colorScheme.onPrimary
@@ -125,33 +124,39 @@ class RegisterPage extends StatelessWidget {
                       backgroundColor: userController.isPhoneNumberValid == true
                           ? theme.colorScheme.primary
                           : theme.colorScheme.surface,
-                      elevation: userController.isPhoneNumberValid == true ? 5.0 : 0.6,
+                      elevation: userController.isPhoneNumberValid == true
+                          ? 5.0
+                          : 0.6,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                       ///send the user data to repo and go to home
-                        // send data to repo
-                        userController.addUser().then((value) {
-                          if (value != null) {
-                            context.read<UserController>().userModel = value;
-                            //Navigator.pushReplacementNamed(context, AppRoutes.home);
-                            AppRoutes.goToHome(context);
-                          }else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content:
-                                  Text(lang.somethingWentWrong!)),
-                            );
-                          }
-                        });
+                        userController
+                            .addUser(
+                              providedReferenceCode: userController
+                                  .referenceCodeController
+                                  .text
+                                  .trim()
+                                  .toUpperCase(),
+                            )
+                            .then((value) {
+                              if (value != null) {
+                                context.read<UserController>().userModel =
+                                    value;
+                                AppRoutes.goToHome(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(lang.somethingWentWrong!),
+                                  ),
+                                );
+                              }
+                            });
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content:
-                                  Text(lang.pleaseEnterYourName!)),
+                          SnackBar(content: Text(lang.pleaseEnterYourName!)),
                         );
                       }
                     },
@@ -159,7 +164,6 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
