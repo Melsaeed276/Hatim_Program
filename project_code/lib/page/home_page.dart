@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hatim_program/page/admin_dashboard/admin_dashboard_page.dart';
 
 import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hatim_program/models/models.dart';
@@ -6,6 +7,7 @@ import 'package:hatim_program/page_route.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
+import 'community/communities_page.dart';
 import 'hone_page_views/user_groups_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -33,10 +35,10 @@ class HomePage extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // Show error if any
         } else {
+          final user = snapshot.data;
           return Scaffold(
             appBar: AppBar(
               title: Text(lang.homePageTitle!),
-              leading: const SizedBox(),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.logout),
@@ -56,6 +58,42 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ],
+            ),
+            drawer: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                    child: Text('Menu'),
+                  ),
+                  ListTile(
+                    title: const Text('Communities'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CommunitiesPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (user != null && user.isSuperAdmin)
+                    ListTile(
+                      title: const Text('Admin Dashboard'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminDashboardPage(),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

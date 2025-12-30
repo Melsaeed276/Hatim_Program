@@ -8,14 +8,15 @@ class UserModel {
   late final String id;
   final String name;
   String phoneNumber;
-  final bool isAdmin;
-  // map of groupsID and int of the current chapter
+  final bool isSuperAdmin;
   List<String> groups = [];
+  List<String> communityIds = []; // New field for community IDs
 
   UserModel({
     required this.name,
     required this.phoneNumber,
-    this.isAdmin = false,
+    this.isSuperAdmin = false,
+    this.communityIds = const [],
   }) {
     id = processPhoneNumber(phoneNumber);
   }
@@ -24,16 +25,18 @@ class UserModel {
       : id = json['id'],
         name = json['name'],
         phoneNumber = json['phoneNumber'],
-        isAdmin = json['isAdmin'],
-        groups = List<String>.from(json['groups'].map((x) => x.toString()));
+        isSuperAdmin = json['isSuperAdmin'] ?? false,
+        groups = List<String>.from(json['groups']?.map((x) => x.toString()) ?? []),
+        communityIds = List<String>.from(json['communityIds']?.map((x) => x.toString()) ?? []);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = processPhoneNumber(phoneNumber);
     data['name'] = name;
     data['phoneNumber'] = phoneNumber;
-    data['isAdmin'] = isAdmin;
+    data['isSuperAdmin'] = isSuperAdmin;
     data['groups'] = groups;
+    data['communityIds'] = communityIds;
     return data;
   }
 

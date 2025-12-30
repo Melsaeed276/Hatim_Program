@@ -17,5 +17,8 @@ class ServicesBase {
   ///  it will show if the person has read the chapter or not
   final groupsDb = FirebaseFirestore.instance.collection("groups");
 
+  // Community DB
+  final communityDb = FirebaseFirestore.instance.collection("communities");
+
 
 }
