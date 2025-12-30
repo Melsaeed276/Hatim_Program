@@ -9,8 +9,9 @@ class UserModel {
   final String name;
   String phoneNumber;
   final bool isSuperAdmin;
+  // map of groupsID and int of the current chapter
   List<String> groups = [];
-  List<String> communityIds = []; // New field for community IDs
+  List<String> communityIds = [];
 
   UserModel({
     required this.name,
@@ -25,9 +26,11 @@ class UserModel {
       : id = json['id'],
         name = json['name'],
         phoneNumber = json['phoneNumber'],
-        isSuperAdmin = json['isSuperAdmin'] ?? false,
-        groups = List<String>.from(json['groups']?.map((x) => x.toString()) ?? []),
-        communityIds = List<String>.from(json['communityIds']?.map((x) => x.toString()) ?? []);
+        isSuperAdmin = json['isSuperAdmin'] ?? json['isAdmin'] ?? false,
+        groups =
+            List<String>.from(json['groups']?.map((x) => x.toString()) ?? []),
+        communityIds = List<String>.from(
+            json['communityIds']?.map((x) => x.toString()) ?? []);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

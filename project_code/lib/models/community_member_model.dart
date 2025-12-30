@@ -1,15 +1,12 @@
-// 1. Enum for the user's role within a community
 enum CommunityRole {
   admin,
   member,
 }
 
-// 2. A dedicated class for admin permissions
-// This makes it easy to add new permissions in the future.
 class CommunityAdminPermissions {
-  final bool canCreateHatim;
-  final bool canCreateZikir;
-  final bool canSendNotifications;
+  bool canCreateHatim;
+  bool canCreateZikir;
+  bool canSendNotifications;
 
   CommunityAdminPermissions({
     this.canCreateHatim = false,
@@ -17,7 +14,6 @@ class CommunityAdminPermissions {
     this.canSendNotifications = false,
   });
 
-  // Factory constructor for JSON deserialization
   factory CommunityAdminPermissions.fromJson(Map<String, dynamic> json) {
     return CommunityAdminPermissions(
       canCreateHatim: json['canCreateHatim'] ?? false,
@@ -26,7 +22,6 @@ class CommunityAdminPermissions {
     );
   }
 
-  // Method for JSON serialization
   Map<String, dynamic> toJson() {
     return {
       'canCreateHatim': canCreateHatim,
@@ -36,21 +31,19 @@ class CommunityAdminPermissions {
   }
 }
 
-// 3. The main model to link a user to a community
 class CommunityMemberModel {
   final String userId;
   final String communityId;
-  final CommunityRole role;
-  final CommunityAdminPermissions? permissions; // Nullable for non-admins
+  CommunityRole role;
+  CommunityAdminPermissions? permissions;
 
   CommunityMemberModel({
     required this.userId,
     required this.communityId,
     this.role = CommunityRole.member,
-    this.permissions, // Only admins will have this object
+    this.permissions,
   });
 
-  // Factory constructor for JSON deserialization
   factory CommunityMemberModel.fromJson(Map<String, dynamic> json) {
     return CommunityMemberModel(
       userId: json['userId'],
@@ -62,7 +55,6 @@ class CommunityMemberModel {
     );
   }
 
-  // Method for JSON serialization
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,

@@ -2,11 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hatim_program/models/community_member_model.dart';
 import 'package:hatim_program/models/models.dart';
+import 'package:hatim_program/service/user_services.dart';
 
 import '../models/community_model.dart';
 import 'services_base.dart';
 
 class CommunityServices extends ServicesBase {
+  late final UserServices _userServices;
+
+  CommunityServices({UserServices? userServices})
+      : _userServices = userServices ?? UserServices();
+
   // Create a new community and add it to the database
   Future<bool> createCommunity(CommunityModel community) async {
     try {
@@ -39,10 +45,20 @@ class CommunityServices extends ServicesBase {
   // Get all communities a user is a member of
   Future<List<CommunityModel>> getCommunitiesForUser(String userId) async {
     try {
-      var data = await communityDb
-          .where('members', arrayContains: {'userId': userId})
+      // Because Firestore does not support querying an array of maps with an 'array-contains' filter,
+      // we must first fetch the user's document to get their list of community IDs.
+      final user = await _userServices.getUserByPhoneNumber(userId);
+      if (user == null || user.communityIds.isEmpty) {
+        return [];
+      }
+
+      // Then, we can fetch the communities using a 'whereIn' query on the community IDs.
+      final communityData = await communityDb
+          .where(FieldPath.documentId, whereIn: user.communityIds)
           .get();
-      return data.docs.map((e) => CommunityModel.fromJson(e.data())).toList();
+      return communityData.docs
+          .map((e) => CommunityModel.fromJson(e.data()))
+          .toList();
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -77,6 +93,52 @@ class CommunityServices extends ServicesBase {
     }
   }
 
+  // Request to join a community
+  Future<bool> requestToJoinCommunity(String communityId, String userId) async {
+    try {
+      await communityDb.doc(communityId).update({
+        'pendingMembers': FieldValue.arrayUnion([userId])
+      });
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  // Approve a join request
+  Future<bool> approveJoinRequest(String communityId, String userId) async {
+    try {
+      await communityDb.doc(communityId).update({
+        'pendingMembers': FieldValue.arrayRemove([userId])
+      });
+      await joinCommunity(communityId, userId);
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  // Reject a join request
+  Future<bool> rejectJoinRequest(String communityId, String userId) async {
+    try {
+      await communityDb.doc(communityId).update({
+        'pendingMembers': FieldValue.arrayRemove([userId])
+      });
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
   // Add a user to a community's member list
   Future<bool> joinCommunity(String communityId, String userId) async {
     try {
@@ -87,6 +149,7 @@ class CommunityServices extends ServicesBase {
       await communityDb.doc(communityId).update({
         'members': FieldValue.arrayUnion([newMember.toJson()])
       });
+      await _userServices.addUserToCommunity(userId, communityId);
       return true;
     } catch (e) {
       if (kDebugMode) {
@@ -105,6 +168,7 @@ class CommunityServices extends ServicesBase {
         await communityDb.doc(communityId).update({
           'members': FieldValue.arrayRemove([member.toJson()])
         });
+        await _userServices.removeUserFromCommunity(userId, communityId);
         return true;
       }
       return false;
@@ -120,19 +184,20 @@ class CommunityServices extends ServicesBase {
   Future<bool> updateMember(
       String communityId, CommunityMemberModel member) async {
     try {
-      var community = await getCommunityById(communityId);
-      if (community != null) {
+      final communityRef = communityDb.doc(communityId);
+      await dbInstance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(communityRef);
+        final community = CommunityModel.fromJson(snapshot.data()!);
         final oldMember =
             community.members.firstWhere((m) => m.userId == member.userId);
-        await communityDb.doc(communityId).update({
+        transaction.update(communityRef, {
           'members': FieldValue.arrayRemove([oldMember.toJson()])
         });
-        await communityDb.doc(communityId).update({
+        transaction.update(communityRef, {
           'members': FieldValue.arrayUnion([member.toJson()])
         });
-        return true;
-      }
-      return false;
+      });
+      return true;
     } catch (e) {
       if (kDebugMode) {
         print(e);

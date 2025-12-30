@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hatim_program/page/admin_dashboard/admin_dashboard_page.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hatim_program/models/models.dart';
@@ -7,7 +7,6 @@ import 'package:hatim_program/page_route.dart';
 import 'package:provider/provider.dart';
 
 import '../controller/contollers.dart';
-import 'community/communities_page.dart';
 import 'hone_page_views/user_groups_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -70,26 +69,22 @@ class HomePage extends StatelessWidget {
                     child: Text('Menu'),
                   ),
                   ListTile(
+                    title: const Text('Profile'),
+                    onTap: () {
+                      context.go('/profile');
+                    },
+                  ),
+                  ListTile(
                     title: const Text('Communities'),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CommunitiesPage(),
-                        ),
-                      );
+                      context.go('/communities');
                     },
                   ),
                   if (user != null && user.isSuperAdmin)
                     ListTile(
                       title: const Text('Admin Dashboard'),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AdminDashboardPage(),
-                          ),
-                        );
+                        context.go('/admin');
                       },
                     ),
                 ],

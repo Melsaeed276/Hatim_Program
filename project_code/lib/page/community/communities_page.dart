@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hatim_program/models/community_model.dart';
-import 'package:hatim_program/page/community/community_details_page.dart';
+import 'package:hatim_program/page/community/community_view_page.dart';
 import 'package:hatim_program/service/community_services.dart';
 
 class CommunitiesPage extends StatefulWidget {
@@ -13,7 +13,7 @@ class CommunitiesPage extends StatefulWidget {
 class _CommunitiesPageState extends State<CommunitiesPage> {
   final CommunityServices _communityServices = CommunityServices();
   // TODO: Replace with actual user ID from auth service
-  final String _currentUserId = 'user1';
+  final String _currentUserId = 'user_placeholder';
   String _searchQuery = '';
 
   @override
@@ -50,11 +50,13 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('You have not joined any communities yet.'));
+                  return const Center(
+                      child: Text('You have not joined any communities yet.'));
                 } else {
                   final myCommunities = snapshot.data!
-                      .where((community) =>
-                          community.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+                      .where((community) => community.name
+                          .toLowerCase()
+                          .contains(_searchQuery.toLowerCase()))
                       .toList();
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +65,8 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                         padding: EdgeInsets.all(8.0),
                         child: Text(
                           'My Communities',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Expanded(
@@ -79,7 +82,8 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        CommunityDetailsPage(community: community),
+                                        CommunityViewPage(
+                                            community: community),
                                   ),
                                 );
                               },
@@ -107,20 +111,22 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                 } else {
                   // Filter out communities the user has already joined
                   final allCommunities = snapshot.data!
-                      .where((community) =>
-                          !community.members.any((member) => member.userId == _currentUserId))
-                      .where((community) =>
-                          community.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+                      .where((community) => !community.members
+                          .any((member) => member.userId == _currentUserId) && !community.pendingMembers.contains(_currentUserId))
+                      .where((community) => community.name
+                          .toLowerCase()
+                          .contains(_searchQuery.toLowerCase()))
                       .toList();
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       const Padding(
+                      const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Discover Communities',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Expanded(
@@ -132,10 +138,11 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                               title: Text(community.name),
                               subtitle: Text(community.description),
                               trailing: ElevatedButton(
-                                child: const Text('Join'),
+                                child: const Text('Request to Join'),
                                 onPressed: () {
                                   _communityServices
-                                      .joinCommunity(community.id, _currentUserId)
+                                      .requestToJoinCommunity(
+                                          community.id, _currentUserId)
                                       .then((_) => setState(() {}));
                                 },
                               ),

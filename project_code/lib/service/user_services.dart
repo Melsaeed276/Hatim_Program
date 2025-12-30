@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/models.dart';
@@ -12,6 +13,19 @@ class UserServices extends ServicesBase {
   Future<List<UserModel>>? getAllUsers() async {
     try {
       var data = await userDb.get();
+      return data.docs.map((e) => UserModel.fromJson(e.data())).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // get users by ids and return a list of users
+  Future<List<UserModel>> getUsersByIds(List<String> userIds) async {
+    try {
+      if (userIds.isEmpty) {
+        return [];
+      }
+      var data = await userDb.whereIn('id', userIds).get();
       return data.docs.map((e) => UserModel.fromJson(e.data())).toList();
     } catch (e) {
       return [];
@@ -56,6 +70,37 @@ class UserServices extends ServicesBase {
   Future<bool> updateUser(UserModel user) async {
     try {
       await userDb.doc(user.id).update(user.toJson());
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  // add user to community
+  Future<bool> addUserToCommunity(String userId, String communityId) async {
+    try {
+      await userDb.doc(userId).update({
+        'communityIds': FieldValue.arrayUnion([communityId])
+      });
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return false;
+    }
+  }
+
+  // remove user from community
+  Future<bool> removeUserFromCommunity(
+      String userId, String communityId) async {
+    try {
+      await userDb.doc(userId).update({
+        'communityIds': FieldValue.arrayRemove([communityId])
+      });
       return true;
     } catch (e) {
       if (kDebugMode) {

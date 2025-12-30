@@ -5,10 +5,11 @@ import 'hatim_model.dart';
 
 class CommunityModel {
   final String id;
-  final String name;
+  String name;
   final String description;
   final String createdBy; // SuperAdmin ID
   final List<CommunityMemberModel> members;
+  final List<String> pendingMembers; // List of user IDs
   final List<HatimModel> hatimPrograms;
   final List<ZikirModel> zikirs;
 
@@ -18,6 +19,7 @@ class CommunityModel {
     required this.description,
     required this.createdBy,
     this.members = const [],
+    this.pendingMembers = const [],
     this.hatimPrograms = const [],
     this.zikirs = const [],
   });
@@ -33,6 +35,7 @@ class CommunityModel {
                   CommunityMemberModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      pendingMembers: List<String>.from(json['pendingMembers'] ?? []),
       hatimPrograms: (json['hatimPrograms'] as List<dynamic>?)
               ?.map((e) => HatimModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -51,6 +54,7 @@ class CommunityModel {
       'description': description,
       'createdBy': createdBy,
       'members': members.map((e) => e.toJson()).toList(),
+      'pendingMembers': pendingMembers,
       'hatimPrograms': hatimPrograms.map((e) => e.toJson()).toList(),
       'zikirs': zikirs.map((e) => e.toJson()).toList(),
     };

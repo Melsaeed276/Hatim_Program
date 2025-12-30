@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hatim_program/models/community_model.dart';
-import 'package:hatim_program/page/admin_dashboard/community_details_page.dart';
 import 'package:hatim_program/service/community_services.dart';
 import 'package:uuid/uuid.dart';
+
+import 'community_management_page.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -18,6 +19,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   final _descriptionController = TextEditingController();
 
   Future<void> _showCreateCommunityDialog() async {
+    // TODO: Replace with actual superadmin ID from auth service
+    const String superAdminId = 'superadmin_placeholder';
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -72,7 +76,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     id: const Uuid().v4(),
                     name: _nameController.text,
                     description: _descriptionController.text,
-                    createdBy: 'superadmin', // TODO: Replace with actual superadmin ID
+                    createdBy: superAdminId,
                   );
                   _communityServices.createCommunity(newCommunity).then((_) {
                     setState(() {});
@@ -121,7 +125,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            CommunityDetailsPage(community: community),
+                            CommunityManagementPage(community: community),
                       ),
                     ).then((_) => setState(() {}));
                   },
