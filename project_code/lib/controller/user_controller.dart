@@ -99,14 +99,23 @@ class UserController extends ChangeNotifier{
     if (userModel != null && id == null) {
       return userModel;
     }else {
-
-      userModel = await userRepo.getUserByPhoneNumber(id??getCurrentUserID);
+      final userId = id ?? getCurrentUserID;
+      // Skip if it's the default value
+      if (userId == '0' || userId.isEmpty) {
+        return null;
+      }
+      userModel = await userRepo.getUserByPhoneNumber(userId);
       return userModel;
     }
   }
 
   Future<UserModel?> loadUser({String? id}) async {
-    return await userRepo.getUserByPhoneNumber(id??getCurrentUserID);
+    final userId = id ?? getCurrentUserID;
+    // Skip if it's the default value
+    if (userId == '0' || userId.isEmpty) {
+      return null;
+    }
+    return await userRepo.getUserByPhoneNumber(userId);
   }
 
 
@@ -154,6 +163,10 @@ class UserController extends ChangeNotifier{
   //  print(userModel!.groups.length);
 
       for (var groupID in userModel!.groups) {
+        // Skip empty group IDs
+        if (groupID.isEmpty) {
+          continue;
+        }
         var group = await groupRepo.getGroupByID(groupID);
         if (group != null) {
           userGroups.add(group);

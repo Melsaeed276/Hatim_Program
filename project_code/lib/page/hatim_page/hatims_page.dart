@@ -32,9 +32,16 @@ class _HatimsPageState extends State<HatimsPage> {
 
     final userController = Provider.of<UserController>(context, listen: false);
 
-    isAdmin = userController.userModel?.isAdmin ?? false;
-    _groupFuture =
-        groupController.getGroupByID(groupController.getCurrentGroupID);
+    isAdmin = userController.userModel?.isSuperAdmin ?? false;
+    
+    // Get the current group ID and validate it
+    final currentGroupID = groupController.getCurrentGroupID;
+    if (currentGroupID.isNotEmpty && currentGroupID != '0') {
+      _groupFuture = groupController.getGroupByID(currentGroupID);
+    } else {
+      // If no valid group ID, return null future
+      _groupFuture = Future.value(null);
+    }
 
 
     // Scroll to the current hatim
@@ -343,13 +350,29 @@ class _HatimsPageState extends State<HatimsPage> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
-            var group = await groupController
-                .getGroupByID(groupController.getCurrentGroupID);
+            final currentGroupID = groupController.getCurrentGroupID;
+            if (currentGroupID.isEmpty || currentGroupID == '0') {
+              // Show error message if no valid group ID
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(lang.somethingWentWrong ?? 'Something went wrong')),
+              );
+              return;
+            }
+            
+            var group = await groupController.getGroupByID(currentGroupID);
+            
+            if (group == null) {
+              // Show error if group not found
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(lang.somethingWentWrong ?? 'Something went wrong')),
+              );
+              return;
+            }
 
             setState(() {
               double itemHeight = 80;
               //group.getCurrentHatimOfUser(userID)
-              int index = group!.getCurrentHatimOfUser(userID);
+              int index = group.getCurrentHatimOfUser(userID);
               // replace with your desired index
               _scrollController.animateTo(
                 index <= 6 ? (index).toDouble() : (index * itemHeight),

@@ -25,7 +25,7 @@ class UserServices extends ServicesBase {
       if (userIds.isEmpty) {
         return [];
       }
-      var data = await userDb.whereIn('id', userIds).get();
+      var data = await userDb.where(FieldPath.documentId, whereIn: userIds).get();
       return data.docs.map((e) => UserModel.fromJson(e.data())).toList();
     } catch (e) {
       return [];
@@ -45,10 +45,35 @@ class UserServices extends ServicesBase {
 
   // get user by id return user model
   Future<UserModel?> getUserByPhoneNumber(String phoneNumber) async {
+    // Validate phoneNumber is not empty
+    if (phoneNumber.isEmpty) {
+      if (kDebugMode) {
+        print('Error: phoneNumber cannot be empty in getUserByPhoneNumber');
+      }
+      return null;
+    }
+    
+    // Skip default/placeholder values
+    if (phoneNumber == '0') {
+      if (kDebugMode) {
+        print('Warning: phoneNumber is default value "0" in getUserByPhoneNumber');
+      }
+      return null;
+    }
+    
     try {
+      final processedPhone = UserModel.processPhoneNumber(phoneNumber);
+      // Validate processed phone number is not empty
+      if (processedPhone.isEmpty) {
+        if (kDebugMode) {
+          print('Error: processed phoneNumber is empty in getUserByPhoneNumber. Original: "$phoneNumber"');
+        }
+        return null;
+      }
+      
       // by the ID
       var data = await userDb
-          .doc(UserModel.processPhoneNumber(phoneNumber))
+          .doc(processedPhone)
           .get()
           .then((value) {
         return value;
@@ -68,6 +93,14 @@ class UserServices extends ServicesBase {
 
   // update user
   Future<bool> updateUser(UserModel user) async {
+    // Validate user.id is not empty
+    if (user.id.isEmpty) {
+      if (kDebugMode) {
+        print('Error: user.id cannot be empty in updateUser');
+      }
+      return false;
+    }
+    
     try {
       await userDb.doc(user.id).update(user.toJson());
       return true;
@@ -81,6 +114,14 @@ class UserServices extends ServicesBase {
 
   // add user to community
   Future<bool> addUserToCommunity(String userId, String communityId) async {
+    // Validate userId is not empty
+    if (userId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: userId cannot be empty in addUserToCommunity');
+      }
+      return false;
+    }
+    
     try {
       await userDb.doc(userId).update({
         'communityIds': FieldValue.arrayUnion([communityId])
@@ -97,6 +138,14 @@ class UserServices extends ServicesBase {
   // remove user from community
   Future<bool> removeUserFromCommunity(
       String userId, String communityId) async {
+    // Validate userId is not empty
+    if (userId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: userId cannot be empty in removeUserFromCommunity');
+      }
+      return false;
+    }
+    
     try {
       await userDb.doc(userId).update({
         'communityIds': FieldValue.arrayRemove([communityId])
@@ -112,6 +161,14 @@ class UserServices extends ServicesBase {
 
   // add user and return bool
   Future<bool> addUser(UserModel user) async {
+    // Validate user.id is not empty
+    if (user.id.isEmpty) {
+      if (kDebugMode) {
+        print('Error: user.id cannot be empty in addUser');
+      }
+      return false;
+    }
+    
     try {
       await userDb.doc(user.id).set(user.toJson());
       return true;
@@ -127,6 +184,13 @@ class UserServices extends ServicesBase {
   Future<void> addUsers(List<UserModel> users) async {
     try {
       for (var user in users) {
+        // Skip users with empty IDs
+        if (user.id.isEmpty) {
+          if (kDebugMode) {
+            print('Warning: Skipping user with empty ID in addUsers');
+          }
+          continue;
+        }
         await userDb.doc(user.id).set(user.toJson());
       }
     } catch (e) {
@@ -138,6 +202,14 @@ class UserServices extends ServicesBase {
 
   // delete user
   Future<void> deleteUser(String id) async {
+    // Validate id is not empty
+    if (id.isEmpty) {
+      if (kDebugMode) {
+        print('Error: id cannot be empty in deleteUser');
+      }
+      return;
+    }
+    
     try {
       await userDb.doc(id).delete();
     } catch (e) {

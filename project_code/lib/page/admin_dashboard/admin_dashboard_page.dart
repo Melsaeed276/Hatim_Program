@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hatim_program/controller/contollers.dart';
 import 'package:hatim_program/models/community_model.dart';
 import 'package:hatim_program/service/community_services.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'community_management_page.dart';
@@ -19,8 +21,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   final _descriptionController = TextEditingController();
 
   Future<void> _showCreateCommunityDialog() async {
-    // TODO: Replace with actual superadmin ID from auth service
-    const String superAdminId = 'superadmin_placeholder';
+    final userController = Provider.of<UserController>(context, listen: false);
+    final superAdminId = userController.getCurrentUserID;
 
     return showDialog<void>(
       context: context,

@@ -19,7 +19,7 @@ class GroupList extends StatelessWidget {
     final languageController = LocalizationController();
 
     final userController = Provider.of<UserController>(context, listen: false);
-    final isAdmin = userController.userModel!.isAdmin;
+    final isAdmin = userController.userModel?.isSuperAdmin ?? false;
 
     final theme = Theme.of(context);
     final themeColor = Theme.of(context).colorScheme;

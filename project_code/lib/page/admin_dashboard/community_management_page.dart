@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hatim_program/models/community_member_model.dart';
 import 'package:hatim_program/models/community_model.dart';
-import 'package:hatim_program/models/hatim_model.dart';
+import 'package:hatim_program/models/group_model.dart';
 import 'package:hatim_program/models/user_model.dart';
 import 'package:hatim_program/models/zikir_model.dart';
 import 'package:hatim_program/page/admin_dashboard/permissions_dialog.dart';
 import 'package:hatim_program/service/community_services.dart';
 import 'package:hatim_program/service/user_services.dart';
 import 'package:uuid/uuid.dart';
+
 
 class CommunityManagementPage extends StatefulWidget {
   final CommunityModel community;
@@ -158,8 +159,8 @@ class _CommunityManagementPageState extends State<CommunityManagementPage> {
               child: const Text('Create'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  final newHatim = HatimModel(
-                    id: _hatimIdController.text,
+                  final newHatim = GroupModel(
+                    groupID: _hatimIdController.text,
                   );
                   _communityServices
                       .addHatimToCommunity(_community.id, newHatim)
@@ -357,7 +358,7 @@ class _CommunityManagementPageState extends State<CommunityManagementPage> {
                 ),
                 ..._community.hatimPrograms.map(
                   (hatim) => ListTile(
-                    title: Text(hatim.id),
+                    title: Text(hatim.groupID),
                   ),
                 ),
               ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hatim_program/controller/contollers.dart';
 import 'package:hatim_program/models/community_model.dart';
 import 'package:hatim_program/page/community/community_view_page.dart';
 import 'package:hatim_program/service/community_services.dart';
+import 'package:provider/provider.dart';
 
 class CommunitiesPage extends StatefulWidget {
   const CommunitiesPage({super.key});
@@ -12,12 +14,13 @@ class CommunitiesPage extends StatefulWidget {
 
 class _CommunitiesPageState extends State<CommunitiesPage> {
   final CommunityServices _communityServices = CommunityServices();
-  // TODO: Replace with actual user ID from auth service
-  final String _currentUserId = 'user_placeholder';
   String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context, listen: false);
+    final currentUserId = userController.getCurrentUserID;
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Communities'),
@@ -43,7 +46,7 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
         children: [
           Expanded(
             child: FutureBuilder<List<CommunityModel>>(
-              future: _communityServices.getCommunitiesForUser(_currentUserId),
+              future: _communityServices.getCommunitiesForUser(currentUserId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -112,7 +115,7 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                   // Filter out communities the user has already joined
                   final allCommunities = snapshot.data!
                       .where((community) => !community.members
-                          .any((member) => member.userId == _currentUserId) && !community.pendingMembers.contains(_currentUserId))
+                          .any((member) => member.userId == currentUserId) && !community.pendingMembers.contains(currentUserId))
                       .where((community) => community.name
                           .toLowerCase()
                           .contains(_searchQuery.toLowerCase()))
@@ -142,7 +145,7 @@ class _CommunitiesPageState extends State<CommunitiesPage> {
                                 onPressed: () {
                                   _communityServices
                                       .requestToJoinCommunity(
-                                          community.id, _currentUserId)
+                                          community.id, currentUserId)
                                       .then((_) => setState(() {}));
                                 },
                               ),

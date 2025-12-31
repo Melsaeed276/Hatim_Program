@@ -92,7 +92,7 @@ class GroupModel {
 
   GroupModel.withCustomInfo({required this.groupID,this.groupDateCount = 30,this.userCount = 30,this.hatimStyle = HatimStyle.allTogetherInOneHatim, this.dateType = GroupDateType.week,this.startDate, this.endDate}) {
     round = 0;
-    this.hatimStyle = hatimStyle;
+    hatimStyle = hatimStyle;
     status = GroupStatus.waiting;
     createdDate = DateTime.now();
   }

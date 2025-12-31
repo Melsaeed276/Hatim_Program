@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hatim_program/models/community_model.dart';
+import 'package:hatim_program/controller/contollers.dart';
+import 'package:hatim_program/models/group_model.dart';
 import 'package:hatim_program/models/user_model.dart';
-import 'package:hatim_program/service/community_services.dart';
-import 'package:hatim_program/service/user_services.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,19 +12,16 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final UserServices _userServices = UserServices();
-  final CommunityServices _communityServices = CommunityServices();
-  // TODO: Replace with actual user ID from auth service
-  final String _currentUserId = 'user_placeholder';
-
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context, listen: true);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
       ),
       body: FutureBuilder<UserModel?>(
-        future: _userServices.getUserByPhoneNumber(_currentUserId),
+        future: userController.getUserByPhoneNumber(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -46,30 +43,31 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const Divider(),
                 const ListTile(
-                  title: Text('My Communities'),
+                  title: Text('My Groups'),
                 ),
-                if (user.communityIds.isEmpty)
+                if (user.groups.isEmpty)
                   const ListTile(
-                    title: Text('You have not joined any communities yet.'),
+                    title: Text('You have not joined any groups yet.'),
                   )
                 else
-                  FutureBuilder<List<CommunityModel>>(
-                    future: _communityServices.getCommunitiesForUser(user.id),
+                  FutureBuilder<List<GroupModel>>(
+                    future: userController.getAllGroupsOfUser(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No communities found.'));
+                        return const Center(child: Text('No groups found.'));
                       } else {
-                        final communities = snapshot.data!;
+                        final groups = snapshot.data!;
                         return Column(
-                          children: communities
+                          children: groups
                               .map(
-                                (community) => ListTile(
-                                  title: Text(community.name),
-                                  subtitle: Text(community.description),
+                                (group) => ListTile(
+                                  title: Text('Group ${group.groupID}'),
+                                  subtitle: Text('Status: ${group.status.name} - ${group.usersID.length}/${group.userCount} members'),
+                                  trailing: Text('Round ${group.round}'),
                                 ),
                               )
                               .toList(),

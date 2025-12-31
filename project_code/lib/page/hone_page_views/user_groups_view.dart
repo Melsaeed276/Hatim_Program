@@ -31,7 +31,7 @@ class _UserGroupsViewState extends State<UserGroupsView> {
 
     if (_didLoad == false) {
       _didLoad = true;
-      _groupsFuture = userController.userModel!.isAdmin
+      _groupsFuture = (userController.userModel?.isSuperAdmin ?? false)
           ? groupController.getAllGroups()
           : userController.getAllGroupsOfUser();
     }
@@ -49,7 +49,7 @@ class _UserGroupsViewState extends State<UserGroupsView> {
     // size of the screen
     final size = MediaQuery.of(context).size;
 
-    final isAdmin = userController.userModel!.isAdmin;
+    final isAdmin = userController.userModel?.isSuperAdmin ?? false;
 
     return Container(
       height: size.height,
@@ -75,7 +75,7 @@ class _UserGroupsViewState extends State<UserGroupsView> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: Text(widget.userData.isAdmin ? lang.groups! : lang.myGroups!,
+                  child: Text(widget.userData.isSuperAdmin ? lang.groups! : lang.myGroups!,
                       style: theme.textTheme.headlineSmall),
                 ),
 
@@ -139,7 +139,7 @@ class _UserGroupsViewState extends State<UserGroupsView> {
           /// if the user model is null show the loading
           /// if the user model is not null  check if the user has groups
           if (widget.userData.groups.isEmpty &&
-              widget.userData.isAdmin == false)
+              widget.userData.isSuperAdmin == false)
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Center(
@@ -161,7 +161,7 @@ class _UserGroupsViewState extends State<UserGroupsView> {
                     height: 20,
                   ),
                   // add group button
-                  if (userController.userModel!.isAdmin == false)
+                  if (!(userController.userModel?.isSuperAdmin ?? false))
                     TextButton(
                       //style
                       style: TextButton.styleFrom(

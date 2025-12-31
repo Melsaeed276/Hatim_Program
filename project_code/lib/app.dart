@@ -34,9 +34,7 @@ class App extends StatelessWidget {
       ),
       routerConfig:
           AppRoutes.router(context.read<UserController>().getCurrentUserID),
-      // initialRoute: context.read<UserController>().getCurrentUserID != '0'
-      //     ? AppRoutes.home
-      //     :  AppRoutes.login,
+    
     );
   }
 }

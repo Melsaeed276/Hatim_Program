@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hatim_program/app_router.dart';
+import 'package:hatim_program/app.dart';
 import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -50,9 +50,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => GroupController()),
 
       ],
-      child: MaterialApp.router(
-        routerConfig: AppRouter().router,
-      ),
+      child: const App(),
     ),
   );
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:hatim_program/controller/auth_controller.dart';
 import 'package:hatim_program/models/models.dart';
@@ -33,8 +32,30 @@ class HomePage extends StatelessWidget {
                   CircularProgressIndicator()); // Show a loading spinner while waiting
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}'); // Show error if any
+        } else if (snapshot.data == null) {
+          // Handle case where user is not logged in or user data is not available
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(lang.homePageTitle!),
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(lang.userNotFound ?? 'User not found'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      AppRoutes.goToLogin(context);
+                    },
+                    child: Text(lang.login ?? 'Login'),
+                  ),
+                ],
+              ),
+            ),
+          );
         } else {
-          final user = snapshot.data;
+          final user = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
               title: Text(lang.homePageTitle!),
@@ -71,20 +92,23 @@ class HomePage extends StatelessWidget {
                   ListTile(
                     title: const Text('Profile'),
                     onTap: () {
-                      context.go('/profile');
+                      AppRoutes.goToProfile(context);
+                      Navigator.pop(context); // Close drawer
                     },
                   ),
                   ListTile(
                     title: const Text('Communities'),
                     onTap: () {
-                      context.go('/communities');
+                      AppRoutes.goToCommunities(context);
+                      Navigator.pop(context); // Close drawer
                     },
                   ),
-                  if (user != null && user.isSuperAdmin)
+                  if (user.isSuperAdmin)
                     ListTile(
                       title: const Text('Admin Dashboard'),
                       onTap: () {
-                        context.go('/admin');
+                        AppRoutes.goToAdmin(context);
+                        Navigator.pop(context); // Close drawer
                       },
                     ),
                 ],
@@ -116,7 +140,7 @@ class HomePage extends StatelessWidget {
                 ),
                 Expanded(
                     child: UserGroupsView(
-                  userData: userController.userModel!,
+                  userData: user,
                 )),
               ],
             ),

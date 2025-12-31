@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hatim_program/page/admin_dashboard/admin_dashboard_page.dart';
 import 'package:hatim_program/page/admin_dashboard/community_management_page.dart';
 import 'package:hatim_program/page/community/communities_page.dart';
 import 'package:hatim_program/page/community/community_view_page.dart';

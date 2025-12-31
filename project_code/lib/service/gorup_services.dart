@@ -37,6 +37,14 @@ class GroupServices extends ServicesBase {
 
   // get group by ID
   Future<GroupModel?> getGroupByID(String groupID) async {
+    // Validate groupID is not empty
+    if (groupID.isEmpty) {
+      if (kDebugMode) {
+        print('Error: groupID cannot be empty');
+      }
+      return null;
+    }
+    
     try {
       var data = await groupsDb.doc(groupID).get();
 
@@ -62,6 +70,14 @@ class GroupServices extends ServicesBase {
 
   // update group
   Future<void> updateGroup(GroupModel group) async {
+    // Validate groupID is not empty
+    if (group.groupID.isEmpty) {
+      if (kDebugMode) {
+        print('Error: groupID cannot be empty in updateGroup');
+      }
+      return;
+    }
+    
     try {
       await groupsDb.doc(group.groupID).update(group.toJson());
 
@@ -83,6 +99,14 @@ class GroupServices extends ServicesBase {
 
   ///get hatims of the group
   Future<List<HatimRoundModel>> getHatimsOfGroup(String groupID) async {
+    // Validate groupID is not empty
+    if (groupID.isEmpty) {
+      if (kDebugMode) {
+        print('Error: groupID cannot be empty in getHatimsOfGroup');
+      }
+      return [];
+    }
+    
     try {
       var data = await groupsDb.doc(groupID).collection('hatimRounds').get();
       if (data.docs.isNotEmpty) {
@@ -103,6 +127,14 @@ class GroupServices extends ServicesBase {
 
   // add group
   Future<void> addGroup(GroupModel group) async {
+    // Validate groupID is not empty
+    if (group.groupID.isEmpty) {
+      if (kDebugMode) {
+        print('Error: groupID cannot be empty in addGroup');
+      }
+      return;
+    }
+    
     try {
       await groupsDb.doc(group.groupID).set(group.toJson());
     } catch (e) {
@@ -114,6 +146,14 @@ class GroupServices extends ServicesBase {
 
   //delete group
   Future<void> deleteGroup(String groupID) async {
+    // Validate groupID is not empty
+    if (groupID.isEmpty) {
+      if (kDebugMode) {
+        print('Error: groupID cannot be empty in deleteGroup');
+      }
+      return;
+    }
+    
     try {
       await groupsDb.doc(groupID).delete();
     } catch (e) {

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hatim_program/models/community_member_model.dart';
 import 'package:hatim_program/models/models.dart';
+import 'package:hatim_program/models/zikir_model.dart';
 import 'package:hatim_program/service/user_services.dart';
 
 import '../models/community_model.dart';
@@ -15,6 +16,14 @@ class CommunityServices extends ServicesBase {
 
   // Create a new community and add it to the database
   Future<bool> createCommunity(CommunityModel community) async {
+    // Validate community.id is not empty
+    if (community.id.isEmpty) {
+      if (kDebugMode) {
+        print('Error: community.id cannot be empty in createCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(community.id).set(community.toJson());
       return true;
@@ -28,6 +37,14 @@ class CommunityServices extends ServicesBase {
 
   // Get a community by its ID
   Future<CommunityModel?> getCommunityById(String communityId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in getCommunityById');
+      }
+      return null;
+    }
+    
     try {
       var data = await communityDb.doc(communityId).get();
       if (data.exists) {
@@ -69,6 +86,14 @@ class CommunityServices extends ServicesBase {
 
   // Update a community's data
   Future<bool> updateCommunity(CommunityModel community) async {
+    // Validate community.id is not empty
+    if (community.id.isEmpty) {
+      if (kDebugMode) {
+        print('Error: community.id cannot be empty in updateCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(community.id).update(community.toJson());
       return true;
@@ -82,6 +107,14 @@ class CommunityServices extends ServicesBase {
 
   // Delete a community
   Future<bool> deleteCommunity(String communityId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in deleteCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).delete();
       return true;
@@ -95,6 +128,14 @@ class CommunityServices extends ServicesBase {
 
   // Request to join a community
   Future<bool> requestToJoinCommunity(String communityId, String userId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in requestToJoinCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).update({
         'pendingMembers': FieldValue.arrayUnion([userId])
@@ -110,6 +151,14 @@ class CommunityServices extends ServicesBase {
 
   // Approve a join request
   Future<bool> approveJoinRequest(String communityId, String userId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in approveJoinRequest');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).update({
         'pendingMembers': FieldValue.arrayRemove([userId])
@@ -126,6 +175,14 @@ class CommunityServices extends ServicesBase {
 
   // Reject a join request
   Future<bool> rejectJoinRequest(String communityId, String userId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in rejectJoinRequest');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).update({
         'pendingMembers': FieldValue.arrayRemove([userId])
@@ -141,6 +198,14 @@ class CommunityServices extends ServicesBase {
 
   // Add a user to a community's member list
   Future<bool> joinCommunity(String communityId, String userId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in joinCommunity');
+      }
+      return false;
+    }
+    
     try {
       final newMember = CommunityMemberModel(
         userId: userId,
@@ -161,6 +226,14 @@ class CommunityServices extends ServicesBase {
 
   // Remove a user from a community's member list
   Future<bool> leaveCommunity(String communityId, String userId) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in leaveCommunity');
+      }
+      return false;
+    }
+    
     try {
       var community = await getCommunityById(communityId);
       if (community != null) {
@@ -183,6 +256,14 @@ class CommunityServices extends ServicesBase {
   // Update a user's role and permissions in a community
   Future<bool> updateMember(
       String communityId, CommunityMemberModel member) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in updateMember');
+      }
+      return false;
+    }
+    
     try {
       final communityRef = communityDb.doc(communityId);
       await dbInstance.runTransaction((transaction) async {
@@ -207,7 +288,15 @@ class CommunityServices extends ServicesBase {
   }
 
   // Add a Hatim program to a community
-  Future<bool> addHatimToCommunity(String communityId, HatimModel hatim) async {
+  Future<bool> addHatimToCommunity(String communityId, GroupModel hatim) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in addHatimToCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).update({
         'hatimPrograms': FieldValue.arrayUnion([hatim.toJson()])
@@ -223,6 +312,14 @@ class CommunityServices extends ServicesBase {
 
   // Add a Zikir to a community
   Future<bool> addZikirToCommunity(String communityId, ZikirModel zikir) async {
+    // Validate communityId is not empty
+    if (communityId.isEmpty) {
+      if (kDebugMode) {
+        print('Error: communityId cannot be empty in addZikirToCommunity');
+      }
+      return false;
+    }
+    
     try {
       await communityDb.doc(communityId).update({
         'zikirs': FieldValue.arrayUnion([zikir.toJson()])

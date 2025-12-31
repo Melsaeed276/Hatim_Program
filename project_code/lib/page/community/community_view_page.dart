@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hatim_program/controller/contollers.dart';
 import 'package:hatim_program/models/community_model.dart';
-import 'package:hatim_program/models/hatim_model.dart';
+import 'package:hatim_program/models/group_model.dart';
 import 'package:hatim_program/models/zikir_model.dart';
 import 'package:hatim_program/service/community_services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
 
 class CommunityViewPage extends StatefulWidget {
   final CommunityModel community;
@@ -24,8 +27,6 @@ class _CommunityViewPageState extends State<CommunityViewPage> {
   final _hatimIdController = TextEditingController();
   late SharedPreferences _prefs;
   Map<String, int> _zikirCounts = {};
-  // TODO: Replace with actual user ID from auth service
-  final String _currentUserId = 'user_placeholder';
 
   @override
   void initState() {
@@ -179,8 +180,8 @@ class _CommunityViewPageState extends State<CommunityViewPage> {
               child: const Text('Create'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  final newHatim = HatimModel(
-                    id: _hatimIdController.text,
+                  final newHatim = GroupModel(
+                    groupID: _hatimIdController.text,
                   );
                   _communityServices
                       .addHatimToCommunity(widget.community.id, newHatim)
@@ -201,8 +202,11 @@ class _CommunityViewPageState extends State<CommunityViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context, listen: false);
+    final currentUserId = userController.getCurrentUserID;
+    
     final member = widget.community.members
-        .firstWhere((m) => m.userId == _currentUserId);
+        .firstWhere((m) => m.userId == currentUserId);
     final canCreateHatim = member.permissions?.canCreateHatim ?? false;
     final canCreateZikir = member.permissions?.canCreateZikir ?? false;
 
@@ -227,7 +231,7 @@ class _CommunityViewPageState extends State<CommunityViewPage> {
           else
             ...widget.community.hatimPrograms.map(
               (hatim) => ListTile(
-                title: Text('Hatim Program ${hatim.id}'), // Placeholder
+                title: Text('Hatim Program ${hatim.groupID}'), // Placeholder
                 // TODO: Add navigation to Hatim details page
               ),
             ),

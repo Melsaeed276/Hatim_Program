@@ -129,7 +129,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     helperStyle: theme.textTheme.bodySmall,
                     helperMaxLines: 2,
                   ),
-                  value: groupDateType,
+                  initialValue: groupDateType,
                   onChanged: (GroupDateType? newValue) {
                     setState(() {
                       groupDateType = newValue!;
@@ -157,7 +157,7 @@ class _AddHatimGroupDialogState extends State<AddHatimGroupDialog> {
                     helperStyle: theme.textTheme.bodySmall,
                     helperMaxLines: 2,
                   ),
-                  value: hatimStyle,
+                  initialValue: hatimStyle,
                   onChanged: (HatimStyle? newValue) {
                     setState(() {
                       hatimStyle = newValue!;

@@ -1,7 +1,6 @@
 import 'package:hatim_program/models/community_member_model.dart';
+import 'package:hatim_program/models/group_model.dart';
 import 'package:hatim_program/models/zikir_model.dart';
-
-import 'hatim_model.dart';
 
 class CommunityModel {
   final String id;
@@ -10,7 +9,7 @@ class CommunityModel {
   final String createdBy; // SuperAdmin ID
   final List<CommunityMemberModel> members;
   final List<String> pendingMembers; // List of user IDs
-  final List<HatimModel> hatimPrograms;
+  final List<GroupModel> hatimPrograms;
   final List<ZikirModel> zikirs;
 
   CommunityModel({
@@ -37,7 +36,7 @@ class CommunityModel {
           [],
       pendingMembers: List<String>.from(json['pendingMembers'] ?? []),
       hatimPrograms: (json['hatimPrograms'] as List<dynamic>?)
-              ?.map((e) => HatimModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => GroupModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       zikirs: (json['zikirs'] as List<dynamic>?)
