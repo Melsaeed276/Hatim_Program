@@ -17,6 +17,19 @@ abstract class GroupRepoInterface {
   Future<GroupCreationResult> addUserToGroup(String groupID, String userID);
   Future<void> deleteGroupAsAdmin(String groupId);
   Future<void> removeUserFromGroup(String groupId, String userId);
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  });
 }
 
 class GroupRepo implements GroupRepoInterface {
@@ -190,5 +203,35 @@ class GroupRepo implements GroupRepoInterface {
   @override
   Future<void> removeUserFromGroup(String groupId, String userId) async {
     await groupService.removeUserFromGroup(groupId, userId);
+  }
+
+  /// Update group details (admin edit functionality)
+  @override
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  }) async {
+    await groupService.updateGroupDetails(
+      groupId: groupId,
+      name: name,
+      userCount: userCount,
+      groupDateCount: groupDateCount,
+      dateType: dateType,
+      plannedStartDate: plannedStartDate,
+      hijriStartYear: hijriStartYear,
+      hijriStartMonth: hijriStartMonth,
+      hijriStartDay: hijriStartDay,
+      startHour: startHour,
+      startMinute: startMinute,
+    );
   }
 }

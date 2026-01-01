@@ -877,9 +877,116 @@ class ARText implements Localization {
   String? get whatsAppSupportError => 'لا يمكن فتح واتساب';
   @override
   String? get callSupport => 'اتصل للدعم';
-    @override
+  @override
   String get whoMadeThisAppDescription => 'هذا التطبيق تم تطويره من قبل محمد السعيد و روضة نور ارمغان السعيد .';
   
   @override
   String get whoMadeThisAppTitle => 'من صنع هذا التطبيق';
+
+  // Admin Group Details Page
+  @override
+  String? get editLabel => 'تعديل';
+  @override
+  String? get roundsLabel => 'الجولات';
+  @override
+  String? get cannotReduceUserCountBelowCurrentMembers => 
+      'لا يمكن تقليل الحد الأقصى للأعضاء عن عدد الأعضاء الحاليين';
+  @override
+  String? get groupUpdatedSuccessfully => 'تم تحديث المجموعة بنجاح';
+  @override
+  String? get calendarTypeLabel => 'نوع التقويم';
+  @override
+  String? get immutableLabel => 'لا يمكن تغييره';
+  @override
+  String? get startDateTimeSection => 'تاريخ ووقت البدء';
+  @override
+  String? get configurationSection => 'الإعدادات';
+  @override
+  String? get maxMembersLabel => 'الحد الأقصى للأعضاء';
+  @override
+  String? get currentMembersLabel => 'الحالي';
+  @override
+  String? get minimumLabel => 'الحد الأدنى';
+  @override
+  String? get roundCountLabel => 'عدد الجولات';
+  @override
+  String? get saveChanges => 'حفظ التغييرات';
+  @override
+  String? get removeUserTitle => 'إزالة المستخدم';
+  @override
+  String? get removeUserConfirmation => 
+      'هل أنت متأكد أنك تريد إزالة هذا المستخدم من المجموعة؟';
+  @override
+  String? get removeButton => 'إزالة';
+  @override
+  String? get noUsersInGroup => 'لا يوجد مستخدمون في هذه المجموعة بعد';
+  @override
+  String? get removeUser => 'إزالة المستخدم';
+  @override
+  String? get noRoundsYet => 'لا توجد جولات بعد';
+  @override
+  String? get roundsWillAppearWhenGroupActive => 
+      'ستظهر الجولات عندما تصبح المجموعة نشطة';
+  @override
+  String? get roundLabel => 'الجولة';
+  @override
+  String? get completedLabel => 'مكتمل';
+  @override
+  String? get pendingLabel => 'قيد الانتظار';
+  @override
+  String? get totalLabel => 'المجموع';
+  @override
+  String? get juzLabel => 'جزء';
+  @override
+  String? get membersLabel => 'الأعضاء';
+
+  // Calendar Types
+  @override
+  String? get hijriCalendar => 'هجري (إسلامي)';
+  @override
+  String? get gregorianCalendar => 'ميلادي';
+  @override
+  String? get calendarTypeHelperText => 
+      'اختر نظام التقويم لهذه المجموعة. لا يمكن تغييره لاحقاً.';
+  @override
+  String? get startDateLabel => 'تاريخ البدء (اختياري)';
+  @override
+  String? get startDateHelperText => 
+      'متى يجب أن يبدأ الختم. اتركه فارغاً للبدء عند اكتمال المجموعة.';
+  @override
+  String? get startTimeLabel => 'وقت البدء (اختياري)';
+  @override
+  String? get gregorianEquivalent => 'المعادل الميلادي';
+  @override
+  String? get hijriEquivalent => 'المعادل الهجري';
+  @override
+  String? get selectDate => 'اختر التاريخ';
+  @override
+  String? get selectHijriDate => 'اختر التاريخ الهجري';
+  @override
+  String? get selectTime => 'اختر الوقت';
+  @override
+  String? get pleaseSelectDurationType => 'يرجى اختيار نوع المدة';
+
+  // Hijri Date Picker
+  @override
+  String? get hijriDateLabel => 'التاريخ الهجري';
+  @override
+  String? get gregorianDateLabel => 'التاريخ الميلادي';
+  @override
+  String? get dayLabel => 'اليوم';
+  @override
+  String? get monthLabel => 'الشهر';
+  @override
+  String? get yearLabel => 'السنة';
+  @override
+  String? get timeLabel => 'الوقت';
+  @override
+  String? get dualCalendarDisplay => 'عرض التاريخ';
+
+  // Round Details
+  @override
+  String? get endDateLabel => 'تاريخ الانتهاء';
+  @override
+  String? get roundDurationLabel => 'مدة الجولة';
 }

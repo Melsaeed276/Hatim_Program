@@ -876,4 +876,111 @@ class TRText implements Localization {
   
   @override
   String get whoMadeThisAppTitle => 'Bu uygulamayı kim yaptı';
+
+  // Admin Group Details Page
+  @override
+  String? get editLabel => 'Düzenle';
+  @override
+  String? get roundsLabel => 'Turlar';
+  @override
+  String? get cannotReduceUserCountBelowCurrentMembers => 
+      'Maksimum üye sayısı mevcut üye sayısının altına düşürülemez';
+  @override
+  String? get groupUpdatedSuccessfully => 'Grup başarıyla güncellendi';
+  @override
+  String? get calendarTypeLabel => 'Takvim Türü';
+  @override
+  String? get immutableLabel => 'Değiştirilemez';
+  @override
+  String? get startDateTimeSection => 'Başlangıç Tarihi ve Saati';
+  @override
+  String? get configurationSection => 'Yapılandırma';
+  @override
+  String? get maxMembersLabel => 'Maksimum Üye';
+  @override
+  String? get currentMembersLabel => 'Mevcut';
+  @override
+  String? get minimumLabel => 'Minimum';
+  @override
+  String? get roundCountLabel => 'Tur Sayısı';
+  @override
+  String? get saveChanges => 'Değişiklikleri Kaydet';
+  @override
+  String? get removeUserTitle => 'Kullanıcıyı Kaldır';
+  @override
+  String? get removeUserConfirmation => 
+      'Bu kullanıcıyı gruptan kaldırmak istediğinizden emin misiniz?';
+  @override
+  String? get removeButton => 'Kaldır';
+  @override
+  String? get noUsersInGroup => 'Bu grupta henüz kullanıcı yok';
+  @override
+  String? get removeUser => 'Kullanıcıyı Kaldır';
+  @override
+  String? get noRoundsYet => 'Henüz tur yok';
+  @override
+  String? get roundsWillAppearWhenGroupActive => 
+      'Grup aktif olduğunda turlar görünecek';
+  @override
+  String? get roundLabel => 'Tur';
+  @override
+  String? get completedLabel => 'Tamamlandı';
+  @override
+  String? get pendingLabel => 'Bekliyor';
+  @override
+  String? get totalLabel => 'Toplam';
+  @override
+  String? get juzLabel => 'Cüz';
+  @override
+  String? get membersLabel => 'Üyeler';
+
+  // Calendar Types
+  @override
+  String? get hijriCalendar => 'Hicri (İslami)';
+  @override
+  String? get gregorianCalendar => 'Miladi';
+  @override
+  String? get calendarTypeHelperText => 
+      'Bu grup için takvim sistemini seçin. Sonradan değiştirilemez.';
+  @override
+  String? get startDateLabel => 'Başlangıç Tarihi (İsteğe Bağlı)';
+  @override
+  String? get startDateHelperText => 
+      'Hatim ne zaman başlamalı. Grup dolduğunda başlamak için boş bırakın.';
+  @override
+  String? get startTimeLabel => 'Başlangıç Saati (İsteğe Bağlı)';
+  @override
+  String? get gregorianEquivalent => 'Miladi karşılığı';
+  @override
+  String? get hijriEquivalent => 'Hicri karşılığı';
+  @override
+  String? get selectDate => 'Tarih Seç';
+  @override
+  String? get selectHijriDate => 'Hicri Tarih Seç';
+  @override
+  String? get selectTime => 'Saat Seç';
+  @override
+  String? get pleaseSelectDurationType => 'Lütfen süre türünü seçin';
+
+  // Hijri Date Picker
+  @override
+  String? get hijriDateLabel => 'Hicri Tarih';
+  @override
+  String? get gregorianDateLabel => 'Miladi Tarih';
+  @override
+  String? get dayLabel => 'Gün';
+  @override
+  String? get monthLabel => 'Ay';
+  @override
+  String? get yearLabel => 'Yıl';
+  @override
+  String? get timeLabel => 'Saat';
+  @override
+  String? get dualCalendarDisplay => 'Tarih Görüntüleme';
+
+  // Round Details
+  @override
+  String? get endDateLabel => 'Bitiş Tarihi';
+  @override
+  String? get roundDurationLabel => 'Tur Süresi';
 }

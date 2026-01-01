@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hatim_program/models/models.dart';
-import 'package:hatim_program/page/hatim_page/hatim_details_page.dart';
+import 'package:provider/provider.dart';
 
+import 'controller/contollers.dart';
 import 'page/over_screens/over_screens.dart';
 import 'page/pages.dart';
 import 'page/admin/admin_config_page.dart';
 import 'page/admin/group_members_page.dart';
+import 'page/admin/admin_group_details_page.dart';
 
 /// in this file we will define all the routes of the application and manage the navigation of the application
 
@@ -15,11 +17,13 @@ class AppRoutes {
   static const home = 'home';
   static const login = '/';
   static const register = 'register';
-  static const group = 'home/group';
-  static const hatim = 'home/group/hatim';
-  static const adminConfig = 'home/admin';
-  static const groupMembers = 'home/admin/members';
   static const profile = 'home/profile';
+  static const adminConfig = 'home/admin';
+  
+  // Path-based routes with parameters
+  static String hatimWithGroup(String groupID) => 'home/hatim/$groupID';
+  static String adminHatimDetails(String groupID) => 'home/admin/hatim/$groupID/details';
+  static String adminHatimMembers(String groupID) => 'home/admin/hatim/$groupID/members';
 
   static String _location(String path) {
     if (!path.startsWith('/')) {
@@ -68,39 +72,117 @@ class AppRoutes {
               builder: (context, state) =>
                   const ApplyForEachPage(child: HomePage()),
               routes: [
+                // New path-based route: /home/hatim/:groupID
                 GoRoute(
-                  path: 'group',
-                  builder: (context, state) =>
-                      const ApplyForEachPage(child: HatimsPage()),
-                  routes: [
-                    GoRoute(
-                      path: 'hatim',
-                      builder: (context, state) {
-                        final Map<String, dynamic> args =
-                            state.extra as Map<String, dynamic>;
-                        final hatimRound = args['hatim'] as HatimRoundModel?;
-                        final group = args['group'] as GroupModel?;
-                        return ApplyForEachPage(
-                          child: HatimDetailsPage(
-                            hatimRound: hatimRound,
-                            group: group,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                  path: 'hatim/:groupID',
+                  builder: (context, state) {
+                    final groupID = state.pathParameters['groupID'];
+                    if (groupID == null) {
+                      return const Scaffold(
+                        body: Center(child: Text('Invalid group ID')),
+                      );
+                    }
+                    return ApplyForEachPage(child: HatimsPage(groupID: groupID));
+                  },
                 ),
+                // Admin routes with protection
                 GoRoute(
                   path: 'admin',
+                  redirect: (context, state) {
+                    final userController = Provider.of<UserController>(context, listen: false);
+                    final isAdmin = userController.userModel?.isAdmin ?? false;
+                    if (!isAdmin) {
+                      return '/home';
+                    }
+                    return null;
+                  },
                   builder: (context, state) =>
                       const ApplyForEachPage(child: AdminConfigPage()),
                   routes: [
+                    // Admin hatim routes with groupID parameter
                     GoRoute(
-                      path: 'members',
+                      path: 'hatim/:groupID/members',
+                      redirect: (context, state) {
+                        final userController = Provider.of<UserController>(context, listen: false);
+                        final isAdmin = userController.userModel?.isAdmin ?? false;
+                        if (!isAdmin) {
+                          return '/home';
+                        }
+                        return null;
+                      },
                       builder: (context, state) {
-                        final group = state.extra as GroupModel;
-                        return ApplyForEachPage(
-                          child: GroupMembersPage(group: group),
+                        final groupID = state.pathParameters['groupID'];
+                        if (groupID == null) {
+                          return const Scaffold(
+                            body: Center(child: Text('Invalid group ID')),
+                          );
+                        }
+                        
+                        // Fetch group data
+                        final groupController = Provider.of<GroupController>(context, listen: false);
+                        return FutureBuilder<GroupModel?>(
+                          future: groupController.getGroupByID(groupID),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Scaffold(
+                                body: Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Scaffold(
+                                body: Center(child: Text('Error: ${snapshot.error}')),
+                              );
+                            } else if (snapshot.data == null) {
+                              return const Scaffold(
+                                body: Center(child: Text('Group not found')),
+                              );
+                            }
+                            return ApplyForEachPage(
+                              child: GroupMembersPage(group: snapshot.data!),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'hatim/:groupID/details',
+                      redirect: (context, state) {
+                        final userController = Provider.of<UserController>(context, listen: false);
+                        final isAdmin = userController.userModel?.isAdmin ?? false;
+                        if (!isAdmin) {
+                          return '/home';
+                        }
+                        return null;
+                      },
+                      builder: (context, state) {
+                        final groupID = state.pathParameters['groupID'];
+                        if (groupID == null) {
+                          return const Scaffold(
+                            body: Center(child: Text('Invalid group ID')),
+                          );
+                        }
+                        
+                        // Fetch group data
+                        final groupController = Provider.of<GroupController>(context, listen: false);
+                        return FutureBuilder<GroupModel?>(
+                          future: groupController.getGroupByID(groupID),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Scaffold(
+                                body: Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Scaffold(
+                                body: Center(child: Text('Error: ${snapshot.error}')),
+                              );
+                            } else if (snapshot.data == null) {
+                              return const Scaffold(
+                                body: Center(child: Text('Group not found')),
+                              );
+                            }
+                            return ApplyForEachPage(
+                              child: AdminGroupDetailsPage(group: snapshot.data!),
+                            );
+                          },
                         );
                       },
                     ),
@@ -141,20 +223,9 @@ class AppRoutes {
     GoRouter.of(context).go(_location(AppRoutes.register));
   }
 
-  //static go to the group page
-  static void goToGroup(BuildContext context) {
-    GoRouter.of(context).push(_location(AppRoutes.group));
-  }
-
-  //static go to the hatim page
-  static void goToHatim(
-    BuildContext context,
-    HatimRoundModel hatim,
-    GroupModel group,
-  ) {
-    GoRouter.of(
-      context,
-    ).push(_location(AppRoutes.hatim), extra: {'hatim': hatim, 'group': group});
+  //static go to the hatim page with groupID
+  static void goToHatim(BuildContext context, String groupID) {
+    GoRouter.of(context).push(_location(AppRoutes.hatimWithGroup(groupID)));
   }
 
   //static go to the admin config page
@@ -167,9 +238,14 @@ class AppRoutes {
     GoRouter.of(context).push(_location(AppRoutes.profile));
   }
 
-  //static go to the group members page
-  static void goToGroupMembers(BuildContext context, GroupModel group) {
-    GoRouter.of(context).push(_location(groupMembers), extra: group);
+  //static go to the group members page (admin)
+  static void goToGroupMembers(BuildContext context, String groupID) {
+    GoRouter.of(context).push(_location(AppRoutes.adminHatimMembers(groupID)));
+  }
+
+  //static go to the admin group details page
+  static void goToAdminGroupDetails(BuildContext context, String groupID) {
+    GoRouter.of(context).push(_location(AppRoutes.adminHatimDetails(groupID)));
   }
 
   //static go back

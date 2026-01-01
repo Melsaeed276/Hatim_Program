@@ -132,7 +132,51 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
 
   void _navigateToGroupMembers(GroupModel group) {
     if (!mounted) return;
-    AppRoutes.goToGroupMembers(context, group);
+    AppRoutes.goToGroupMembers(context, group.groupID);
+  }
+
+  void _navigateToGroupDetails(GroupModel group) {
+    if (!mounted) return;
+    AppRoutes.goToAdminGroupDetails(context, group.groupID);
+  }
+
+  Widget _buildStatusChip(GroupStatus status, ThemeData theme, dynamic lang) {
+    Color backgroundColor;
+    Color foregroundColor;
+    String label;
+
+    switch (status) {
+      case GroupStatus.active:
+        backgroundColor = theme.colorScheme.primaryContainer;
+        foregroundColor = theme.colorScheme.onPrimaryContainer;
+        label = 'Active';
+        break;
+      case GroupStatus.waiting:
+        backgroundColor = theme.colorScheme.secondaryContainer;
+        foregroundColor = theme.colorScheme.onSecondaryContainer;
+        label = 'Waiting';
+        break;
+      case GroupStatus.finished:
+        backgroundColor = theme.colorScheme.tertiaryContainer;
+        foregroundColor = theme.colorScheme.onTertiaryContainer;
+        label = 'Finished';
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: foregroundColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 
   @override
@@ -259,55 +303,117 @@ class _AdminGroupsManagementViewState extends State<AdminGroupsManagementView> {
                         horizontal: 16.0,
                         vertical: 8.0,
                       ),
-                      child: ListTile(
-                        title: Text(
-                          group.name,
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${lang.groupIDLabel ?? 'Group ID'}: ${group.groupID}',
-                            ),
-                            Text(
-                              '${lang.statusLabel ?? 'Status:'} ${group.status.toString().split('.').last}',
-                            ),
-                            Text(
-                              '${lang.usersLabel ?? 'Users:'} ${group.usersID.length}/${group.userCount}',
-                            ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.people),
-                              tooltip: 'View Members',
-                              onPressed: () => _navigateToGroupMembers(group),
-                            ),
-                            if (group.usersID.length < group.userCount)
-                              IconButton(
-                                icon: const Icon(Icons.person_add),
-                                tooltip: 'Add User',
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        UserSelectionDialog(group: group),
-                                  ).then((_) => _refreshOwnedGroups());
-                                },
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        onTap: () => _navigateToGroupDetails(group),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      group.name,
+                                      style: theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  _buildStatusChip(group.status, theme, lang),
+                                ],
                               ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: Theme.of(context).colorScheme.error,
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.tag,
+                                    size: 16,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    group.groupID,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Icon(
+                                    Icons.people_outline,
+                                    size: 16,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${group.usersID.length}/${group.userCount}',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Icon(
+                                    group.calendarType == GroupCalendarType.hijri
+                                        ? Icons.calendar_month
+                                        : Icons.calendar_today,
+                                    size: 16,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    group.calendarType == GroupCalendarType.hijri
+                                        ? 'Hijri'
+                                        : 'Gregorian',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              tooltip: 'Delete Group',
-                              onPressed: () =>
-                                  _handleDeleteGroup(group, adminPassword),
-                            ),
-                          ],
+                              const SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  FilledButton.tonalIcon(
+                                    icon: const Icon(Icons.edit, size: 18),
+                                    label: Text(lang.editLabel ?? 'Edit'),
+                                    onPressed: () => _navigateToGroupDetails(group),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton.filledTonal(
+                                    icon: const Icon(Icons.people),
+                                    tooltip: lang.membersLabel ?? 'View Members',
+                                    onPressed: () => _navigateToGroupMembers(group),
+                                  ),
+                                  if (group.usersID.length < group.userCount) ...[
+                                    const SizedBox(width: 8),
+                                    IconButton.filledTonal(
+                                      icon: const Icon(Icons.person_add),
+                                      tooltip: 'Add User',
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              UserSelectionDialog(group: group),
+                                        ).then((_) => _refreshOwnedGroups());
+                                      },
+                                    ),
+                                  ],
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete_outline,
+                                      color: theme.colorScheme.error,
+                                    ),
+                                    tooltip: lang.deleteGroup ?? 'Delete Group',
+                                    onPressed: () =>
+                                        _handleDeleteGroup(group, adminPassword),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

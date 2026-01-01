@@ -403,4 +403,195 @@ class GroupServices extends ServicesBase implements GroupServiceInterface {
       rethrow;
     }
   }
+
+  /// Update group details (admin edit functionality)
+  /// Updates editable fields while preserving completion data in rounds
+  @override
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  }) async {
+    try {
+      if (kDebugMode) {
+        print('GROUP_SERVICE: updateGroupDetails called for groupId = $groupId');
+      }
+
+      final groupRef = groupsDb.doc(groupId);
+      final snap = await groupRef.get();
+      final data = snap.data();
+      
+      if (data == null) {
+        throw Exception('Group not found');
+      }
+
+      // Build update map with only provided fields
+      final Map<String, dynamic> updates = {};
+      
+      if (name != null) {
+        updates['name'] = name;
+      }
+      
+      if (userCount != null) {
+        updates['userCount'] = userCount;
+      }
+      
+      if (groupDateCount != null) {
+        final oldGroupDateCount = data['groupDateCount'] as int? ?? 30;
+        updates['groupDateCount'] = groupDateCount;
+        
+        // Handle rounds count change if group is active
+        if (groupDateCount != oldGroupDateCount) {
+          final status = data['status'] as int? ?? 0;
+          if (status == GroupStatus.active.index) {
+            await _adjustRoundsCount(groupId, oldGroupDateCount, groupDateCount);
+          }
+        }
+      }
+      
+      if (dateType != null) {
+        updates['dateType'] = dateType.index;
+      }
+      
+      if (plannedStartDate != null) {
+        updates['planned_start_date'] = plannedStartDate.toIso8601String();
+        
+        // If group is active, also update start_date and recalculate end_date
+        final status = data['status'] as int? ?? 0;
+        if (status == GroupStatus.active.index) {
+          updates['start_date'] = plannedStartDate.toIso8601String();
+          
+          // Calculate new end date
+          final currentDateType = dateType ?? 
+              (data['dateType'] != null 
+                  ? GroupDateType.values[data['dateType'] as int] 
+                  : GroupDateType.week);
+          final currentGroupDateCount = groupDateCount ?? 
+              (data['groupDateCount'] as int? ?? 30);
+          
+          final int daysToAdd = currentDateType == GroupDateType.week 
+              ? currentGroupDateCount * 7 
+              : currentGroupDateCount;
+          final endDate = plannedStartDate.add(Duration(days: daysToAdd));
+          updates['end_date'] = endDate.toIso8601String();
+        }
+      }
+      
+      // Hijri date fields
+      if (hijriStartYear != null) {
+        updates['hijriStartYear'] = hijriStartYear;
+      }
+      if (hijriStartMonth != null) {
+        updates['hijriStartMonth'] = hijriStartMonth;
+      }
+      if (hijriStartDay != null) {
+        updates['hijriStartDay'] = hijriStartDay;
+      }
+      
+      // Time fields
+      if (startHour != null) {
+        updates['startHour'] = startHour;
+      }
+      if (startMinute != null) {
+        updates['startMinute'] = startMinute;
+      }
+
+      if (updates.isNotEmpty) {
+        await groupRef.update(updates);
+        if (kDebugMode) {
+          print('GROUP_SERVICE: updateGroupDetails completed. Updated fields: ${updates.keys}');
+        }
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('GROUP_SERVICE ERROR in updateGroupDetails: $e');
+        print('GROUP_SERVICE Stack trace: $stackTrace');
+      }
+      rethrow;
+    }
+  }
+
+  /// Adjust rounds count when admin changes groupDateCount
+  /// - If increased: create new rounds (without overwriting existing)
+  /// - If decreased: delete extra rounds beyond new count
+  Future<void> _adjustRoundsCount(
+    String groupId,
+    int oldCount,
+    int newCount,
+  ) async {
+    try {
+      if (kDebugMode) {
+        print('GROUP_SERVICE: _adjustRoundsCount from $oldCount to $newCount');
+      }
+
+      final hatimRoundsRef = groupsDb.doc(groupId).collection('hatimRounds');
+
+      if (newCount > oldCount) {
+        // Add new rounds
+        WriteBatch batch = dbInstance.batch();
+        int batchCount = 0;
+
+        for (int i = oldCount + 1; i <= newCount; i++) {
+          final roundDoc = hatimRoundsRef.doc(i.toString());
+          batch.set(roundDoc, {
+            'roundID': i,
+            'completedUserIDs': <String>[],
+          });
+          batchCount++;
+
+          if (batchCount >= 500) {
+            await batch.commit();
+            batch = dbInstance.batch();
+            batchCount = 0;
+          }
+        }
+
+        if (batchCount > 0) {
+          await batch.commit();
+        }
+
+        if (kDebugMode) {
+          print('GROUP_SERVICE: Created ${newCount - oldCount} new rounds');
+        }
+      } else if (newCount < oldCount) {
+        // Delete extra rounds
+        WriteBatch batch = dbInstance.batch();
+        int batchCount = 0;
+
+        for (int i = newCount + 1; i <= oldCount; i++) {
+          final roundDoc = hatimRoundsRef.doc(i.toString());
+          batch.delete(roundDoc);
+          batchCount++;
+
+          if (batchCount >= 500) {
+            await batch.commit();
+            batch = dbInstance.batch();
+            batchCount = 0;
+          }
+        }
+
+        if (batchCount > 0) {
+          await batch.commit();
+        }
+
+        if (kDebugMode) {
+          print('GROUP_SERVICE: Deleted ${oldCount - newCount} extra rounds');
+        }
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('GROUP_SERVICE ERROR in _adjustRoundsCount: $e');
+        print('GROUP_SERVICE Stack trace: $stackTrace');
+      }
+      rethrow;
+    }
+  }
 }

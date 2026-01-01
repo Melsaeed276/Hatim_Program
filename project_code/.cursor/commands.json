@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "name": "Build & Deploy to Firebase",
+      "description": "Build Flutter web project and deploy to Firebase Hosting",
+      "script": "#!/bin/bash\nset -e\n\necho \"🔨 Building Flutter web project...\"\nflutter build web --release\n\necho \"\"\necho \"📤 Deploying to Firebase Hosting...\"\nfirebase deploy --only hosting\n\necho \"\"\necho \"✅ Build and deployment complete!\"\necho \"🌐 Your app is now live on Firebase Hosting.\"\n",
+      "cwd": "${workspaceFolder}",
+      "shell": "bash"
+    },
+    {
+      "name": "Build Flutter Web Only",
+      "description": "Build Flutter web project for production",
+      "script": "#!/bin/bash\nset -e\n\necho \"🔨 Building Flutter web project...\"\nflutter build web --release\n\necho \"\"\necho \"✅ Build complete!\"\necho \"📁 Output: build/web/\"\n",
+      "cwd": "${workspaceFolder}",
+      "shell": "bash"
+    },
+    {
+      "name": "Deploy to Firebase Only",
+      "description": "Deploy already built Flutter web project to Firebase Hosting",
+      "script": "#!/bin/bash\nset -e\n\necho \"📤 Deploying to Firebase Hosting...\"\nfirebase deploy --only hosting\n\necho \"\"\necho \"✅ Deployment complete!\"\necho \"🌐 Your app is now live on Firebase Hosting.\"\n",
+      "cwd": "${workspaceFolder}",
+      "shell": "bash"
+    }
+  ]
+}

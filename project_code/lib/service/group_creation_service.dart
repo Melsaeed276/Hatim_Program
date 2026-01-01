@@ -26,6 +26,22 @@ abstract class GroupServiceInterface {
   Future<List<GroupModel>> getGroupsCreatedByAdmin(String adminId);
   Future<void> deleteGroupAsAdmin(String groupId);
   Future<void> removeUserFromGroup(String groupId, String userId);
+  
+  /// Update group details (admin edit functionality)
+  /// Updates editable fields while preserving completion data in rounds
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  });
 }
 
 // Service dedicated to handling group creation logic
@@ -105,6 +121,13 @@ class GroupCreationService {
     required int count,
     String? adminId,
     String? userId,
+    GroupCalendarType calendarType = GroupCalendarType.hijri,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
   }) async {
     // Sanitize inputs
     final sanitizedGroupID = SecurityService.sanitizeGroupID(groupID);
@@ -137,6 +160,13 @@ class GroupCreationService {
       dateType: groupDateType,
       hatimStyle: hatimStyle,
       userCount: count,
+      calendarType: calendarType,
+      plannedStartDate: plannedStartDate,
+      hijriStartYear: hijriStartYear,
+      hijriStartMonth: hijriStartMonth,
+      hijriStartDay: hijriStartDay,
+      startHour: startHour,
+      startMinute: startMinute,
     );
 
     // Save to database
@@ -157,6 +187,13 @@ class GroupCreationService {
     required int count,
     String? adminId,
     String? userId,
+    GroupCalendarType calendarType = GroupCalendarType.hijri,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
   }) async {
     final groupID = await generateUniqueRandomGroupID();
 
@@ -168,6 +205,13 @@ class GroupCreationService {
       count: count,
       adminId: adminId,
       userId: userId,
+      calendarType: calendarType,
+      plannedStartDate: plannedStartDate,
+      hijriStartYear: hijriStartYear,
+      hijriStartMonth: hijriStartMonth,
+      hijriStartDay: hijriStartDay,
+      startHour: startHour,
+      startMinute: startMinute,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/models.dart';
 import '../../localization/localization.dart';
+import '../../utils/calendar_conversion.dart';
 
 /// Shows the Add Group UI as a full-screen Material 3 bottom sheet
 Future<T?> showAddHatimGroupSheet<T>(BuildContext context, {String? adminId}) {
@@ -709,6 +710,15 @@ class _AddHatimGroupSheetState extends State<AddHatimGroupSheet> {
   bool isLoading = false;
   String? errorMessage;
 
+  // Calendar type and date/time fields
+  GroupCalendarType calendarType = GroupCalendarType.hijri;
+  DateTime? selectedGregorianDate;
+  // Hijri date components
+  int? hijriYear;
+  int? hijriMonth;
+  int? hijriDay;
+  TimeOfDay? selectedTime;
+
   // Helper function to get localized hatim style name
   String _getHatimStyleName(HatimStyle style, Localization lang) {
     switch (style) {
@@ -757,6 +767,171 @@ class _AddHatimGroupSheetState extends State<AddHatimGroupSheet> {
 
   void _dismissSheet([bool? success]) {
     Navigator.pop(context, success ?? false);
+  }
+
+  Future<void> _pickGregorianDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedGregorianDate ?? DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+    );
+    if (picked != null && picked != selectedGregorianDate) {
+      setState(() {
+        selectedGregorianDate = picked;
+      });
+    }
+  }
+
+  Future<void> _pickHijriDate() async {
+    final lang = Provider.of<LocalizationController>(context, listen: false).getLanguage();
+    final currentHijri = CalendarConversion.getCurrentHijriDate();
+    
+    int tempYear = hijriYear ?? currentHijri.year;
+    int tempMonth = hijriMonth ?? currentHijri.month;
+    int tempDay = hijriDay ?? currentHijri.day;
+    
+    final months = CalendarConversion.getHijriMonthNames();
+    
+    final result = await showDialog<Map<String, int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(lang.selectHijriDate ?? 'Select Hijri Date'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      // Day
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButtonFormField<int>(
+                          initialValue: tempDay,
+                          decoration: InputDecoration(
+                            labelText: 'Day',
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          ),
+                          items: List.generate(30, (i) => i + 1).map((day) {
+                            return DropdownMenuItem(value: day, child: Text('$day'));
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) setDialogState(() => tempDay = value);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Month
+                      Expanded(
+                        flex: 4,
+                        child: DropdownButtonFormField<int>(
+                          initialValue: tempMonth,
+                          decoration: InputDecoration(
+                            labelText: 'Month',
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          ),
+                          items: List.generate(12, (i) => i + 1).map((month) {
+                            return DropdownMenuItem(
+                              value: month,
+                              child: Text(months[month - 1]),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            if (value != null) setDialogState(() => tempMonth = value);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Year
+                  TextFormField(
+                    initialValue: tempYear.toString(),
+                    decoration: InputDecoration(
+                      labelText: 'Year',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) {
+                      final year = int.tryParse(value);
+                      if (year != null && year > 0) {
+                        tempYear = year;
+                      }
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(lang.cancel ?? 'Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(lang.done ?? 'Done'),
+                  onPressed: () {
+                    Navigator.of(context).pop({
+                      'year': tempYear,
+                      'month': tempMonth,
+                      'day': tempDay,
+                    });
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    
+    if (result != null) {
+      setState(() {
+        hijriYear = result['year'];
+        hijriMonth = result['month'];
+        hijriDay = result['day'];
+      });
+    }
+  }
+
+  Future<void> _pickTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null && picked != selectedTime) {
+      setState(() {
+        selectedTime = picked;
+      });
+    }
+  }
+
+  String _getConvertedDateText(Localization lang) {
+    if (calendarType == GroupCalendarType.hijri && hijriYear != null && hijriMonth != null && hijriDay != null) {
+      // Convert Hijri to Gregorian for display
+      final gregorian = CalendarConversion.hijriToGregorian(
+        hijriYear: hijriYear!,
+        hijriMonth: hijriMonth!,
+        hijriDay: hijriDay!,
+      );
+      return '${lang.gregorianEquivalent ?? 'Gregorian equivalent'}: ${gregorian.day}/${gregorian.month}/${gregorian.year}';
+    } else if (calendarType == GroupCalendarType.gregorian && selectedGregorianDate != null) {
+      // Convert Gregorian to Hijri for display
+      final hijri = CalendarConversion.gregorianToHijri(selectedGregorianDate!);
+      return '${lang.hijriEquivalent ?? 'Hijri equivalent'}: ${hijri.day}/${hijri.month}/${hijri.year}';
+    }
+    return '';
+  }
+  
+  bool get _hasHijriDate => hijriYear != null && hijriMonth != null && hijriDay != null;
+  
+  String _formatHijriDate() {
+    if (!_hasHijriDate) return '';
+    final months = CalendarConversion.getHijriMonthNames();
+    return '$hijriDay ${months[hijriMonth! - 1]} $hijriYear';
   }
 
   Future<void> _copyToClipboard(String text) async {
@@ -1285,6 +1460,252 @@ class _AddHatimGroupSheetState extends State<AddHatimGroupSheet> {
 
                         const SizedBox(height: 16),
 
+                        // Schedule Configuration Card (Calendar Type + Start Date/Time)
+                        Card(
+                          elevation: 0,
+                          color: themeColor.surfaceContainerHighest.withValues(
+                            alpha: 0.3,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.schedule,
+                                      size: 20,
+                                      color: themeColor.primary,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      lang.startDateTimeSection ??
+                                          'Schedule Configuration',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: themeColor.onSurface,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
+                                // Calendar Type Selection
+                                Text(
+                                  lang.calendarTypeLabel ?? 'Calendar Type',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: themeColor.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  lang.calendarTypeHelperText ??
+                                      'Choose the calendar system for this group. This cannot be changed later.',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: themeColor.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                SegmentedButton<GroupCalendarType>(
+                                  segments: [
+                                    ButtonSegment<GroupCalendarType>(
+                                      value: GroupCalendarType.hijri,
+                                      label: Text(lang.hijriCalendar ?? 'Hijri'),
+                                      icon: const Icon(Icons.calendar_month),
+                                    ),
+                                    ButtonSegment<GroupCalendarType>(
+                                      value: GroupCalendarType.gregorian,
+                                      label: Text(lang.gregorianCalendar ?? 'Gregorian'),
+                                      icon: const Icon(Icons.calendar_today),
+                                    ),
+                                  ],
+                                  selected: {calendarType},
+                                  onSelectionChanged: (Set<GroupCalendarType> selected) {
+                                    setState(() {
+                                      calendarType = selected.first;
+                                      // Clear the opposite date when switching
+                                      if (calendarType == GroupCalendarType.hijri) {
+                                        selectedGregorianDate = null;
+                                      } else {
+                                        hijriYear = null;
+                                        hijriMonth = null;
+                                        hijriDay = null;
+                                      }
+                                    });
+                                  },
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                // Start Date Selection
+                                Text(
+                                  lang.startDateLabel ?? 'Start Date (Optional)',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: themeColor.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  lang.startDateHelperText ??
+                                      'When the hatim should start. Leave empty to start when group is full.',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: themeColor.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+
+                                if (calendarType == GroupCalendarType.gregorian)
+                                  ListTile(
+                                    tileColor: themeColor.surface,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: themeColor.outline.withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    leading: Icon(
+                                      Icons.calendar_today,
+                                      color: themeColor.primary,
+                                    ),
+                                    title: Text(
+                                      selectedGregorianDate == null
+                                          ? (lang.selectDate ?? 'Select Date')
+                                          : '${selectedGregorianDate!.day}/${selectedGregorianDate!.month}/${selectedGregorianDate!.year}',
+                                      style: theme.textTheme.bodyLarge,
+                                    ),
+                                    trailing: selectedGregorianDate != null
+                                        ? IconButton(
+                                            icon: const Icon(Icons.clear),
+                                            onPressed: () {
+                                              setState(() {
+                                                selectedGregorianDate = null;
+                                              });
+                                            },
+                                          )
+                                        : const Icon(Icons.arrow_forward_ios, size: 16),
+                                    onTap: _pickGregorianDate,
+                                  )
+                                else
+                                  ListTile(
+                                    tileColor: themeColor.surface,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: themeColor.outline.withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    leading: Icon(
+                                      Icons.calendar_month,
+                                      color: themeColor.primary,
+                                    ),
+                                    title: Text(
+                                      !_hasHijriDate
+                                          ? (lang.selectHijriDate ?? 'Select Hijri Date')
+                                          : _formatHijriDate(),
+                                      style: theme.textTheme.bodyLarge,
+                                    ),
+                                    trailing: _hasHijriDate
+                                        ? IconButton(
+                                            icon: const Icon(Icons.clear),
+                                            onPressed: () {
+                                              setState(() {
+                                                hijriYear = null;
+                                                hijriMonth = null;
+                                                hijriDay = null;
+                                              });
+                                            },
+                                          )
+                                        : const Icon(Icons.arrow_forward_ios, size: 16),
+                                    onTap: _pickHijriDate,
+                                  ),
+
+                                const SizedBox(height: 16),
+
+                                // Start Time Selection
+                                Text(
+                                  lang.startTimeLabel ?? 'Start Time (Optional)',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: themeColor.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                ListTile(
+                                  tileColor: themeColor.surface,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: themeColor.outline.withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                  leading: Icon(
+                                    Icons.access_time,
+                                    color: themeColor.primary,
+                                  ),
+                                  title: Text(
+                                    selectedTime == null
+                                        ? (lang.selectTime ?? 'Select Time')
+                                        : selectedTime!.format(context),
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  trailing: selectedTime != null
+                                      ? IconButton(
+                                          icon: const Icon(Icons.clear),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedTime = null;
+                                            });
+                                          },
+                                        )
+                                      : const Icon(Icons.arrow_forward_ios, size: 16),
+                                  onTap: _pickTime,
+                                ),
+
+                                // Show converted date if both calendars should be displayed
+                                if ((calendarType == GroupCalendarType.hijri && _hasHijriDate) ||
+                                    (calendarType == GroupCalendarType.gregorian && selectedGregorianDate != null))
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: themeColor.primaryContainer.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.info_outline,
+                                            size: 18,
+                                            color: themeColor.onPrimaryContainer,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              _getConvertedDateText(lang),
+                                              style: theme.textTheme.bodySmall?.copyWith(
+                                                color: themeColor.onPrimaryContainer,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
                         // Error Messages
                         if (isExistMessage)
                           Container(
@@ -1419,6 +1840,39 @@ class _AddHatimGroupSheetState extends State<AddHatimGroupSheet> {
                                           ? 30
                                           : (count > 100 ? 100 : count);
 
+                                      // Prepare date/time values
+                                      DateTime? plannedStartDate;
+                                      int? hijriStartYear;
+                                      int? hijriStartMonth;
+                                      int? hijriStartDay;
+
+                                      if (calendarType == GroupCalendarType.hijri && _hasHijriDate) {
+                                        hijriStartYear = hijriYear;
+                                        hijriStartMonth = hijriMonth;
+                                        hijriStartDay = hijriDay;
+                                        // Convert to Gregorian for plannedStartDate
+                                        plannedStartDate = CalendarConversion.hijriToGregorian(
+                                          hijriYear: hijriStartYear!,
+                                          hijriMonth: hijriStartMonth!,
+                                          hijriDay: hijriStartDay!,
+                                          hour: selectedTime?.hour ?? 0,
+                                          minute: selectedTime?.minute ?? 0,
+                                        );
+                                      } else if (calendarType == GroupCalendarType.gregorian && selectedGregorianDate != null) {
+                                        plannedStartDate = DateTime(
+                                          selectedGregorianDate!.year,
+                                          selectedGregorianDate!.month,
+                                          selectedGregorianDate!.day,
+                                          selectedTime?.hour ?? 0,
+                                          selectedTime?.minute ?? 0,
+                                        );
+                                        // Convert to Hijri for storage
+                                        final hijriEquiv = CalendarConversion.gregorianToHijri(selectedGregorianDate!);
+                                        hijriStartYear = hijriEquiv.year;
+                                        hijriStartMonth = hijriEquiv.month;
+                                        hijriStartDay = hijriEquiv.day;
+                                      }
+
                                       final result = await groupController
                                           .addNewGroup(
                                             trimmedGroupID,
@@ -1427,8 +1881,14 @@ class _AddHatimGroupSheetState extends State<AddHatimGroupSheet> {
                                             hatimStyle: hatimStyle,
                                             count: validatedCount,
                                             adminId: widget.adminId,
-                                            userId:
-                                                userController.getCurrentUserID,
+                                            userId: userController.getCurrentUserID,
+                                            calendarType: calendarType,
+                                            plannedStartDate: plannedStartDate,
+                                            hijriStartYear: hijriStartYear,
+                                            hijriStartMonth: hijriStartMonth,
+                                            hijriStartDay: hijriStartDay,
+                                            startHour: selectedTime?.hour,
+                                            startMinute: selectedTime?.minute,
                                           );
 
                                       if (result.isSuccess) {

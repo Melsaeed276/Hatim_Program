@@ -68,8 +68,11 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
             ElevatedButton(
               onPressed: () {
                 //  Navigator.popAndPushNamed(context, AppRoutes.group);
-
-                AppRoutes.goToGroup(context);
+                if (widget.group != null) {
+                  AppRoutes.goToHatim(context, widget.group!.groupID);
+                } else {
+                  AppRoutes.goBack(context);
+                }
               },
               child: Text(lang.back!),
             ),
@@ -94,7 +97,11 @@ class _HatimDetailsPageState extends State<HatimDetailsPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            AppRoutes.goToGroup(context);
+            if (widget.group != null) {
+              AppRoutes.goToHatim(context, widget.group!.groupID);
+            } else {
+              AppRoutes.goBack(context);
+            }
           },
         ),
       ),

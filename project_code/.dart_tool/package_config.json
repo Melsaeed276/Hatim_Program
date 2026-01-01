@@ -194,6 +194,12 @@
       "languageVersion": "3.9"
     },
     {
+      "name": "hijri",
+      "rootUri": "file:///Users/cay/.pub-cache/hosted/pub.dev/hijri-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "hive",
       "rootUri": "file:///Users/cay/.pub-cache/hosted/pub.dev/hive-2.2.3",
       "packageUri": "lib/",

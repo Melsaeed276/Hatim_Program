@@ -67,9 +67,8 @@ class GroupList extends StatelessWidget {
               }else if (group.status == GroupStatus.active){
                 ///Navigator my Id to the hatim page of that group and send hatim model
                 ///Navigator.of(context).pushNamed('/group', arguments: group.hatimRounds);
-                // navigate to the hatim page
-                context.read<GroupController>().setGroupID = group.groupID;
-                AppRoutes.goToGroup(context);
+                // navigate to the hatim page with groupID
+                AppRoutes.goToHatim(context, group.groupID);
               }
 
               // List<HatimRoundModel>? data = await context.read<GroupController>().getUserHatimsRound(userID: userID,groupID: group.groupID);

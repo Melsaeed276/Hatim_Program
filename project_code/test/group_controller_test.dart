@@ -49,6 +49,42 @@ class TestGroupServices implements GroupServiceInterface {
     _groups.remove(groupId);
   }
 
+  @override
+  Future<void> removeUserFromGroup(String groupId, String userId) async {
+    await Future.delayed(Duration(milliseconds: 1));
+    _groups[groupId]?.usersID.remove(userId);
+  }
+
+  @override
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  }) async {
+    await Future.delayed(Duration(milliseconds: 1));
+    final group = _groups[groupId];
+    if (group != null) {
+      if (name != null) group.name = name;
+      if (userCount != null) group.userCount = userCount;
+      if (groupDateCount != null) group.groupDateCount = groupDateCount;
+      if (dateType != null) group.dateType = dateType;
+      if (plannedStartDate != null) group.plannedStartDate = plannedStartDate;
+      if (hijriStartYear != null) group.hijriStartYear = hijriStartYear;
+      if (hijriStartMonth != null) group.hijriStartMonth = hijriStartMonth;
+      if (hijriStartDay != null) group.hijriStartDay = hijriStartDay;
+      if (startHour != null) group.startHour = startHour;
+      if (startMinute != null) group.startMinute = startMinute;
+    }
+  }
+
   void addTestGroup(GroupModel group) {
     _groups[group.groupID] = group;
   }
@@ -120,6 +156,40 @@ class TestGroupRepo implements GroupRepoInterface {
   Future<void> deleteGroupAsAdmin(String groupId) async {
     // For testing, just remove from map
     // Note: This is a simplified implementation for testing
+  }
+
+  @override
+  Future<void> removeUserFromGroup(String groupId, String userId) async {
+    await _testServices.removeUserFromGroup(groupId, userId);
+  }
+
+  @override
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  }) async {
+    await _testServices.updateGroupDetails(
+      groupId: groupId,
+      name: name,
+      userCount: userCount,
+      groupDateCount: groupDateCount,
+      dateType: dateType,
+      plannedStartDate: plannedStartDate,
+      hijriStartYear: hijriStartYear,
+      hijriStartMonth: hijriStartMonth,
+      hijriStartDay: hijriStartDay,
+      startHour: startHour,
+      startMinute: startMinute,
+    );
   }
 
   void addTestGroup(GroupModel group) {

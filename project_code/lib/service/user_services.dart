@@ -8,6 +8,21 @@ import 'services_base.dart';
 ///  each user will have a list of hatim groups
 
 class UserServices extends ServicesBase {
+  // Simple in-memory cache shared across the app lifetime
+  static final Map<String, UserModel?> _userCache = {};
+
+  /// Retrieve a user from the cache if present.
+  /// Returns null when the user is not cached **or** not found in Firestore.
+  static UserModel? getCachedUser(String phoneNumber) {
+    final key = UserModel.processPhoneNumber(phoneNumber);
+    return _userCache[key];
+  }
+
+  /// Store / update a user in the cache
+  static void _cacheUser(UserModel? user) {
+    if (user == null) return;
+    _userCache[user.id] = user;
+  }
   // get all users and return a list of users
   Future<List<UserModel>>? getAllUsers() async {
     try {
@@ -32,6 +47,9 @@ class UserServices extends ServicesBase {
 
   // get user by id return user model
   Future<UserModel?> getUserByPhoneNumber(String phoneNumber) async {
+    // 1. Return immediately if cached
+    final cached = UserServices.getCachedUser(phoneNumber);
+    if (cached != null) return cached;
     try {
       // by the ID
       var data = await userDb
@@ -52,7 +70,9 @@ class UserServices extends ServicesBase {
           "adminPassword type: ${firestoreData['adminPassword'].runtimeType}",
         );
       }
-      return UserModel.fromJson(data.data()!);
+      final user = UserModel.fromJson(data.data()!);
+      UserServices._cacheUser(user);
+      return user;
     } catch (e) {
       if (kDebugMode) {
         print("error from server $e");

@@ -14,6 +14,28 @@ enum GroupDateType { week, day }
 
 enum HatimStyle { allTogetherInOneHatim, byRounds, byChallenge }
 
+/// Calendar type for the group - immutable after creation
+/// Admin chooses this when creating a group and cannot change it later
+enum GroupCalendarType { hijri, gregorian }
+
+extension GroupCalendarTypeExtension on GroupCalendarType {
+  static GroupCalendarType? fromJson(dynamic json) {
+    if (json is int && json >= 0 && json < GroupCalendarType.values.length) {
+      return GroupCalendarType.values[json];
+    }
+    return null;
+  }
+
+  String get displayName {
+    switch (this) {
+      case GroupCalendarType.hijri:
+        return 'Hijri (Islamic)';
+      case GroupCalendarType.gregorian:
+        return 'Gregorian';
+    }
+  }
+}
+
 extension HatimStyleExtension on HatimStyle {
   // check the if the json input is valid and return the hatim style
   static HatimStyle? fromJson(dynamic json) {
@@ -57,15 +79,31 @@ class GroupModel {
   /// list of hatim rounds (30 rounds)
   List<HatimRoundModel> hatimRounds = [];
 
-  ///stated date
-  /// if the group is active then the start date will be the current date
+  /// Calendar type for this group (immutable after creation)
+  /// Determines whether dates are stored/displayed as Hijri or Gregorian
+  late final GroupCalendarType calendarType;
+
+  /// Hijri start date fields (used when calendarType == hijri)
+  int? hijriStartYear;
+  int? hijriStartMonth;
+  int? hijriStartDay;
+
+  /// Start time fields (shared by both calendar types)
+  int? startHour;
+  int? startMinute;
+
+  /// Derived Gregorian start date (computed from Hijri or stored directly for Gregorian)
+  /// Used for scheduling calculations
   DateTime? startDate;
 
   late final DateTime createdDate;
 
-  ///end date
-  /// if the group is active then the end date will be the start date + 30 weeks
+  /// Derived end date (computed from startDate + duration)
   DateTime? endDate;
+
+  /// Planned start date set by admin at creation (before group becomes active)
+  /// If set, this will be used instead of DateTime.now() when group activates
+  DateTime? plannedStartDate;
 
   int groupDateCount;
   int userCount;
@@ -96,6 +134,7 @@ class GroupModel {
     this.dateType = GroupDateType.week,
     this.userCount = 30,
     this.groupDateCount = 30,
+    this.calendarType = GroupCalendarType.hijri,
   }) {
     round = 0;
     status = GroupStatus.waiting;
@@ -111,8 +150,15 @@ class GroupModel {
     this.userCount = 30,
     this.hatimStyle = HatimStyle.allTogetherInOneHatim,
     this.dateType = GroupDateType.week,
+    this.calendarType = GroupCalendarType.hijri,
     this.startDate,
     this.endDate,
+    this.plannedStartDate,
+    this.hijriStartYear,
+    this.hijriStartMonth,
+    this.hijriStartDay,
+    this.startHour,
+    this.startMinute,
   }) {
     round = 0;
     hatimStyle = hatimStyle;
@@ -128,6 +174,7 @@ class GroupModel {
     this.userCount = 30,
     this.groupDateCount = 30,
     this.hatimStyle = HatimStyle.allTogetherInOneHatim,
+    this.calendarType = GroupCalendarType.hijri,
   }) {
     groupID = generateRandomGroupID().toString();
     round = 0;
@@ -210,6 +257,10 @@ class GroupModel {
               json['dateType'] < GroupDateType.values.length)
           ? GroupDateType.values[json['dateType']]
           : GroupDateType.week,
+      // Default existing groups to Hijri calendar type for backward compatibility
+      calendarType =
+          GroupCalendarTypeExtension.fromJson(json['calendarType']) ??
+          GroupCalendarType.hijri,
       hatimStyle =
           HatimStyleExtension.fromJson(json['hatimStyle']) ??
           HatimStyle.allTogetherInOneHatim,
@@ -221,7 +272,17 @@ class GroupModel {
           : null,
       endDate = json['end_date'] != null
           ? DateTime.parse(json['end_date'])
-          : null;
+          : null,
+      plannedStartDate = json['planned_start_date'] != null
+          ? DateTime.parse(json['planned_start_date'])
+          : null,
+      // Hijri date fields
+      hijriStartYear = json['hijriStartYear'] as int?,
+      hijriStartMonth = json['hijriStartMonth'] as int?,
+      hijriStartDay = json['hijriStartDay'] as int?,
+      // Time fields
+      startHour = json['startHour'] as int?,
+      startMinute = json['startMinute'] as int?;
 
   ///write by Mohammed
   // to json
@@ -232,6 +293,7 @@ class GroupModel {
       print('GROUP_MODEL: adminId type = ${adminId?.runtimeType}, value = $adminId');
       print('GROUP_MODEL: usersID length = ${usersID.length}');
       print('GROUP_MODEL: status = $status (index: ${status.index})');
+      print('GROUP_MODEL: calendarType = $calendarType');
     }
     
     try {
@@ -244,11 +306,21 @@ class GroupModel {
         'groupDateCount': groupDateCount,
         'userCount': userCount,
         'dateType': dateType.index,
+        'calendarType': calendarType.index,
         'hatimStyle': hatimStyle.index,
         'status': status.index,
         'created_date': createdDate.toIso8601String(),
         'start_date': startDate?.toIso8601String(),
         'end_date': endDate?.toIso8601String(),
+        if (plannedStartDate != null)
+          'planned_start_date': plannedStartDate!.toIso8601String(),
+        // Hijri date fields
+        if (hijriStartYear != null) 'hijriStartYear': hijriStartYear,
+        if (hijriStartMonth != null) 'hijriStartMonth': hijriStartMonth,
+        if (hijriStartDay != null) 'hijriStartDay': hijriStartDay,
+        // Time fields
+        if (startHour != null) 'startHour': startHour,
+        if (startMinute != null) 'startMinute': startMinute,
       };
       
       if (kDebugMode) {
@@ -326,10 +398,17 @@ class GroupModel {
           print("GROUP_MODEL: Round set to: $round");
         }
 
-        ///startDate will be the activation time (when group becomes active)
-        startDate = DateTime.now();
-        if (kDebugMode) {
-          print("GROUP_MODEL: Start date set to: $startDate");
+        /// startDate: use plannedStartDate if set by admin, otherwise use current time
+        if (plannedStartDate != null) {
+          startDate = plannedStartDate;
+          if (kDebugMode) {
+            print("GROUP_MODEL: Using planned start date: $startDate");
+          }
+        } else {
+          startDate = DateTime.now();
+          if (kDebugMode) {
+            print("GROUP_MODEL: Start date set to now: $startDate");
+          }
         }
 
         switch (dateType) {
@@ -570,6 +649,6 @@ class GroupModel {
   // to string
   @override
   String toString() {
-    return 'GroupModel{groupID: $groupID, adminId: $adminId, round: $round, usersID: $usersID, hatimRounds: $hatimRounds, startDate: $startDate, endDate: $endDate, groupDateCount: $groupDateCount, userCount: $userCount, hatimStyle: $hatimStyle, status: $status, dateType: $dateType, createdDate: $createdDate}';
+    return 'GroupModel{groupID: $groupID, adminId: $adminId, round: $round, usersID: $usersID, hatimRounds: $hatimRounds, startDate: $startDate, endDate: $endDate, plannedStartDate: $plannedStartDate, groupDateCount: $groupDateCount, userCount: $userCount, hatimStyle: $hatimStyle, status: $status, dateType: $dateType, calendarType: $calendarType, hijriStart: $hijriStartYear/$hijriStartMonth/$hijriStartDay, startTime: $startHour:$startMinute, createdDate: $createdDate}';
   }
 }

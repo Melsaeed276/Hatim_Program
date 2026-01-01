@@ -15,6 +15,7 @@
         "flutter",
         "flutter_localizations",
         "go_router",
+        "hijri",
         "hive",
         "hive_flutter",
         "package_info_plus",
@@ -63,6 +64,11 @@
         "test_api",
         "vector_math"
       ]
+    },
+    {
+      "name": "hijri",
+      "version": "3.0.0",
+      "dependencies": []
     },
     {
       "name": "package_info_plus",

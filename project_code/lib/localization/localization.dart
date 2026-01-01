@@ -464,4 +464,59 @@ abstract class Localization {
   String? get callSupportError;
   String? get whatsAppSupportError;
   String? get callSupport;
+
+  // Admin Group Details Page
+  String? get editLabel;
+  String? get roundsLabel;
+  String? get cannotReduceUserCountBelowCurrentMembers;
+  String? get groupUpdatedSuccessfully;
+  String? get calendarTypeLabel;
+  String? get immutableLabel;
+  String? get startDateTimeSection;
+  String? get configurationSection;
+  String? get maxMembersLabel;
+  String? get currentMembersLabel;
+  String? get minimumLabel;
+  String? get roundCountLabel;
+  String? get saveChanges;
+  String? get removeUserTitle;
+  String? get removeUserConfirmation;
+  String? get removeButton;
+  String? get noUsersInGroup;
+  String? get removeUser;
+  String? get noRoundsYet;
+  String? get roundsWillAppearWhenGroupActive;
+  String? get roundLabel;
+  String? get completedLabel;
+  String? get pendingLabel;
+  String? get totalLabel;
+  String? get juzLabel;
+  String? get membersLabel;
+
+  // Calendar Types
+  String? get hijriCalendar;
+  String? get gregorianCalendar;
+  String? get calendarTypeHelperText;
+  String? get startDateLabel;
+  String? get startDateHelperText;
+  String? get startTimeLabel;
+  String? get gregorianEquivalent;
+  String? get hijriEquivalent;
+  String? get selectDate;
+  String? get selectHijriDate;
+  String? get selectTime;
+  String? get pleaseSelectDurationType;
+
+  // Hijri Date Picker
+  String? get hijriDateLabel;
+  String? get gregorianDateLabel;
+  String? get dayLabel;
+  String? get monthLabel;
+  String? get yearLabel;
+  String? get timeLabel;
+  String? get dualCalendarDisplay;
+
+  // Round Details
+  String? get endDateLabel;
+  String? get roundDurationLabel;
 }

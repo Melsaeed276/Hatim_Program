@@ -8,7 +8,9 @@ import 'update_hatim_dialog.dart';
 
 class HatimsPage extends StatefulWidget {
   // final Future<List<HatimRoundModel>>? hatimModel;
-  const HatimsPage({super.key});
+  final String? groupID;
+  
+  const HatimsPage({super.key, this.groupID});
 
   @override
   State<HatimsPage> createState() => _HatimsPageState();
@@ -29,9 +31,15 @@ class _HatimsPageState extends State<HatimsPage> {
       listen: false,
     );
 
-    _groupFuture = groupController.getGroupByID(
-      groupController.getCurrentGroupID,
-    );
+    // Use provided groupID or fallback to controller's current groupID
+    final groupIdToUse = widget.groupID ?? groupController.getCurrentGroupID;
+    
+    _groupFuture = groupController.getGroupByID(groupIdToUse);
+    
+    // Set the groupID in the controller if provided
+    if (widget.groupID != null) {
+      groupController.setGroupID = widget.groupID!;
+    }
 
     // Scroll to the current hatim
   }
@@ -170,7 +178,7 @@ class _HatimsPageState extends State<HatimsPage> {
                               '${lang.theHatimIsOverAtThatDate}: ${endDate.day}/${endDate.month}/${endDate.year}';
 
                           final title = ownerAdmin
-                              ? '${lang.hatim}: ${hatim.roundID}. ${lang.week}'
+                              ? '${lang.hatim}: ${hatim.roundID}. ${group.dateType == GroupDateType.day ? lang.groupDateTypeDay : lang.week}'
                               : '${lang.hatimChapter!}: ${hatim.getJuzForUser(userID, group.usersID, group.hatimStyle)}';
 
                           return Padding(

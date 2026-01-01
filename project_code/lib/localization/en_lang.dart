@@ -876,9 +876,116 @@ class ENText implements Localization {
   @override
   String? get callSupport => 'Call for support';
 
-    @override
+  @override
   String get whoMadeThisAppDescription => 'This app was developed by Muhammed Elsaeed and Ravzanur Armağan Elsaeed.';
   
   @override
   String get whoMadeThisAppTitle => 'Who made this app';
+
+  // Admin Group Details Page
+  @override
+  String? get editLabel => 'Edit';
+  @override
+  String? get roundsLabel => 'Rounds';
+  @override
+  String? get cannotReduceUserCountBelowCurrentMembers => 
+      'Cannot reduce max members below current member count';
+  @override
+  String? get groupUpdatedSuccessfully => 'Group updated successfully';
+  @override
+  String? get calendarTypeLabel => 'Calendar Type';
+  @override
+  String? get immutableLabel => 'Cannot be changed';
+  @override
+  String? get startDateTimeSection => 'Start Date & Time';
+  @override
+  String? get configurationSection => 'Configuration';
+  @override
+  String? get maxMembersLabel => 'Max Members';
+  @override
+  String? get currentMembersLabel => 'Current';
+  @override
+  String? get minimumLabel => 'Minimum';
+  @override
+  String? get roundCountLabel => 'Round Count';
+  @override
+  String? get saveChanges => 'Save Changes';
+  @override
+  String? get removeUserTitle => 'Remove User';
+  @override
+  String? get removeUserConfirmation => 
+      'Are you sure you want to remove this user from the group?';
+  @override
+  String? get removeButton => 'Remove';
+  @override
+  String? get noUsersInGroup => 'No users in this group yet';
+  @override
+  String? get removeUser => 'Remove User';
+  @override
+  String? get noRoundsYet => 'No rounds yet';
+  @override
+  String? get roundsWillAppearWhenGroupActive => 
+      'Rounds will appear when the group becomes active';
+  @override
+  String? get roundLabel => 'Round';
+  @override
+  String? get completedLabel => 'Completed';
+  @override
+  String? get pendingLabel => 'Pending';
+  @override
+  String? get totalLabel => 'Total';
+  @override
+  String? get juzLabel => 'Juz';
+  @override
+  String? get membersLabel => 'Members';
+
+  // Calendar Types
+  @override
+  String? get hijriCalendar => 'Hijri (Islamic)';
+  @override
+  String? get gregorianCalendar => 'Gregorian';
+  @override
+  String? get calendarTypeHelperText => 
+      'Choose the calendar system for this group. This cannot be changed later.';
+  @override
+  String? get startDateLabel => 'Start Date (Optional)';
+  @override
+  String? get startDateHelperText => 
+      'When the hatim should start. Leave empty to start when group is full.';
+  @override
+  String? get startTimeLabel => 'Start Time (Optional)';
+  @override
+  String? get gregorianEquivalent => 'Gregorian equivalent';
+  @override
+  String? get hijriEquivalent => 'Hijri equivalent';
+  @override
+  String? get selectDate => 'Select Date';
+  @override
+  String? get selectHijriDate => 'Select Hijri Date';
+  @override
+  String? get selectTime => 'Select Time';
+  @override
+  String? get pleaseSelectDurationType => 'Please select a duration type';
+
+  // Hijri Date Picker
+  @override
+  String? get hijriDateLabel => 'Hijri Date';
+  @override
+  String? get gregorianDateLabel => 'Gregorian Date';
+  @override
+  String? get dayLabel => 'Day';
+  @override
+  String? get monthLabel => 'Month';
+  @override
+  String? get yearLabel => 'Year';
+  @override
+  String? get timeLabel => 'Time';
+  @override
+  String? get dualCalendarDisplay => 'Date Display';
+
+  // Round Details
+  @override
+  String? get endDateLabel => 'End Date';
+  @override
+  String? get roundDurationLabel => 'Round Duration';
 }

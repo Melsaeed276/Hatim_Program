@@ -121,6 +121,13 @@ class GroupController extends ChangeNotifier {
     required int count,
     String? adminId,
     String? userId,
+    GroupCalendarType calendarType = GroupCalendarType.hijri,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
   }) async {
     GroupCreationResult result;
 
@@ -133,6 +140,13 @@ class GroupController extends ChangeNotifier {
         count: count,
         adminId: adminId,
         userId: userId,
+        calendarType: calendarType,
+        plannedStartDate: plannedStartDate,
+        hijriStartYear: hijriStartYear,
+        hijriStartMonth: hijriStartMonth,
+        hijriStartDay: hijriStartDay,
+        startHour: startHour,
+        startMinute: startMinute,
       );
     } else {
       // Create group with custom ID
@@ -144,6 +158,13 @@ class GroupController extends ChangeNotifier {
         count: count,
         adminId: adminId,
         userId: userId,
+        calendarType: calendarType,
+        plannedStartDate: plannedStartDate,
+        hijriStartYear: hijriStartYear,
+        hijriStartMonth: hijriStartMonth,
+        hijriStartDay: hijriStartDay,
+        startHour: startHour,
+        startMinute: startMinute,
       );
     }
 
@@ -179,6 +200,48 @@ class GroupController extends ChangeNotifier {
     await _groupRepo.updateGroup(group);
     // Clear cache for this group since it was updated
     _clearGroupCache(group.groupID);
+  }
+
+  /// Update group details (admin edit functionality)
+  /// This method updates editable fields while preserving completion data
+  Future<void> updateGroupDetails({
+    required String groupId,
+    String? name,
+    int? userCount,
+    int? groupDateCount,
+    GroupDateType? dateType,
+    DateTime? plannedStartDate,
+    int? hijriStartYear,
+    int? hijriStartMonth,
+    int? hijriStartDay,
+    int? startHour,
+    int? startMinute,
+  }) async {
+    final group = await _groupRepo.getGroupByID(groupId);
+    if (group == null) {
+      throw Exception('Group not found');
+    }
+
+    // Update editable fields
+    // Note: Since GroupModel has late final fields, we need to update via the repo
+    // We'll create a map of updates and pass to repo
+    
+    await _groupRepo.updateGroupDetails(
+      groupId: groupId,
+      name: name,
+      userCount: userCount,
+      groupDateCount: groupDateCount,
+      dateType: dateType,
+      plannedStartDate: plannedStartDate,
+      hijriStartYear: hijriStartYear,
+      hijriStartMonth: hijriStartMonth,
+      hijriStartDay: hijriStartDay,
+      startHour: startHour,
+      startMinute: startMinute,
+    );
+
+    // Clear cache for this group since it was updated
+    _clearGroupCache(groupId);
   }
 
   /// get groups created by a specific admin
