@@ -25,6 +25,12 @@ jobs:
         working-directory: ./project_code
         run: flutter pub get
 
+      - name: 🔥 Create firebase_options.dart from secret
+        working-directory: ./project_code
+        run: |
+          mkdir -p lib
+          echo '${{ secrets.FIREBASE_OPTIONS_DART }}' > lib/firebase_options.dart
+
       - name: 🔨 Build Flutter web
         working-directory: ./project_code
         run: flutter build web --release
