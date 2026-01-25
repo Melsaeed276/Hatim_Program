@@ -1,54 +1,53 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
-import 'package:hatim_program/models/user_model.dart';
-import 'package:hatim_program/page/profile_page.dart';
-
-// Mock classes for testing
-class MockUserController extends ChangeNotifier {
-  UserModel? _userModel;
-
-  UserModel? get userModel => _userModel;
-
-  set userModel(UserModel? user) {
-    _userModel = user;
-    notifyListeners();
-  }
-
-  Future<UserModel?> getUserByPhoneNumber({String? id}) async {
-    return _userModel;
-  }
-}
-
-class MockLocalizationController extends ChangeNotifier {
-  // Simple mock that returns hardcoded strings
-  String getCloseText() => 'Close';
-  String getCancelText() => 'Cancel';
-  String getContinueText() => 'Continue';
-}
-
-class MockAuthController extends AuthController {
-  @override
-  Future<bool> setUserPassword(String newPassword) async {
-    // Mock successful password setting
-    return true;
-  }
-}
+import 'package:hatim_program/core/controllers/localization_controller.dart';
+import 'package:hatim_program/features/auth/controllers/user_controller.dart';
+import 'package:hatim_program/features/auth/models/user_model.dart';
+import 'package:hatim_program/features/auth/pages/profile_page.dart';
 
 void main() {
-  late MockUserController mockUserController;
+  late Directory hiveDir;
+  late UserController userController;
+  late LocalizationController localizationController;
+
+  setUpAll(() async {
+    hiveDir = await Directory.systemTemp.createTemp('hatim_profile_test_');
+    try {
+      Hive.init(hiveDir.path);
+    } catch (_) {
+      // Hive may already be initialized by another test file.
+    }
+    if (!Hive.isBoxOpen('language')) {
+      await Hive.openBox('language');
+    }
+    if (!Hive.isBoxOpen('user')) {
+      await Hive.openBox('user');
+    }
+    Hive.box('language').put('langCode', 'en');
+  });
+
+  tearDownAll(() async {
+    // Intentionally no Hive cleanup here; closing Hive can hang in widget tests.
+  });
 
   setUp(() {
-    mockUserController = MockUserController();
+    userController = UserController();
+    localizationController = LocalizationController();
   });
 
   Widget createProfilePage() {
-    return ChangeNotifierProvider<MockUserController>.value(
-      value: mockUserController,
-      child: const MaterialApp(
-        home: ProfilePage(),
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<LocalizationController>.value(
+          value: localizationController,
+        ),
+        ChangeNotifierProvider<UserController>.value(value: userController),
+      ],
+      child: const MaterialApp(home: ProfilePage()),
     );
   }
 
@@ -57,11 +56,10 @@ void main() {
       final testUser = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 5,
         totalCompletedChapters: 150,
         score: 250,
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pump(); // Don't settle to avoid complex provider dependencies
@@ -71,7 +69,8 @@ void main() {
     });
 
     testWidgets('should handle null user model gracefully', (WidgetTester tester) async {
-      mockUserController.userModel = null;
+      // Keep userID as '0' and don't touch the setter to avoid repo lookups in tests.
+      Hive.box('user').put('userID', '0');
 
       await tester.pumpWidget(createProfilePage());
       await tester.pump();
@@ -84,11 +83,10 @@ void main() {
       final testUser = UserModel(
         name: 'John Doe',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 3,
         totalCompletedChapters: 90,
         score: 180,
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -102,11 +100,10 @@ void main() {
         name: 'Admin User',
         phoneNumber: '5534567890',
         isAdmin: true,
-        totalCompletedHatim: 10,
         totalCompletedChapters: 300,
         score: 500,
       );
-      mockUserController.userModel = adminUser;
+      userController.userModel = adminUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -118,35 +115,33 @@ void main() {
       final testUser = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 7,
         totalCompletedChapters: 210,
         score: 350,
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
 
       expect(find.text('Statistics'), findsOneWidget);
-      expect(find.text('7'), findsOneWidget); // Completed Hatims
       expect(find.text('210'), findsOneWidget); // Completed Chapters
-      expect(find.text('350'), findsOneWidget); // Score
+      expect(find.text('350.0'), findsOneWidget); // Score is formatted with 1 decimal
     });
 
     testWidgets('should display statistics with zero values', (WidgetTester tester) async {
       final newUser = UserModel(
         name: 'New User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 0,
         totalCompletedChapters: 0,
         score: 0,
       );
-      mockUserController.userModel = newUser;
+      userController.userModel = newUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
 
-      expect(find.text('0'), findsNWidgets(3)); // Three zero values
+      expect(find.text('0.0'), findsOneWidget); // Score is formatted with 1 decimal
+      expect(find.text('0'), findsOneWidget); // Completed chapters
     });
 
     testWidgets('should display security section', (WidgetTester tester) async {
@@ -154,7 +149,7 @@ void main() {
         name: 'Test User',
         phoneNumber: '5534567890',
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -169,7 +164,7 @@ void main() {
         phoneNumber: '5534567890',
         password: 'existingpassword',
       );
-      mockUserController.userModel = userWithPassword;
+      userController.userModel = userWithPassword;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -182,7 +177,7 @@ void main() {
         name: 'Test User',
         phoneNumber: '5534567890',
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -197,7 +192,7 @@ void main() {
         name: 'Alice',
         phoneNumber: '5534567890',
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pumpAndSettle();
@@ -211,19 +206,17 @@ void main() {
       final testUser = UserModel(
         name: 'Stats User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 10,
         totalCompletedChapters: 300,
         score: 500,
       );
-      mockUserController.userModel = testUser;
+      userController.userModel = testUser;
 
       await tester.pumpWidget(createProfilePage());
       await tester.pump();
 
       // Verify the widget accepts the user model with new fields
-      expect(mockUserController.userModel?.totalCompletedHatim, 10);
-      expect(mockUserController.userModel?.totalCompletedChapters, 300);
-      expect(mockUserController.userModel?.score, 500);
+      expect(userController.userModel?.totalCompletedChapters, 300);
+      expect(userController.userModel?.score, 500);
     });
   });
 }

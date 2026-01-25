@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hatim_program/models/user_model.dart';
+import 'package:hatim_program/features/auth/models/user_model.dart';
 
 void main() {
   group('UserModel - New Fields and Serialization', () {
@@ -11,10 +11,9 @@ void main() {
           phoneNumber: '5534567890',
           isAdmin: false,
           adminPassword: null,
-          password: 'testpass123',
-          totalCompletedHatim: 5,
-          totalCompletedChapters: 150,
-          score: 250,
+        password: 'testpass123',
+        totalCompletedChapters: 150,
+        score: 250,
         );
 
         expect(user.name, 'Test User');
@@ -23,7 +22,6 @@ void main() {
         expect(user.isAdmin, false);
         expect(user.adminPassword, null);
         expect(user.password, 'testpass123');
-        expect(user.totalCompletedHatim, 5);
         expect(user.totalCompletedChapters, 150);
         expect(user.score, 250);
         expect(user.groups, isEmpty);
@@ -38,7 +36,6 @@ void main() {
         final user = UserModel(name: 'Test User', phoneNumber: '5534567890');
 
         expect(user.password, null);
-        expect(user.totalCompletedHatim, 0);
         expect(user.totalCompletedChapters, 0);
         expect(user.score, 0);
         expect(user.isAdmin, false);
@@ -54,7 +51,6 @@ void main() {
         'isAdmin': true,
         'adminPassword': 'admin123',
         'password': 'userpass123',
-        'totalCompletedHatim': 3,
         'totalCompletedChapters': 90,
         'score': 180,
         'groups': ['group1', 'group2'],
@@ -70,7 +66,6 @@ void main() {
       expect(user.isAdmin, true);
       expect(user.adminPassword, 'admin123');
       expect(user.password, 'userpass123');
-      expect(user.totalCompletedHatim, 3);
       expect(user.totalCompletedChapters, 90);
       expect(user.score, 180);
       expect(user.groups, ['group1', 'group2']);
@@ -92,7 +87,6 @@ void main() {
         final user = UserModel.fromJson(json);
 
         expect(user.password, null);
-        expect(user.totalCompletedHatim, 0);
         expect(user.totalCompletedChapters, 0);
         expect(user.score, 0);
       },
@@ -103,7 +97,6 @@ void main() {
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'testpass123',
-        totalCompletedHatim: 5,
         totalCompletedChapters: 150,
         score: 250,
       );
@@ -114,7 +107,6 @@ void main() {
       expect(json['name'], 'Test User');
       expect(json['phoneNumber'], '5534567890');
       expect(json['password'], 'testpass123');
-      expect(json['totalCompletedHatim'], 5);
       expect(json['totalCompletedChapters'], 150);
       expect(json['score'], 250);
       expect(json['isAdmin'], false);
@@ -168,17 +160,14 @@ void main() {
       final user = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 2,
         totalCompletedChapters: 60,
         score: 100,
       );
 
-      // Simulate completing another hatim
-      user.totalCompletedHatim += 1;
+      // Simulate additional progress
       user.totalCompletedChapters += 30;
       user.score += 50;
 
-      expect(user.totalCompletedHatim, 3);
       expect(user.totalCompletedChapters, 90);
       expect(user.score, 150);
     });
@@ -228,7 +217,6 @@ void main() {
         isAdmin: true,
         adminPassword: 'admin123',
         password: 'user123',
-        totalCompletedHatim: 10,
         totalCompletedChapters: 300,
         score: 500,
       );
@@ -247,10 +235,6 @@ void main() {
       expect(deserializedUser.isAdmin, originalUser.isAdmin);
       expect(deserializedUser.adminPassword, originalUser.adminPassword);
       expect(deserializedUser.password, originalUser.password);
-      expect(
-        deserializedUser.totalCompletedHatim,
-        originalUser.totalCompletedHatim,
-      );
       expect(
         deserializedUser.totalCompletedChapters,
         originalUser.totalCompletedChapters,

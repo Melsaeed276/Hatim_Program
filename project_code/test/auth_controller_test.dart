@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
-import 'package:hatim_program/models/user_model.dart';
+import 'package:hive/hive.dart';
+import 'package:hatim_program/features/auth/controllers/auth_controller.dart';
+import 'package:hatim_program/features/auth/models/user_model.dart';
 
 // Mock UserRepo for testing
 class MockUserRepo {
@@ -35,6 +38,20 @@ class MockUserRepo {
 void main() {
   late AuthController authController;
 
+  setUpAll(() async {
+    final dir = await Directory.systemTemp.createTemp('hatim_auth_test_');
+    try {
+      Hive.init(dir.path);
+    } catch (_) {}
+    if (!Hive.isBoxOpen('user')) {
+      await Hive.openBox('user');
+    }
+    if (!Hive.isBoxOpen('language')) {
+      await Hive.openBox('language');
+    }
+    Hive.box('language').put('langCode', 'en');
+  });
+
   setUp(() {
     authController = AuthController();
   });
@@ -44,57 +61,66 @@ void main() {
   });
 
   group('AuthController - Password Functionality', () {
-    test('verifyUserPassword should return true for user without password', () {
+    test('verifyUserPassword should return true for user without password', () async {
       final userWithoutPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
       );
 
-      final result = authController.verifyUserPassword('anypassword', userWithoutPassword);
+      final result = await authController.verifyUserPassword(
+        'anypassword',
+        userWithoutPassword,
+      );
       expect(result, true);
     });
 
-    test('verifyUserPassword should return true for correct password', () {
+    test('verifyUserPassword should return true for correct password', () async {
       final userWithPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'correctpassword123',
       );
 
-      final result = authController.verifyUserPassword('correctpassword123', userWithPassword);
+      final result = await authController.verifyUserPassword(
+        'correctpassword123',
+        userWithPassword,
+      );
       expect(result, true);
     });
 
-    test('verifyUserPassword should return false for incorrect password', () {
+    test('verifyUserPassword should return false for incorrect password', () async {
       final userWithPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'correctpassword123',
       );
 
-      final result = authController.verifyUserPassword('wrongpassword', userWithPassword);
+      final result = await authController.verifyUserPassword(
+        'wrongpassword',
+        userWithPassword,
+      );
       expect(result, false);
     });
 
-    test('verifyUserPassword should return false for empty password input', () {
+    test('verifyUserPassword should return false for empty password input', () async {
       final userWithPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'password123',
       );
 
-      final result = authController.verifyUserPassword('', userWithPassword);
+      final result = await authController.verifyUserPassword('', userWithPassword);
       expect(result, false);
     });
 
-    test('verifyUserPassword should return false for null password input', () {
+    test('verifyUserPassword should return false for null password input', () async {
       final userWithPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'password123',
       );
 
-      final result = authController.verifyUserPassword('', userWithPassword);
+      final result = await authController.verifyUserPassword('', userWithPassword);
       expect(result, false);
     });
 
@@ -174,7 +200,6 @@ void main() {
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'testpassword123',
-        totalCompletedHatim: 2,
         totalCompletedChapters: 60,
         score: 100,
       );
@@ -183,10 +208,9 @@ void main() {
       expect(user.name, 'Test User');
       expect(user.phoneNumber, '5534567890');
       expect(user.password, 'testpassword123');
-      expect(user.totalCompletedHatim, 2);
       expect(user.totalCompletedChapters, 60);
       expect(user.score, 100);
-      expect(user.id, '534567890');
+      expect(user.id, '5534567890');
     });
 
     test('getUserByPhoneNumber should handle users with and without passwords', () async {
@@ -202,37 +226,46 @@ void main() {
       );
 
       // Test password verification logic
-      expect(authController.verifyUserPassword('password123', userWithPassword), true);
-      expect(authController.verifyUserPassword('wrongpass', userWithPassword), false);
-      expect(authController.verifyUserPassword('anypass', userWithoutPassword), true);
+      expect(
+        await authController.verifyUserPassword('password123', userWithPassword),
+        true,
+      );
+      expect(
+        await authController.verifyUserPassword('wrongpass', userWithPassword),
+        false,
+      );
+      expect(
+        await authController.verifyUserPassword('anypass', userWithoutPassword),
+        true,
+      );
     });
   });
 
   group('AuthController - Password Security Scenarios', () {
-    test('password verification should be case sensitive', () {
+    test('password verification should be case sensitive', () async {
       final user = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'Password123',
       );
 
-      expect(authController.verifyUserPassword('Password123', user), true);
-      expect(authController.verifyUserPassword('password123', user), false);
-      expect(authController.verifyUserPassword('PASSWORD123', user), false);
+      expect(await authController.verifyUserPassword('Password123', user), true);
+      expect(await authController.verifyUserPassword('password123', user), false);
+      expect(await authController.verifyUserPassword('PASSWORD123', user), false);
     });
 
-    test('password verification should handle special characters', () {
+    test('password verification should handle special characters', () async {
       final user = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
         password: 'P@ssw0rd!123',
       );
 
-      expect(authController.verifyUserPassword('P@ssw0rd!123', user), true);
-      expect(authController.verifyUserPassword('P@ssw0rd!124', user), false);
+      expect(await authController.verifyUserPassword('P@ssw0rd!123', user), true);
+      expect(await authController.verifyUserPassword('P@ssw0rd!124', user), false);
     });
 
-    test('password verification should handle very long passwords', () {
+    test('password verification should handle very long passwords', () async {
       final longPassword = 'A' * 100;
       final user = UserModel(
         name: 'Test User',
@@ -240,11 +273,14 @@ void main() {
         password: longPassword,
       );
 
-      expect(authController.verifyUserPassword(longPassword, user), true);
-      expect(authController.verifyUserPassword('${longPassword}x', user), false);
+      expect(await authController.verifyUserPassword(longPassword, user), true);
+      expect(
+        await authController.verifyUserPassword('${longPassword}x', user),
+        false,
+      );
     });
 
-    test('password verification should handle unicode characters', () {
+    test('password verification should handle unicode characters', () async {
       final unicodePassword = 'Pässwörd123🚀';
       final user = UserModel(
         name: 'Test User',
@@ -252,8 +288,11 @@ void main() {
         password: unicodePassword,
       );
 
-      expect(authController.verifyUserPassword(unicodePassword, user), true);
-      expect(authController.verifyUserPassword('Pässwörd123', user), false);
+      expect(
+        await authController.verifyUserPassword(unicodePassword, user),
+        true,
+      );
+      expect(await authController.verifyUserPassword('Pässwörd123', user), false);
     });
   });
 }

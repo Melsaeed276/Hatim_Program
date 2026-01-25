@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hatim_program/controller/auth_controller.dart';
-import 'package:hatim_program/models/user_model.dart';
+import 'package:hive/hive.dart';
+import 'package:hatim_program/features/auth/controllers/auth_controller.dart';
+import 'package:hatim_program/features/auth/models/user_model.dart';
 
 // Mock UserRepo for testing
 class MockUserRepo {
@@ -34,6 +37,23 @@ class TestAuthController extends AuthController {
 void main() {
   late TestAuthController testAuthController;
 
+  setUpAll(() async {
+    // AuthController -> UserController uses Hive boxes; initialize once for tests.
+    final dir = await Directory.systemTemp.createTemp('hatim_login_flow_test_');
+    try {
+      Hive.init(dir.path);
+    } catch (_) {
+      // Hive may already be initialized by another test file.
+    }
+    if (!Hive.isBoxOpen('user')) {
+      await Hive.openBox('user');
+    }
+    if (!Hive.isBoxOpen('language')) {
+      await Hive.openBox('language');
+    }
+    Hive.box('language').put('langCode', 'en');
+  });
+
   setUp(() {
     testAuthController = TestAuthController();
   });
@@ -44,12 +64,11 @@ void main() {
       final userWithoutPassword = UserModel(
         name: 'Test User',
         phoneNumber: '5534567890',
-        totalCompletedHatim: 2,
         totalCompletedChapters: 60,
         score: 100,
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         'anypassword',
         userWithoutPassword,
       );
@@ -62,12 +81,11 @@ void main() {
         name: 'Secure User',
         phoneNumber: '5534567890',
         password: 'securepass123',
-        totalCompletedHatim: 5,
         totalCompletedChapters: 150,
         score: 250,
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         'securepass123',
         userWithPassword,
       );
@@ -81,7 +99,7 @@ void main() {
         password: 'securepass123',
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         'wrongpass',
         userWithPassword,
       );
@@ -95,7 +113,7 @@ void main() {
         password: 'somepass123',
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         '',
         userWithPassword,
       );
@@ -111,19 +129,18 @@ void main() {
           isAdmin: true,
           adminPassword: 'adminpass123',
           password: 'userpass123',
-          totalCompletedHatim: 10,
           totalCompletedChapters: 300,
           score: 500,
         );
 
         // User password verification should work independently
-        final userPasswordResult = testAuthController.verifyUserPassword(
+        final userPasswordResult = await testAuthController.verifyUserPassword(
           'userpass123',
           adminUser,
         );
         expect(userPasswordResult, true);
 
-        final wrongUserPasswordResult = testAuthController.verifyUserPassword(
+        final wrongUserPasswordResult = await testAuthController.verifyUserPassword(
           'wrongpass',
           adminUser,
         );
@@ -153,7 +170,7 @@ void main() {
         password: 'P@ssw0rd!123#\$%',
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         'P@ssw0rd!123#\$%',
         userWithComplexPassword,
       );
@@ -168,13 +185,13 @@ void main() {
         password: longPassword,
       );
 
-      final result = testAuthController.verifyUserPassword(
+      final result = await testAuthController.verifyUserPassword(
         longPassword,
         userWithLongPassword,
       );
       expect(result, true);
 
-      final wrongResult = testAuthController.verifyUserPassword(
+      final wrongResult = await testAuthController.verifyUserPassword(
         '${longPassword}x',
         userWithLongPassword,
       );
@@ -188,9 +205,18 @@ void main() {
         password: 'Password123',
       );
 
-      expect(testAuthController.verifyUserPassword('Password123', user), true);
-      expect(testAuthController.verifyUserPassword('password123', user), false);
-      expect(testAuthController.verifyUserPassword('PASSWORD123', user), false);
+      expect(
+        await testAuthController.verifyUserPassword('Password123', user),
+        true,
+      );
+      expect(
+        await testAuthController.verifyUserPassword('password123', user),
+        false,
+      );
+      expect(
+        await testAuthController.verifyUserPassword('PASSWORD123', user),
+        false,
+      );
     });
   });
 }

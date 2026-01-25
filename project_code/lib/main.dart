@@ -5,12 +5,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hatim_program/features/community/controllers/community_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'app.dart';
-import 'controller/contollers.dart';
+import 'core/app.dart';
+import 'core/controllers/controllers.dart';
+import 'features/auth/controllers/controllers.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -42,9 +44,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ConnectionController()),
         ChangeNotifierProvider(create: (context) => UserController()),
         ChangeNotifierProvider(create: (context) => AuthController()),
-        ChangeNotifierProvider(create: (context) => GroupController()),
-        ChangeNotifierProvider(create: (context) => AdminReferralController()),
         ChangeNotifierProvider(create: (context) => ThemeController()),
+        ChangeNotifierProvider(create: (context) => CommunityController()),
       ],
       child: const App(),
     ),
