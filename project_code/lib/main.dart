@@ -1,5 +1,5 @@
 import 'package:hatim_program/app/bootstrap.dart';
 
-void main() {
-  bootstrapApp();
+Future<void> main() async {
+  await bootstrapApp();
 }

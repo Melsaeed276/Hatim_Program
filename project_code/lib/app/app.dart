@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
+import '../features/auth/data/firebase_auth_repository.dart';
+import '../features/auth/domain/auth_repository.dart';
 import 'navigation/app_routes.dart';
 import 'theme/app_theme.dart';
 
 class HatimProgramApp extends StatefulWidget {
-  const HatimProgramApp({super.key});
+  const HatimProgramApp({this.authRepository, super.key});
+
+  final AuthRepository? authRepository;
 
   @override
   State<HatimProgramApp> createState() => _HatimProgramAppState();
@@ -13,6 +20,19 @@ class HatimProgramApp extends StatefulWidget {
 
 class _HatimProgramAppState extends State<HatimProgramApp> {
   Locale _locale = const Locale('en');
+  late final AuthRepository _authRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _authRepository =
+        widget.authRepository ??
+        FirebaseAuthRepository(
+          firebaseAuth: FirebaseAuth.instance,
+          firestore: FirebaseFirestore.instance,
+          googleSignIn: GoogleSignIn(scopes: const <String>['email']),
+        );
+  }
 
   void _setLocale(Locale locale) {
     setState(() {
@@ -36,11 +56,12 @@ class _HatimProgramAppState extends State<HatimProgramApp> {
       onGenerateRoute: (settings) {
         return AppRoutes.onGenerateRoute(
           settings,
+          authRepository: _authRepository,
           locale: _locale,
           onLocaleChanged: _setLocale,
         );
       },
-      initialRoute: AppRoutes.designPreview,
+      initialRoute: AppRoutes.login,
     );
   }
 }
