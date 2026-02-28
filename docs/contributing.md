@@ -20,6 +20,7 @@ Use issue-based branch names, for example:
   - Linked issue number.
 - Keep PRs focused and small.
 - Update docs when behavior or architecture changes.
+- If UI changes are included, complete the `Design Compliance` section in the PR template.
 
 ## Local Validation
 Run from `project_code/` before opening PR:
@@ -27,6 +28,13 @@ Run from `project_code/` before opening PR:
 flutter pub get
 flutter analyze
 flutter test
+```
+
+For UI-impacting changes, also run:
+```bash
+dart run tool/design_guard.dart
+flutter test --tags design --exclude-tags golden
+flutter test --tags golden
 ```
 
 ## Definition of Done

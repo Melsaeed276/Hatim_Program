@@ -1,1 +1,0 @@
-enum CommunityStatus { active, archived }
