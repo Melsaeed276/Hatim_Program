@@ -1,0 +1,193 @@
+name: Design Compliance
+
+on:
+  pull_request:
+    branches:
+      - renew
+    paths:
+      - 'project_code/lib/**'
+      - 'project_code/test/**'
+      - 'project_code/tool/design_guard.dart'
+      - 'docs/design-system/**'
+      - '.github/pull_request_template.md'
+      - '.github/workflows/design-compliance.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  design-checklist-doc-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch base branch
+        run: git fetch origin "${{ github.base_ref }}" --depth=1
+
+      - name: Validate required docs and sections
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "docs/design-system.md"
+            "docs/design-system/components.md"
+            "docs/design-system/screens.md"
+            "docs/design-system/checklist.md"
+            "docs/design-system/implementation.md"
+            ".github/pull_request_template.md"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+          done
+
+          grep -q "## Design Direction" docs/design-system.md
+          grep -q "## Shared Widgets" docs/design-system/components.md
+          grep -q "## 4. Home Prayer Dashboard" docs/design-system/screens.md
+          grep -q "## F. Testing" docs/design-system/checklist.md
+          grep -q "## Enforcement Path" docs/design-system/implementation.md
+
+          grep -q "## Design Compliance" .github/pull_request_template.md
+          grep -q "I reviewed docs/design-system/checklist.md" .github/pull_request_template.md
+
+      - name: Enforce design checklist in PR body for UI changes
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          changed_files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "Changed files:"
+          echo "$changed_files"
+
+          if ! echo "$changed_files" | grep -qE '^project_code/lib/'; then
+            echo "No UI source changes detected; skipping PR body checkbox enforcement."
+            exit 0
+          fi
+
+          body_lower=$(printf '%s' "${PR_BODY:-}" | tr '[:upper:]' '[:lower:]')
+
+          required_items=(
+            "- [x] i reviewed docs/design-system/checklist.md"
+            "- [x] i used design tokens/theme apis (no hardcoded colors/text styles)"
+            "- [x] i added or updated golden tests for changed ui previews/components"
+            "- [x] i validated en/ar/tr behavior and rtl layout impact"
+          )
+
+          for item in "${required_items[@]}"; do
+            if ! printf '%s' "$body_lower" | grep -F -- "$item" >/dev/null; then
+              echo "Missing checked design compliance item in PR body: $item"
+              exit 1
+            fi
+          done
+
+  flutter-static-check:
+    runs-on: ubuntu-latest
+    needs: design-checklist-doc-check
+    defaults:
+      run:
+        working-directory: project_code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+  design-guard-check:
+    runs-on: ubuntu-latest
+    needs: flutter-static-check
+    defaults:
+      run:
+        working-directory: project_code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Fetch base branch
+        run: git fetch origin "${{ github.base_ref }}" --depth=1
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run design guard
+        run: dart run tool/design_guard.dart --changed-only --base-ref "origin/${{ github.base_ref }}"
+
+  design-tests:
+    runs-on: ubuntu-latest
+    needs: design-guard-check
+    defaults:
+      run:
+        working-directory: project_code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run design-tagged tests
+        run: flutter test --tags design --exclude-tags golden
+
+  golden-tests:
+    runs-on: ubuntu-latest
+    needs: design-tests
+    defaults:
+      run:
+        working-directory: project_code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run golden tests
+        run: flutter test --tags golden
+
+      - name: Ensure no golden artifacts changed in CI
+        run: |
+          set -euo pipefail
+          if [[ -n "$(git status --porcelain -- test/goldens)" ]]; then
+            echo "Golden files changed during CI. Commit updated goldens in PR."
+            git status --porcelain -- test/goldens
+            exit 1
+          fi
