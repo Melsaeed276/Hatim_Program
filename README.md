@@ -1,30 +1,57 @@
 # Hatim Program
 
-A comprehensive Flutter application designed to facilitate the coordination of Quran reading circles (Hatims). This app helps groups and individuals organize, track, and complete Hatims efficiently.
+Hatim Program is being rebuilt as an Islamic mobile-first Flutter app.
 
-## Features
+Current target: deliver a clean MVP centered on prayer-time experience, then add additional Islamic features incrementally.
 
-*   **Group Management**: Create and join groups for collective Hatim readings.
-*   **Hatim Tracking**: Track individual and group progress through Juz (parts).
-*   **Admin Panel**: Tools for administrators to manage users and settings.
-*   **Localization**: Support for English, Turkish, and Arabic languages.
-*   **Cross-Platform**: Available on Web and Mobile.
+## MVP Scope (Current Plan)
+- Prayer times for user location.
+- Current prayer, next prayer, and remaining time countdown.
+- Prayer reminder notifications.
+- Auth with phone or Google.
+- User settings for prayer-time calculation preferences.
 
-## Live Demo
+## Tech Stack
+- Flutter (app client)
+- Firebase Auth (phone + Google sign-in)
+- Cloud Firestore (user profile + settings)
+- Local persistence/cache in app for offline prayer-time experience
 
-Check out the live website: [https://hatim-program.web.app/](https://hatim-program.web.app/)
-
-## Supporters
-
-A special thank you to our supporters who made this project possible:
-
-1.  **My wife** - For her unwavering support and patience.
-2.  **Yavuz Selim Vakıf İstanbul** - For their community support and inspiration.
+## Repository Layout
+- `project_code/`: Flutter application source.
+- `docs/`: project architecture, Firebase, and contribution docs.
+- `.github/`: GitHub workflows.
 
 ## Getting Started
+1. Open the Flutter app directory:
+   ```bash
+   cd project_code
+   ```
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+4. Run tests:
+   ```bash
+   flutter test
+   ```
 
-This project is built with Flutter. To run it locally:
+## Firebase Setup (Planned Baseline)
+1. Create a Firebase project.
+2. Enable Authentication providers:
+   - Phone
+   - Google
+3. Enable Firestore.
+4. Configure FlutterFire from `project_code/`:
+   ```bash
+   flutterfire configure
+   ```
 
-1.  Clone the repo.
-2.  Run `flutter pub get`.
-3.  Run `flutter run`.
+## Documentation
+- Architecture: `docs/architecture.md`
+- Firebase: `docs/firebase.md`
+- Contributing: `docs/contributing.md`
