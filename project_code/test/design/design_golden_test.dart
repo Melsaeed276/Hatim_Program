@@ -14,7 +14,7 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(const HatimProgramApp());
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     await expectLater(
       find.byType(HatimProgramApp),

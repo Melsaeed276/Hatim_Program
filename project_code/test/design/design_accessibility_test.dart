@@ -10,6 +10,7 @@ void main() {
     WidgetTester tester,
   ) async {
     final SemanticsHandle handle = tester.ensureSemantics();
+    addTearDown(handle.dispose);
 
     await tester.pumpWidget(const HatimProgramApp());
     await tester.pump();
@@ -19,7 +20,6 @@ void main() {
       find.bySemanticsLabel('Secondary action: Sign in with Google'),
       findsOneWidget,
     );
-    handle.dispose();
   });
 
   testWidgets('Arabic locale applies RTL directionality', (
@@ -29,9 +29,9 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.byType(DropdownButtonFormField<Locale>));
-    await tester.pump();
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Arabic').last);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     final Directionality directionality = tester.widget(
       find.byType(Directionality).first,
