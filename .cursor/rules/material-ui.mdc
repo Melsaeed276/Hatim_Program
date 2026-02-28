@@ -1,0 +1,786 @@
+---
+name: material-ui
+description: "Material Design 3 UI/UX guidelines for Flutter development. Applies to all UI components, pages, dialogs, and user-facing interfaces. Ensures consistent Material Design 3 implementation with responsive design for mobile and tablet, proper accessibility, and excellent user experience."
+globs:
+  - "project_code/lib/page/**/*.dart"
+  - "project_code/lib/**/*_page.dart"
+  - "project_code/lib/**/*dialog*.dart"
+  - "project_code/lib/app.dart"
+alwaysApply: true
+---
+
+# Material Design 3 UI/UX Guidelines for Flutter Development
+
+## Core Principles
+
+This project follows **Material Design 3 (Material You)** guidelines for all UI development. The app is designed primarily for mobile devices but must be responsive and work seamlessly on tablets and larger screens.
+
+## Material Design 3 Requirements
+
+### Theme Configuration
+- **ALWAYS** use `useMaterial3: true` in ThemeData
+- Use `ColorScheme.fromSeed()` for dynamic color theming
+- Support both light and dark themes using `ThemeMode`
+- Use Material Design 3 color tokens (primary, secondary, tertiary, error, surface, etc.)
+- Reference: https://m3.material.io/styles/color/the-color-system/overview
+
+### Typography
+- Use Material Design 3 typography scale:
+  - Display Large/Medium/Small for hero text
+  - Headline Large/Medium/Small for section headers
+  - Title Large/Medium/Small for card titles
+  - Body Large/Medium/Small for content
+  - Label Large/Medium/Small for buttons and labels
+- Use `Theme.of(context).textTheme` instead of hardcoded text styles
+- Ensure proper text contrast ratios (WCAG AA minimum)
+- Reference: https://m3.material.io/styles/typography/overview
+
+### Spacing & Layout
+- Use Material Design 3 spacing tokens (4dp, 8dp, 16dp, 24dp, 32dp, 48dp, 64dp)
+- Use `SizedBox` with multiples of 4dp for spacing
+- Use `Padding` with EdgeInsets that follow the 4dp grid system
+- For responsive layouts, use `LayoutBuilder` or `MediaQuery` to detect screen size
+- Reference: https://m3.material.io/styles/layout/spacing
+
+### Component Guidelines
+
+#### Buttons
+- Use Material 3 button styles:
+  - `FilledButton` for primary actions
+  - `OutlinedButton` for secondary actions
+  - `TextButton` for tertiary actions
+  - `IconButton` for icon-only actions
+- Button height: minimum 40dp (mobile), 48dp (tablet)
+- Button padding: horizontal 24dp, vertical 12dp
+- Use `FloatingActionButton` with Material 3 styling for primary FABs
+- Reference: https://m3.material.io/components/buttons/overview
+
+#### Cards
+- Use `Card` widget with Material 3 elevation (0dp, 1dp, 3dp, 5dp, 8dp)
+- Card padding: 16dp (mobile), 24dp (tablet)
+- Card corner radius: 12dp (small), 16dp (medium), 28dp (large)
+- Use `Card.elevated` for elevated cards
+- Reference: https://m3.material.io/components/cards/overview
+
+#### Navigation
+- Use Material 3 navigation components:
+  - `NavigationBar` for bottom navigation (mobile)
+  - `NavigationRail` for side navigation (tablet/desktop)
+  - `NavigationDrawer` for drawer navigation
+- Navigation bar height: 80dp
+- Navigation rail width: 80dp (collapsed), 256dp (expanded)
+- Use `AppBar` with Material 3 styling
+- Reference: https://m3.material.io/components/navigation/overview
+
+#### Text Fields
+- Use `TextField` with Material 3 styling
+- Use `OutlinedBorder` for outlined text fields
+- Use `FilledBorder` for filled text fields
+- Label text size: 12sp
+- Input text size: 16sp
+- Padding: 16dp horizontal, 12dp vertical
+- Reference: https://m3.material.io/components/text-fields/overview
+
+#### Dialogs
+- Use `Dialog`, `AlertDialog`, or `showDialog` with Material 3 styling
+- Dialog corner radius: 28dp
+- Dialog padding: 24dp
+- Use `Dialog` for full-screen dialogs on mobile, centered dialogs on tablet
+- Reference: https://m3.material.io/components/dialogs/overview
+
+#### Lists
+- Use `ListTile` with Material 3 styling
+- List item height: minimum 48dp (mobile), 56dp (tablet)
+- Leading/trailing icon size: 24dp
+- Use `Divider` with 1dp height for list separators
+- Reference: https://m3.material.io/components/lists/overview
+
+#### Chips
+- Use `Chip`, `FilterChip`, `ChoiceChip`, `ActionChip`, or `InputChip`
+- Chip height: 32dp
+- Chip padding: 8dp horizontal, 4dp vertical
+- Reference: https://m3.material.io/components/chips/overview
+
+## Responsive Design Guidelines
+
+### Breakpoints
+- **Mobile**: < 600dp width
+- **Tablet**: 600dp - 840dp width
+- **Desktop**: > 840dp width
+
+### Responsive Patterns
+
+#### Layout Adaptation
+```dart
+// Use LayoutBuilder or MediaQuery for responsive layouts
+LayoutBuilder(
+  builder: (context, constraints) {
+    if (constraints.maxWidth < 600) {
+      // Mobile layout: single column, bottom navigation
+      return MobileLayout();
+    } else {
+      // Tablet layout: multi-column, navigation rail
+      return TabletLayout();
+    }
+  },
+)
+```
+
+#### Adaptive Components
+- **Mobile**: Use `NavigationBar` at bottom
+- **Tablet**: Use `NavigationRail` on the left side
+- **Mobile**: Use single-column layouts
+- **Tablet**: Use multi-column layouts (2-3 columns)
+- **Mobile**: Full-screen dialogs
+- **Tablet**: Centered dialogs with max width constraints
+
+#### Spacing Adaptation
+- Mobile: Use tighter spacing (8dp, 16dp)
+- Tablet: Use more generous spacing (16dp, 24dp, 32dp)
+- Use `MediaQuery.of(context).size.width` to determine spacing
+
+### Touch Targets
+- Minimum touch target size: 48dp × 48dp (mobile), 40dp × 40dp (tablet)
+- Ensure adequate spacing between interactive elements (8dp minimum)
+
+## Accessibility Guidelines
+
+### Color & Contrast
+- Ensure text meets WCAG AA contrast ratios:
+  - Normal text: 4.5:1 contrast ratio
+  - Large text (18sp+): 3:1 contrast ratio
+- Use `ColorScheme` colors that automatically provide proper contrast
+- Test with both light and dark themes
+
+### Screen Reader Support
+- Always provide `semanticLabel` for icon-only buttons
+- Use `Semantics` widget for custom widgets
+- Ensure all interactive elements are focusable
+
+### Text Scaling
+- Use relative units (sp for text, dp for layout)
+- Test with system font scaling (up to 200%)
+- Avoid fixed pixel sizes for text
+
+## Animation & Motion
+
+### Material Motion
+- Use Material 3 motion patterns:
+  - Easing: `Curves.easeInOut` for most transitions
+  - Duration: 200ms-300ms for most animations
+  - Use `AnimatedContainer`, `AnimatedOpacity`, etc. for smooth transitions
+- Reference: https://m3.material.io/styles/motion/overview
+
+### Transitions
+- Page transitions: Use Material 3 page transitions
+- Dialog transitions: Use Material 3 dialog transitions
+- List item animations: Use `AnimatedList` or `ListView` with `AnimatedList` for smooth insertions/deletions
+
+## Code Examples
+
+### Theme Setup
+```dart
+ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: Colors.blue,
+    brightness: Brightness.light,
+  ),
+  // Use Material 3 typography
+  textTheme: Typography.material2021().black,
+)
+```
+
+### Responsive Button
+```dart
+FilledButton(
+  style: FilledButton.styleFrom(
+    padding: EdgeInsets.symmetric(
+      horizontal: MediaQuery.of(context).size.width < 600 ? 16 : 24,
+      vertical: 12,
+    ),
+    minimumSize: Size(
+      0,
+      MediaQuery.of(context).size.width < 600 ? 40 : 48,
+    ),
+  ),
+  onPressed: () {},
+  child: Text('Button'),
+)
+```
+
+### Responsive Layout
+```dart
+LayoutBuilder(
+  builder: (context, constraints) {
+    final isTablet = constraints.maxWidth >= 600;
+    return isTablet
+        ? Row(
+            children: [
+              NavigationRail(...),
+              Expanded(child: Content()),
+            ],
+          )
+        : Column(
+            children: [
+              Expanded(child: Content()),
+              NavigationBar(...),
+            ],
+          );
+  },
+)
+```
+
+### Loading State with Skeleton Screen
+```dart
+// Preferred: Skeleton screen
+FutureBuilder<List<GroupModel>>(
+  future: _groupsFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return ListView.builder(
+        itemCount: 3,
+        itemBuilder: (context, index) => Card(
+          child: ListTile(
+            leading: CircleAvatar(backgroundColor: Colors.grey[300]),
+            title: Container(
+              height: 16,
+              width: double.infinity,
+              color: Colors.grey[300],
+            ),
+            subtitle: Container(
+              height: 12,
+              width: 100,
+              margin: EdgeInsets.only(top: 8),
+              color: Colors.grey[300],
+            ),
+          ),
+        ),
+      );
+    }
+    // ... rest of builder
+  },
+)
+```
+
+### Error State with Retry
+```dart
+if (snapshot.hasError) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
+        SizedBox(height: 16),
+        Text(
+          'Something went wrong',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        SizedBox(height: 8),
+        Text(
+          snapshot.error.toString(),
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 24),
+        FilledButton.icon(
+          onPressed: () => setState(() => _refreshData()),
+          icon: Icon(Icons.refresh),
+          label: Text('Retry'),
+        ),
+      ],
+    ),
+  );
+}
+```
+
+### Empty State
+```dart
+if (items.isEmpty) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.inbox_outlined,
+          size: 64,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+        SizedBox(height: 16),
+        Text(
+          'No groups yet',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Create your first group to get started!',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 24),
+        FilledButton.icon(
+          onPressed: () => _createGroup(),
+          icon: Icon(Icons.add),
+          label: Text('Create Group'),
+        ),
+      ],
+    ),
+  );
+}
+```
+
+### Form with Validation
+```dart
+TextFormField(
+  decoration: InputDecoration(
+    labelText: 'Group Name',
+    helperText: 'Enter a name for your group',
+    errorText: _nameError,
+    suffixIcon: _nameController.text.isNotEmpty
+        ? IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              _nameController.clear();
+              setState(() => _nameError = null);
+            },
+          )
+        : null,
+  ),
+  controller: _nameController,
+  textInputAction: TextInputAction.next,
+  onChanged: (value) {
+    if (_nameError != null) {
+      setState(() => _nameError = null);
+    }
+  },
+  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Group name is required';
+    }
+    if (value.length < 3) {
+      return 'Group name must be at least 3 characters';
+    }
+    return null;
+  },
+)
+```
+
+### Success Feedback with SnackBar
+```dart
+// After successful action
+ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Row(
+      children: [
+        Icon(Icons.check_circle, color: Colors.white),
+        SizedBox(width: 12),
+        Expanded(
+          child: Text('Group created successfully'),
+        ),
+      ],
+    ),
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    behavior: SnackBarBehavior.floating,
+    duration: Duration(seconds: 3),
+    action: SnackBarAction(
+      label: 'UNDO',
+      textColor: Colors.white,
+      onPressed: () => _undoCreateGroup(),
+    ),
+  ),
+);
+```
+
+### Loading Button State
+```dart
+FilledButton(
+  onPressed: _isLoading ? null : _handleSubmit,
+  child: _isLoading
+      ? SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
+      : Text('Submit'),
+)
+```
+
+### Pull to Refresh
+```dart
+RefreshIndicator(
+  onRefresh: () async {
+    await _refreshData();
+  },
+  child: ListView.builder(
+    itemCount: items.length,
+    itemBuilder: (context, index) => ListTile(
+      title: Text(items[index].name),
+    ),
+  ),
+)
+```
+
+### Network Error Handling
+```dart
+StreamBuilder<ConnectionStatus>(
+  stream: connectionController.connectionStream,
+  builder: (context, snapshot) {
+    final isConnected = snapshot.data?.isConnected ?? true;
+    
+    if (!isConnected) {
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            color: Theme.of(context).colorScheme.errorContainer,
+            child: Row(
+              children: [
+                Icon(Icons.wifi_off, color: Theme.of(context).colorScheme.onErrorContainer),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'No internet connection',
+                    style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(child: _buildContent()),
+        ],
+      );
+    }
+    return _buildContent();
+  },
+)
+```
+
+## User Experience (UX) Principles
+
+### Core UX Principles
+1. **Clarity First** - Every screen should have a clear purpose and primary action
+2. **Progressive Disclosure** - Show only what's necessary, reveal details on demand
+3. **Consistency** - Use consistent patterns, components, and behaviors throughout the app
+4. **Feedback** - Always provide immediate, clear feedback for user actions
+5. **Error Prevention** - Design to prevent errors before they occur
+6. **Efficiency** - Minimize steps to complete tasks, optimize for common workflows
+7. **Forgiveness** - Allow users to undo actions, provide escape routes
+8. **Delight** - Add thoughtful micro-interactions that enhance the experience
+
+### Information Architecture
+- **Primary Navigation**: Use bottom navigation (mobile) or navigation rail (tablet) for main sections
+- **Secondary Navigation**: Use app bar actions, floating action buttons, or contextual menus
+- **Breadcrumbs**: Show clear navigation hierarchy, especially for nested screens
+- **Deep Linking**: Support deep links to specific content (e.g., hatim pages, groups)
+- **Back Navigation**: Always provide clear back navigation with proper state management
+- **Navigation Depth**: Limit navigation depth to 3-4 levels maximum
+
+### Visual Hierarchy
+- **Primary Actions**: Use `FilledButton` with prominent placement (bottom-right or app bar)
+- **Secondary Actions**: Use `OutlinedButton` or `TextButton` with less prominence
+- **Content Priority**: 
+  - Most important content: Top of screen, larger size, higher contrast
+  - Secondary content: Middle of screen, standard size
+  - Tertiary content: Bottom or collapsible sections
+- **Visual Weight**: Use size, color, and spacing to establish importance
+- **Grouping**: Group related content with cards, dividers, or spacing
+- **Scanning Patterns**: Design for F-pattern (left-aligned text) and Z-pattern (forms)
+
+### User Feedback & Communication
+
+#### Loading States
+- **Immediate Feedback**: Show loading indicators within 100ms of user action
+- **Skeleton Screens**: Use skeleton loaders for content-heavy screens (preferred over spinners)
+- **Progress Indicators**: 
+  - `CircularProgressIndicator` for indeterminate operations
+  - `LinearProgressIndicator` for determinate operations with known duration
+- **Loading Text**: Provide context like "Loading groups..." instead of generic "Loading..."
+- **Timeout Handling**: Show error message if loading exceeds 10 seconds
+
+#### Success States
+- **Confirmation**: Use `SnackBar` for simple confirmations (auto-dismiss after 2-3 seconds)
+- **Success Messages**: Be specific ("Group created successfully" not just "Success")
+- **Visual Feedback**: Use checkmarks, color changes, or brief animations
+- **Haptic Feedback**: Use `HapticFeedback.lightImpact()` for important actions (optional)
+
+#### Error Handling
+- **Error Prevention**: 
+  - Validate inputs in real-time
+  - Disable invalid actions
+  - Show helpful hints before errors occur
+- **Error Messages**:
+  - Use clear, actionable language
+  - Explain what went wrong and how to fix it
+  - Avoid technical jargon
+  - Provide recovery options
+- **Error Display**:
+  - Use `SnackBar` for non-critical errors
+  - Use `AlertDialog` for critical errors requiring user action
+  - Use inline error text below form fields
+- **Empty States**: 
+  - Provide helpful empty state messages
+  - Include illustrations or icons
+  - Suggest actions to fill the empty state
+  - Example: "No groups yet. Create your first group to get started!"
+
+#### Form Design & Input Validation
+- **Input Fields**:
+  - Show labels above or inside fields (not just placeholders)
+  - Use helper text for complex inputs
+  - Show character counts for limited inputs
+  - Use appropriate input types (email, phone, number, etc.)
+- **Validation**:
+  - Validate on blur (not on every keystroke)
+  - Show validation errors immediately after user interaction
+  - Use red color from `ColorScheme.error` for errors
+  - Clear errors when user starts typing again
+- **Form Layout**:
+  - Group related fields together
+  - Use single-column layout on mobile
+  - Use multi-column layout on tablet (when appropriate)
+  - Place primary action button at bottom, visible without scrolling
+- **Keyboard Handling**:
+  - Use `TextInputAction.next` to move between fields
+  - Use `TextInputAction.done` for final field
+  - Handle keyboard dismissal gracefully
+  - Adjust layout when keyboard appears
+
+### Content Strategy
+
+#### Text Content
+- **Clarity**: Use simple, clear language (avoid jargon)
+- **Brevity**: Keep text concise, remove unnecessary words
+- **Tone**: Use friendly, helpful tone appropriate for the context
+- **Localization**: All user-facing text must be localizable (use localization controller)
+- **Hierarchy**: Use typography scale to establish text hierarchy
+- **Readability**: 
+  - Line length: 50-75 characters optimal
+  - Line height: 1.5x font size minimum
+  - Paragraph spacing: 16dp minimum
+
+#### Iconography
+- **Consistency**: Use Material Icons consistently throughout the app
+- **Meaning**: Icons should be universally understood or have labels
+- **Size**: 
+  - Small icons: 18dp (inline with text)
+  - Standard icons: 24dp (buttons, lists)
+  - Large icons: 48dp (empty states, hero sections)
+- **Accessibility**: Always provide semantic labels for icon-only buttons
+
+#### Imagery
+- **Placeholders**: Use appropriate placeholders for missing images
+- **Loading**: Show loading indicators for images
+- **Error States**: Show error icons for failed image loads
+- **Aspect Ratios**: Maintain consistent aspect ratios for images
+- **Optimization**: Use appropriate image sizes for different screen densities
+
+### Micro-interactions
+
+#### Button Interactions
+- **Press Feedback**: Use `InkWell` or `InkResponse` for ripple effects
+- **State Changes**: Animate button state changes (enabled/disabled, pressed/released)
+- **Loading States**: Show loading spinner inside button during async operations
+- **Success States**: Brief success animation after completion
+
+#### List Interactions
+- **Swipe Actions**: Implement swipe-to-delete or swipe-to-archive where appropriate
+- **Pull to Refresh**: Use `RefreshIndicator` for list refresh
+- **Infinite Scroll**: Load more content as user scrolls (with loading indicator)
+- **Item Animations**: Animate list item insertions/deletions smoothly
+
+#### Page Transitions
+- **Route Transitions**: Use Material 3 page transitions
+- **Shared Element Transitions**: Use `Hero` widgets for shared element animations
+- **Custom Transitions**: Keep transitions under 300ms for responsiveness
+
+#### Gesture Feedback
+- **Haptic Feedback**: Use sparingly for important actions:
+  ```dart
+  HapticFeedback.lightImpact(); // For selections
+  HapticFeedback.mediumImpact(); // For confirmations
+  HapticFeedback.heavyImpact(); // For errors (rarely)
+  ```
+
+### Performance & Perceived Performance
+
+#### Optimize Perceived Performance
+- **Show Content Fast**: Display cached content immediately, update with fresh data
+- **Progressive Loading**: Load critical content first, then secondary content
+- **Optimistic Updates**: Update UI optimistically, rollback on error
+- **Skeleton Screens**: Show skeleton loaders instead of blank screens
+
+#### Code Performance
+- **Lazy Loading**: Use `ListView.builder` for long lists
+- **Image Optimization**: Use appropriate image formats and sizes
+- **Debouncing**: Debounce search inputs and expensive operations
+- **Caching**: Cache frequently accessed data appropriately
+
+### User Onboarding
+
+#### First-Time Experience
+- **Welcome Screen**: Brief welcome screen explaining app purpose (optional)
+- **Permissions**: Request permissions contextually, explain why they're needed
+- **Tutorials**: Use tooltips or bottom sheets for feature discovery
+- **Progressive Disclosure**: Don't overwhelm users with all features at once
+
+#### Feature Discovery
+- **Tooltips**: Use `Tooltip` widget for icon-only buttons
+- **Bottom Sheets**: Use bottom sheets for contextual help
+- **Empty States**: Use empty states as teaching moments
+
+### Empty States
+
+#### Design Principles
+- **Illustration**: Use simple, friendly illustrations or icons
+- **Message**: Clear, helpful message explaining the empty state
+- **Action**: Provide primary action to resolve the empty state
+- **Tone**: Use encouraging, helpful tone
+
+#### Examples
+```dart
+// Good empty state
+Column(
+  children: [
+    Icon(Icons.inbox_outlined, size: 64, color: Colors.grey),
+    SizedBox(height: 16),
+    Text('No groups yet', style: Theme.of(context).textTheme.titleLarge),
+    SizedBox(height: 8),
+    Text('Create your first group to get started!', 
+         style: Theme.of(context).textTheme.bodyMedium),
+    SizedBox(height: 24),
+    FilledButton(
+      onPressed: () => _createGroup(),
+      child: Text('Create Group'),
+    ),
+  ],
+)
+```
+
+### Error States
+
+#### Network Errors
+- **Offline Detection**: Show offline indicator when connection is lost
+- **Retry Mechanism**: Provide retry button for failed network requests
+- **Cached Content**: Show cached content when available, indicate it's stale
+
+#### Data Errors
+- **Clear Messages**: Explain what went wrong in user-friendly terms
+- **Recovery Options**: Provide clear recovery actions
+- **Support**: Include support contact for persistent issues
+
+### Responsive UX Patterns
+
+#### Mobile-First Considerations
+- **Thumb Zone**: Place primary actions in easy thumb reach (bottom 1/3 of screen)
+- **One-Handed Use**: Design for one-handed operation
+- **Portrait Orientation**: Optimize for portrait mode (app is locked to portrait)
+- **Keyboard Avoidance**: Ensure inputs aren't hidden by keyboard
+
+#### Tablet Enhancements
+- **Multi-Panel Layouts**: Use side-by-side panels when appropriate
+- **Larger Touch Targets**: Increase spacing and touch targets
+- **More Information**: Show more detail without navigation
+- **Navigation Rail**: Use navigation rail instead of bottom bar
+
+### Accessibility UX
+
+#### Visual Accessibility
+- **Color Independence**: Don't rely solely on color to convey information
+- **High Contrast**: Ensure sufficient contrast in all themes
+- **Text Scaling**: Support up to 200% text scaling
+- **Focus Indicators**: Clear focus indicators for keyboard navigation
+
+#### Motor Accessibility
+- **Large Touch Targets**: Minimum 48dp × 48dp touch targets
+- **Spacing**: Adequate spacing between interactive elements
+- **No Time Limits**: Avoid time-limited interactions when possible
+
+#### Cognitive Accessibility
+- **Simple Language**: Use clear, simple language
+- **Consistent Patterns**: Use consistent UI patterns throughout
+- **Error Prevention**: Prevent errors through good design
+- **Help Text**: Provide helpful hints and instructions
+
+## Best Practices
+
+1. **Always use Material 3 components** - Prefer built-in Material 3 widgets over custom implementations
+2. **Test on multiple screen sizes** - Ensure UI works on phones (360dp-428dp) and tablets (600dp-840dp+)
+3. **Use semantic HTML equivalents** - Ensure proper widget semantics for accessibility
+4. **Follow the 4dp grid** - All spacing and sizing should align to 4dp increments
+5. **Use theme colors** - Always reference `Theme.of(context).colorScheme` instead of hardcoded colors
+6. **Support RTL** - Ensure UI works properly for Arabic (RTL) and other RTL languages
+7. **Test dark mode** - Ensure all UI components work correctly in both light and dark themes
+8. **Use proper elevation** - Follow Material 3 elevation guidelines (0dp, 1dp, 3dp, 5dp, 8dp)
+9. **Responsive typography** - Adjust font sizes appropriately for tablet vs mobile
+10. **Touch-friendly** - Ensure all interactive elements meet minimum touch target sizes
+11. **Provide feedback** - Always give immediate feedback for user actions
+12. **Handle errors gracefully** - Show helpful error messages with recovery options
+13. **Optimize for performance** - Use lazy loading, caching, and optimistic updates
+14. **Design empty states** - Provide helpful empty states with clear actions
+15. **Test user flows** - Test complete user journeys, not just individual screens
+
+## Resources
+
+- Material Design 3 Guidelines: https://m3.material.io/
+- Flutter Material 3 Documentation: https://docs.flutter.dev/ui/design/material
+- Material Design 3 Components: https://m3.material.io/components
+- Flutter Responsive Design: https://docs.flutter.dev/development/ui/layout/responsive
+- Material Design Accessibility: https://m3.material.io/foundations/accessible-design/overview
+
+## Code Review Checklist
+
+### UI/Design Checklist
+- [ ] `useMaterial3: true` is set in ThemeData
+- [ ] Components use Material 3 widgets (FilledButton, Card, etc.)
+- [ ] Spacing follows 4dp grid system
+- [ ] Colors come from ColorScheme, not hardcoded
+- [ ] Typography uses Theme textTheme
+- [ ] Responsive design works on mobile and tablet
+- [ ] Touch targets meet minimum size requirements (48dp × 48dp)
+- [ ] Accessibility labels are provided where needed
+- [ ] Dark mode is supported and tested
+- [ ] RTL languages are supported (especially Arabic)
+- [ ] Animations follow Material motion guidelines
+- [ ] Visual hierarchy is clear (primary actions are prominent)
+- [ ] Consistent spacing and alignment throughout
+
+### UX Checklist
+- [ ] Loading states are implemented (skeleton screens preferred)
+- [ ] Error states are handled with clear, actionable messages
+- [ ] Empty states provide helpful guidance and actions
+- [ ] Success feedback is provided for user actions
+- [ ] Form validation provides real-time feedback
+- [ ] Navigation is clear and intuitive
+- [ ] Back navigation works correctly
+- [ ] Keyboard handling is appropriate (next/done actions)
+- [ ] Content is scannable and well-organized
+- [ ] Primary actions are easily accessible (thumb zone on mobile)
+- [ ] Error messages are user-friendly (no technical jargon)
+- [ ] Network errors are handled gracefully
+- [ ] Offline states are considered
+- [ ] Performance is optimized (lazy loading, caching)
+
+### Accessibility Checklist
+- [ ] Screen reader labels are provided for all interactive elements
+- [ ] Color is not the only way to convey information
+- [ ] Text contrast meets WCAG AA standards
+- [ ] Text scaling up to 200% is supported
+- [ ] Focus indicators are visible
+- [ ] Keyboard navigation works for all interactive elements
+- [ ] Semantic widgets are used appropriately
+
+### Testing Checklist
+- [ ] Tested on multiple screen sizes (phone and tablet)
+- [ ] Tested in both light and dark themes
+- [ ] Tested with RTL languages (Arabic)
+- [ ] Tested with large text scaling
+- [ ] Tested with slow network (loading states)
+- [ ] Tested error scenarios
+- [ ] Tested empty states
+- [ ] User flow tested end-to-end
