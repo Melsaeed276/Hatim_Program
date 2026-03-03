@@ -55,6 +55,14 @@ class LocationSetupController extends ChangeNotifier {
   LocationSetupState _state = const LocationSetupState();
   LocationSetupState get state => _state;
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   Future<void> loadSavedLocation() async {
     _setState(_state.copyWith(isBusy: true, clearError: true));
     try {
@@ -227,6 +235,7 @@ class LocationSetupController extends ChangeNotifier {
   }
 
   void _setState(LocationSetupState nextState) {
+    if (_disposed) return;
     _state = nextState;
     notifyListeners();
   }
