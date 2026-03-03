@@ -285,7 +285,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/cay/.pub-cache/hosted/pub.dev/test_api-0.7.8",
+      "rootUri": "file:///Users/cay/.pub-cache/hosted/pub.dev/test_api-0.7.9",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -321,8 +321,8 @@
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.11.0",
+  "generatorVersion": "3.11.1",
   "flutterRoot": "file:///Users/cay/development/flutter",
-  "flutterVersion": "3.41.0",
+  "flutterVersion": "3.41.3",
   "pubCache": "file:///Users/cay/.pub-cache"
 }

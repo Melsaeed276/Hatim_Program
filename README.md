@@ -55,3 +55,4 @@ Current target: deliver a clean MVP centered on prayer-time experience, then add
 - Architecture: `docs/architecture.md`
 - Firebase: `docs/firebase.md`
 - Contributing: `docs/contributing.md`
+- Prayer-time API decision: `docs/prayer-time-api-decision.md`
