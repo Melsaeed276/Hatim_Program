@@ -1,0 +1,38 @@
+import 'location_models.dart';
+
+enum LocationPermissionStatus {
+  unknown,
+  granted,
+  denied,
+  deniedForever,
+  serviceDisabled,
+}
+
+abstract class LocationService {
+  Future<bool> isServiceEnabled();
+
+  Future<LocationPermissionStatus> checkPermission();
+
+  Future<LocationPermissionStatus> requestPermission();
+
+  Future<Coordinates> getCurrentCoordinates();
+}
+
+abstract class GeocodingService {
+  Future<PlaceDetails> reverseGeocode(Coordinates coordinates);
+
+  Future<Coordinates> geocodeCityCountry({
+    required String city,
+    required String country,
+  });
+}
+
+abstract class TimezoneService {
+  Future<String> resolveLocalTimezone();
+}
+
+abstract class LocationProfileRepository {
+  Future<UserLocationProfile?> loadLocation();
+
+  Future<void> saveLocation(UserLocationProfile location);
+}

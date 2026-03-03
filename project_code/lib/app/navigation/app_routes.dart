@@ -6,6 +6,7 @@ import '../../features/auth/presentation/auth_session_page.dart';
 import '../../features/auth/presentation/login_page.dart';
 import '../../features/auth/presentation/register_page.dart';
 import '../../features/design_preview/presentation/design_preview_page.dart';
+import '../../features/prayer_times/location/presentation/location_setup_page.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String login = '/';
   static const String register = '/register';
   static const String session = '/session';
+  static const String locationSetup = '/location-setup';
   static const String designPreview = '/design-preview';
 
   static Route<dynamic> onGenerateRoute(
@@ -60,8 +62,17 @@ class AppRoutes {
           );
         }
         return MaterialPageRoute<void>(
-          builder: (BuildContext _) =>
-              AuthSessionPage(profile: profile, authRepository: authRepository),
+          builder: (BuildContext context) => AuthSessionPage(
+            profile: profile,
+            authRepository: authRepository,
+            onOpenLocationSetup: () {
+              Navigator.of(context).pushNamed(locationSetup);
+            },
+          ),
+        );
+      case locationSetup:
+        return MaterialPageRoute<void>(
+          builder: (BuildContext _) => const LocationSetupPage(),
         );
       case designPreview:
         return MaterialPageRoute<void>(

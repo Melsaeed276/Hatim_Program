@@ -8,11 +8,13 @@ class AuthSessionPage extends StatelessWidget {
   const AuthSessionPage({
     required this.profile,
     required this.authRepository,
+    required this.onOpenLocationSetup,
     super.key,
   });
 
   final AuthUserProfile profile;
   final AuthRepository authRepository;
+  final VoidCallback onOpenLocationSetup;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,11 @@ class AuthSessionPage extends StatelessWidget {
             Text(
               'Password enabled: ${profile.passwordEnabled ? 'Yes' : 'No'}',
               style: textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppTokens.spaceLg),
+            OutlinedButton(
+              onPressed: onOpenLocationSetup,
+              child: const Text('Location setup'),
             ),
             const Spacer(),
             FilledButton(
