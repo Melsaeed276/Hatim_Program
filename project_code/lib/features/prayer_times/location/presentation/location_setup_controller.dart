@@ -187,7 +187,10 @@ class LocationSetupController extends ChangeNotifier {
     try {
       final Coordinates coordinates = await _geocodingService
           .geocodeCityCountry(city: normalizedCity, country: normalizedCountry);
-      final String timezone = await _timezoneService.resolveLocalTimezone();
+      final String timezone = await _timezoneService.resolveTimezoneForCoordinates(
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+      );
 
       final UserLocationProfile location = UserLocationProfile(
         latitude: coordinates.latitude,
