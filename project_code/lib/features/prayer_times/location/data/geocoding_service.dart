@@ -7,15 +7,15 @@ class GeocodingServiceImpl implements GeocodingService {
   const GeocodingServiceImpl();
 
   @override
-  Future<Coordinates> geocodeCityCountry({
-    required String city,
-    required String country,
-  }) async {
-    final List<Location> locations = await locationFromAddress(
-      '$city, $country',
-    );
+  Future<Coordinates> geocodeQuery({required String query}) async {
+    final String normalized = query.trim();
+    if (normalized.isEmpty) {
+      throw StateError('Query cannot be empty.');
+    }
+
+    final List<Location> locations = await locationFromAddress(normalized);
     if (locations.isEmpty) {
-      throw StateError('Unable to resolve location for $city, $country.');
+      throw StateError('Unable to resolve location for $normalized.');
     }
 
     final Location location = locations.first;
@@ -23,6 +23,14 @@ class GeocodingServiceImpl implements GeocodingService {
       latitude: location.latitude,
       longitude: location.longitude,
     );
+  }
+
+  @override
+  Future<Coordinates> geocodeCityCountry({
+    required String city,
+    required String country,
+  }) async {
+    return geocodeQuery(query: '$city, $country');
   }
 
   @override

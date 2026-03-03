@@ -21,6 +21,8 @@ abstract class LocationService {
 abstract class GeocodingService {
   Future<PlaceDetails> reverseGeocode(Coordinates coordinates);
 
+  Future<Coordinates> geocodeQuery({required String query});
+
   Future<Coordinates> geocodeCityCountry({
     required String city,
     required String country,
@@ -29,6 +31,13 @@ abstract class GeocodingService {
 
 abstract class TimezoneService {
   Future<String> resolveLocalTimezone();
+
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  });
+
+  Future<List<String>> getAvailableTimezones();
 }
 
 abstract class LocationProfileRepository {

@@ -28,19 +28,31 @@ class FakeLocationService implements LocationService {
 }
 
 class FakeGeocodingService implements GeocodingService {
+  FakeGeocodingService({this.throwOnReverse = false});
+
+  final bool throwOnReverse;
+
   @override
-  Future<Coordinates> geocodeCityCountry({
-    required String city,
-    required String country,
-  }) async {
-    if (city == 'invalid') {
+  Future<Coordinates> geocodeQuery({required String query}) async {
+    if (query.contains('invalid')) {
       throw StateError('invalid');
     }
     return const Coordinates(latitude: 41.01, longitude: 28.97);
   }
 
   @override
+  Future<Coordinates> geocodeCityCountry({
+    required String city,
+    required String country,
+  }) async {
+    return geocodeQuery(query: '$city, $country');
+  }
+
+  @override
   Future<PlaceDetails> reverseGeocode(Coordinates coordinates) async {
+    if (throwOnReverse) {
+      throw StateError('reverse-failed');
+    }
     return const PlaceDetails(city: 'Istanbul', country: 'Turkey');
   }
 }
@@ -48,6 +60,17 @@ class FakeGeocodingService implements GeocodingService {
 class FakeTimezoneService implements TimezoneService {
   @override
   Future<String> resolveLocalTimezone() async => 'Europe/Istanbul';
+
+  @override
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  }) async => 'Europe/Istanbul';
+
+  @override
+  Future<List<String>> getAvailableTimezones() async {
+    return const <String>['Europe/Istanbul', 'UTC'];
+  }
 }
 
 class InMemoryLocationProfileRepository implements LocationProfileRepository {
@@ -97,7 +120,11 @@ void main() {
       locationProfileRepository: repository,
     );
 
-    await controller.saveManualLocation(city: 'Istanbul', country: 'Turkey');
+    await controller.saveManualLocation(
+      city: 'Istanbul',
+      country: 'Turkey',
+      selectedTimezone: 'Europe/Istanbul',
+    );
 
     expect(repository.saved, isNotNull);
     expect(repository.saved!.city, 'Istanbul');
@@ -115,8 +142,35 @@ void main() {
       locationProfileRepository: InMemoryLocationProfileRepository(),
     );
 
-    await controller.saveManualLocation(city: ' ', country: 'Turkey');
+    await controller.saveManualLocation(
+      city: ' ',
+      country: 'Turkey',
+      selectedTimezone: '',
+    );
 
-    expect(controller.state.errorMessage, 'City and country are required.');
+    expect(
+      controller.state.errorMessage,
+      'City is required for manual location.',
+    );
+  });
+
+  test('auto location still saves when reverse geocoding fails', () async {
+    final InMemoryLocationProfileRepository repository =
+        InMemoryLocationProfileRepository();
+
+    final LocationSetupController controller = LocationSetupController(
+      locationService: FakeLocationService(
+        permission: LocationPermissionStatus.granted,
+      ),
+      geocodingService: FakeGeocodingService(throwOnReverse: true),
+      timezoneService: FakeTimezoneService(),
+      locationProfileRepository: repository,
+    );
+
+    await controller.useCurrentLocation();
+
+    expect(repository.saved, isNotNull);
+    expect(repository.saved!.timezone, 'Europe/Istanbul');
+    expect(repository.saved!.city, 'Unknown');
   });
 }

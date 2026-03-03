@@ -64,7 +64,7 @@ class LocationSetupController extends ChangeNotifier {
         _state.copyWith(
           isBusy: false,
           savedLocation: saved,
-          isManualFormVisible: saved == null,
+          isManualFormVisible: true,
         ),
       );
     } catch (_) {
@@ -76,6 +76,14 @@ class LocationSetupController extends ChangeNotifier {
         ),
       );
     }
+  }
+
+  Future<List<String>> loadAvailableTimezones() async {
+    final List<String> values = List<String>.from(
+      await _timezoneService.getAvailableTimezones(),
+    );
+    values.sort();
+    return values;
   }
 
   Future<void> useCurrentLocation() async {
@@ -129,17 +137,26 @@ class LocationSetupController extends ChangeNotifier {
     try {
       final Coordinates coordinates = await _locationService
           .getCurrentCoordinates();
-      final PlaceDetails place = await _geocodingService.reverseGeocode(
-        coordinates,
-      );
-      final String timezone = await _timezoneService.resolveLocalTimezone();
+
+      PlaceDetails? place;
+      try {
+        place = await _geocodingService.reverseGeocode(coordinates);
+      } catch (_) {
+        place = null;
+      }
+
+      final String timezone = await _timezoneService
+          .resolveTimezoneForCoordinates(
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+          );
 
       final UserLocationProfile location = UserLocationProfile(
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         timezone: timezone,
-        city: place.city,
-        country: place.country,
+        city: place?.city ?? _state.savedLocation?.city ?? 'Unknown',
+        country: place?.country ?? _state.savedLocation?.country ?? 'Unknown',
         source: LocationSource.gps,
         updatedAt: DateTime.now().toUtc(),
       );
@@ -150,7 +167,7 @@ class LocationSetupController extends ChangeNotifier {
         _state.copyWith(
           isBusy: false,
           savedLocation: location,
-          isManualFormVisible: false,
+          isManualFormVisible: true,
           permissionStatus: LocationPermissionStatus.granted,
         ),
       );
@@ -169,13 +186,16 @@ class LocationSetupController extends ChangeNotifier {
   Future<void> saveManualLocation({
     required String city,
     required String country,
+    required String selectedTimezone,
   }) async {
     final String normalizedCity = city.trim();
     final String normalizedCountry = country.trim();
-    if (normalizedCity.isEmpty || normalizedCountry.isEmpty) {
+    final String normalizedTimezone = selectedTimezone.trim();
+
+    if (normalizedCity.isEmpty) {
       _setState(
         _state.copyWith(
-          errorMessage: 'City and country are required.',
+          errorMessage: 'City is required for manual location.',
           isManualFormVisible: true,
         ),
       );
@@ -185,19 +205,38 @@ class LocationSetupController extends ChangeNotifier {
     _setState(_state.copyWith(isBusy: true, clearError: true));
 
     try {
-      final Coordinates coordinates = await _geocodingService
-          .geocodeCityCountry(city: normalizedCity, country: normalizedCountry);
-      final String timezone = await _timezoneService.resolveTimezoneForCoordinates(
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
+      final String query = normalizedCountry.isEmpty
+          ? normalizedCity
+          : '$normalizedCity, $normalizedCountry';
+
+      final Coordinates coordinates = await _geocodingService.geocodeQuery(
+        query: query,
       );
+
+      PlaceDetails? place;
+      try {
+        place = await _geocodingService.reverseGeocode(coordinates);
+      } catch (_) {
+        place = null;
+      }
+
+      final String timezone = normalizedTimezone.isNotEmpty
+          ? normalizedTimezone
+          : await _timezoneService.resolveTimezoneForCoordinates(
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude,
+            );
 
       final UserLocationProfile location = UserLocationProfile(
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         timezone: timezone,
         city: normalizedCity,
-        country: normalizedCountry,
+        country: normalizedCountry.isNotEmpty
+            ? normalizedCountry
+            : (place?.country.isNotEmpty ?? false)
+            ? place!.country
+            : 'Unknown',
         source: LocationSource.manual,
         updatedAt: DateTime.now().toUtc(),
       );
@@ -216,7 +255,7 @@ class LocationSetupController extends ChangeNotifier {
           isBusy: false,
           isManualFormVisible: true,
           errorMessage:
-              'Could not save manual location. Check city and country.',
+              'Could not save manual location. Check city/country or timezone selection.',
         ),
       );
     }
