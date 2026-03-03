@@ -83,7 +83,9 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
                     padding: const EdgeInsets.only(bottom: AppTokens.spaceMd),
                     child: Text(
                       state.errorMessage!,
-                      style: textTheme.bodyMedium,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
                 if (state.savedLocation != null)
