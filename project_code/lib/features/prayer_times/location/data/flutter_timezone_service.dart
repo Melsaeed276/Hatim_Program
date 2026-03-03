@@ -13,4 +13,12 @@ class FlutterTimezoneService implements TimezoneService {
     }
     return timezone;
   }
+
+  @override
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  }) {
+    return resolveLocalTimezone();
+  }
 }
