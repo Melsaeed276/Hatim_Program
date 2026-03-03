@@ -102,7 +102,18 @@ class LocationSetupController extends ChangeNotifier {
       permission = await _locationService.requestPermission();
     }
 
-    if (permission != LocationPermissionStatus.granted) {
+    if (permission == LocationPermissionStatus.deniedForever) {
+      _setState(
+        _state.copyWith(
+          isBusy: false,
+          isManualFormVisible: true,
+          permissionStatus: permission,
+          errorMessage:
+              'Location permission is permanently denied. Please enable it in your device settings or continue manually.',
+        ),
+      );
+      return;
+    } else if (permission != LocationPermissionStatus.granted) {
       _setState(
         _state.copyWith(
           isBusy: false,
