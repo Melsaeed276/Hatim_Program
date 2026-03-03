@@ -125,23 +125,41 @@ void main() {
   });
 
   test(
-    'countdown stream decreases and reaches zero with custom interval',
+    'countdown stream decreases and reaches zero with fake clock',
     () async {
-      final DateTime target = DateTime.now().toUtc().add(
-        const Duration(milliseconds: 120),
-      );
+      final DateTime base = DateTime.utc(2030, 1, 1, 12, 0, 0);
+      int callCount = 0;
+      final List<DateTime> fakeTimes = <DateTime>[
+        base.subtract(const Duration(seconds: 10)),
+        base.subtract(const Duration(seconds: 5)),
+        base.add(const Duration(seconds: 1)),
+      ];
 
       final List<Duration> values = await service
           .countdownStream(
-            nextPrayerAt: target,
+            nextPrayerAt: base,
             timezone: 'UTC',
-            interval: const Duration(milliseconds: 40),
+            interval: const Duration(milliseconds: 1),
+            nowProvider: () => fakeTimes[callCount++],
           )
-          .take(4)
           .toList();
 
-      expect(values.first > Duration.zero, isTrue);
-      expect(values.last, Duration.zero);
+      expect(values, hasLength(3));
+      expect(values[0], const Duration(seconds: 10));
+      expect(values[1], const Duration(seconds: 5));
+      expect(values[2], Duration.zero);
     },
   );
+
+  test('countdownStream emits ArgumentError for non-positive interval',
+      () async {
+    await expectLater(
+      service.countdownStream(
+        nextPrayerAt: DateTime.utc(2030),
+        timezone: 'UTC',
+        interval: Duration.zero,
+      ),
+      emitsError(isA<ArgumentError>()),
+    );
+  });
 }
