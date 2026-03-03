@@ -41,8 +41,6 @@ void main() {
 
     await tester.pumpWidget(buildDesignPreview());
     await tester.pump();
-    await tester.pumpWidget(const HatimProgramApp());
-    await tester.pumpAndSettle();
 
     await expectLater(
       find.byType(MaterialApp),

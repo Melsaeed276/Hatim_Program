@@ -36,6 +36,21 @@ dependencies:
   cloud_firestore: ^6.1.1
   google_sign_in: ^6.3.0
   crypto: ^3.0.6
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+  # NOTE: Because this app depends on geolocator/geocoding, the following
+  # platform permissions must be added outside of pubspec.yaml:
+  # Android (android/app/src/main/AndroidManifest.xml):
+  #   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  #   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  #
+  # iOS (ios/Runner/Info.plist):
+  #   <key>NSLocationWhenInUseUsageDescription</key>
+  #   <string>This app uses your location to provide location-based features.</string>
+  #   <!-- Add NSLocationAlwaysAndWhenInUseUsageDescription if background access is required -->
+  flutter_timezone: ^4.1.1
+  http: ^1.5.0
+  shared_preferences: ^2.5.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
