@@ -48,6 +48,12 @@ class FakeGeocodingService implements GeocodingService {
 class FakeTimezoneService implements TimezoneService {
   @override
   Future<String> resolveLocalTimezone() async => 'Europe/Istanbul';
+
+  @override
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  }) async => 'Europe/Istanbul';
 }
 
 class InMemoryLocationProfileRepository implements LocationProfileRepository {

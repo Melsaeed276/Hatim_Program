@@ -29,6 +29,11 @@ abstract class GeocodingService {
 
 abstract class TimezoneService {
   Future<String> resolveLocalTimezone();
+
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  });
 }
 
 abstract class LocationProfileRepository {

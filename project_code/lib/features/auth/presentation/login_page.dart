@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/logging/app_logger.dart';
 import '../../../app/theme/app_tokens.dart';
 import '../domain/auth_failure.dart';
 import '../domain/auth_repository.dart';
@@ -45,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       _busy = true;
       _error = null;
     });
+    AppLogger.instance.info('Login with phone started');
 
     try {
       final AuthUserProfile profile = await widget.authRepository
@@ -55,12 +57,25 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) {
         return;
       }
+      AppLogger.instance.info(
+        'Login with phone succeeded',
+        context: <String, Object?>{'uid': profile.uid},
+      );
       widget.onAuthSuccess(profile);
     } on AuthFailure catch (error) {
+      AppLogger.instance.warning(
+        'Login with phone failed',
+        context: <String, Object?>{'code': error.code.name},
+      );
       setState(() {
         _error = error.message;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AppLogger.instance.error(
+        'Unexpected phone login failure',
+        error: error,
+        stackTrace: stackTrace,
+      );
       setState(() {
         _error = 'Login failed unexpectedly.';
       });
@@ -78,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
       _busy = true;
       _error = null;
     });
+    AppLogger.instance.info('Login with Google started');
 
     try {
       final AuthUserProfile profile = await widget.authRepository
@@ -85,12 +101,25 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) {
         return;
       }
+      AppLogger.instance.info(
+        'Login with Google succeeded',
+        context: <String, Object?>{'uid': profile.uid},
+      );
       widget.onAuthSuccess(profile);
     } on AuthFailure catch (error) {
+      AppLogger.instance.warning(
+        'Login with Google failed',
+        context: <String, Object?>{'code': error.code.name},
+      );
       setState(() {
         _error = error.message;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AppLogger.instance.error(
+        'Unexpected Google login failure',
+        error: error,
+        stackTrace: stackTrace,
+      );
       setState(() {
         _error = 'Google login failed unexpectedly.';
       });
