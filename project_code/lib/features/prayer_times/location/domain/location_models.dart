@@ -47,9 +47,7 @@ class UserLocationProfile {
 
   static UserLocationProfile fromMap(Map<String, Object?> map) {
     final Object? updatedAtRaw = map['updatedAt'];
-    final DateTime updatedAt = updatedAtRaw is DateTime
-        ? updatedAtRaw
-        : DateTime.tryParse('${updatedAtRaw ?? ''}') ?? DateTime.now().toUtc();
+    final DateTime updatedAt = _toDateTime(updatedAtRaw);
 
     return UserLocationProfile(
       latitude: (map['latitude'] as num?)?.toDouble() ?? 0,
@@ -67,5 +65,23 @@ class UserLocationProfile {
       (LocationSource value) => value.name == raw,
       orElse: () => LocationSource.manual,
     );
+  }
+
+  /// Converts a raw [value] from a map (e.g. Firestore Timestamp, DateTime,
+  /// or ISO-8601 string) to a [DateTime]. Uses duck-typing for Timestamp to
+  /// avoid a hard dependency on cloud_firestore in the domain layer.
+  static DateTime _toDateTime(Object? value) {
+    if (value is DateTime) {
+      return value;
+    }
+    if (value != null) {
+      try {
+        // Handles Firestore Timestamp (and any other type exposing toDate()).
+        return (value as dynamic).toDate() as DateTime;
+      } catch (_) {
+        // Fall through to string parsing below.
+      }
+    }
+    return DateTime.tryParse('${value ?? ''}') ?? DateTime.now().toUtc();
   }
 }
