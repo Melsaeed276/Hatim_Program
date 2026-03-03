@@ -20,6 +20,18 @@ class PrayerStatus {
   final String timezone;
 }
 
+/// Resolves prayer status (current/next prayer and remaining time) for a given
+/// [PrayerDay].
+///
+/// **Timezone database initialization**: This service resolves IANA timezone
+/// names via `tz.getLocation` by default, which requires the timezone database
+/// to be initialized before the first call. Add the following at app startup
+/// (e.g. in `main()`) before using this service in production:
+///
+/// ```dart
+/// import 'package:timezone/data/latest.dart' as tz_data;
+/// tz_data.initializeTimeZones();
+/// ```
 class PrayerLogicService {
   PrayerLogicService({tz.Location Function(String timezone)? locationResolver})
     : _locationResolver = locationResolver ?? tz.getLocation;
@@ -81,11 +93,18 @@ class PrayerLogicService {
     Duration interval = const Duration(minutes: 1),
     DateTime Function()? nowProvider,
   }) async* {
+    if (interval <= Duration.zero) {
+      throw ArgumentError.value(
+        interval,
+        'interval',
+        'interval must be greater than Duration.zero',
+      );
+    }
     final DateTime Function() clock = nowProvider ?? DateTime.now;
+    final tz.Location location = _locationResolver(timezone);
+    final tz.TZDateTime target = tz.TZDateTime.from(nextPrayerAt, location);
     while (true) {
-      final tz.Location location = _locationResolver(timezone);
       final tz.TZDateTime now = tz.TZDateTime.from(clock(), location);
-      final tz.TZDateTime target = tz.TZDateTime.from(nextPrayerAt, location);
       final Duration remaining = target.difference(now);
       if (remaining <= Duration.zero) {
         yield Duration.zero;
