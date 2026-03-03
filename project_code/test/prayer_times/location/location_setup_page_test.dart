@@ -27,6 +27,11 @@ class FakeLocationService implements LocationService {
 
 class FakeGeocodingService implements GeocodingService {
   @override
+  Future<Coordinates> geocodeQuery({required String query}) async {
+    return const Coordinates(latitude: 41.01, longitude: 28.97);
+  }
+
+  @override
   Future<Coordinates> geocodeCityCountry({
     required String city,
     required String country,
@@ -43,6 +48,17 @@ class FakeGeocodingService implements GeocodingService {
 class FakeTimezoneService implements TimezoneService {
   @override
   Future<String> resolveLocalTimezone() async => 'Europe/Istanbul';
+
+  @override
+  Future<String> resolveTimezoneForCoordinates({
+    required double latitude,
+    required double longitude,
+  }) async => 'Europe/Istanbul';
+
+  @override
+  Future<List<String>> getAvailableTimezones() async {
+    return const <String>['Europe/Istanbul', 'UTC'];
+  }
 }
 
 class InMemoryLocationProfileRepository implements LocationProfileRepository {
@@ -74,10 +90,12 @@ void main() {
 
     expect(find.byKey(const Key('manual-city-field')), findsOneWidget);
     expect(find.byKey(const Key('manual-country-field')), findsOneWidget);
+    expect(find.byKey(const Key('manual-timezone-field')), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Save manual location'));
     await tester.tap(find.text('Save manual location'));
     await tester.pumpAndSettle();
 
-    expect(find.text('City and country are required.'), findsOneWidget);
+    expect(find.text('City is required for manual location.'), findsOneWidget);
   });
 }

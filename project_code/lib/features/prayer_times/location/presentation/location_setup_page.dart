@@ -24,6 +24,9 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
   late final bool _ownsController;
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+  final TextEditingController _timezoneController = TextEditingController();
+
+  List<String> _availableTimezones = const <String>[];
 
   @override
   void initState() {
@@ -34,19 +37,31 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
         LocationSetupController(
           locationService: const GeolocatorLocationService(),
           geocodingService: const GeocodingServiceImpl(),
-          timezoneService: const FlutterTimezoneService(),
+          timezoneService: FlutterTimezoneService(),
           locationProfileRepository: FirestoreLocationProfileRepository(
             firestore: FirebaseFirestore.instance,
             firebaseAuth: FirebaseAuth.instance,
           ),
         );
     _controller.loadSavedLocation();
+    _loadTimezones();
+  }
+
+  Future<void> _loadTimezones() async {
+    final List<String> values = await _controller.loadAvailableTimezones();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _availableTimezones = values;
+    });
   }
 
   @override
   void dispose() {
     _cityController.dispose();
     _countryController.dispose();
+    _timezoneController.dispose();
     if (_ownsController) {
       _controller.dispose();
     }
@@ -74,7 +89,7 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
                 ),
                 const SizedBox(height: AppTokens.spaceMd),
                 Text(
-                  'You can use GPS or enter city/country manually.',
+                  'Use GPS or enter your city and choose timezone.',
                   style: textTheme.bodyMedium,
                 ),
                 const SizedBox(height: AppTokens.spaceLg),
@@ -123,9 +138,14 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
                     key: const Key('manual-country-field'),
                     controller: _countryController,
                     decoration: const InputDecoration(
-                      labelText: 'Country',
+                      labelText: 'Country (optional)',
                       hintText: 'Turkey',
                     ),
+                  ),
+                  const SizedBox(height: AppTokens.spaceMd),
+                  _TimezoneAutocompleteField(
+                    controller: _timezoneController,
+                    timezones: _availableTimezones,
                   ),
                   const SizedBox(height: AppTokens.spaceMd),
                   FilledButton(
@@ -135,6 +155,7 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
                             _controller.saveManualLocation(
                               city: _cityController.text,
                               country: _countryController.text,
+                              selectedTimezone: _timezoneController.text,
                             );
                           },
                     child: const Text('Save manual location'),
@@ -145,6 +166,61 @@ class _LocationSetupPageState extends State<LocationSetupPage> {
           );
         },
       ),
+    );
+  }
+}
+
+class _TimezoneAutocompleteField extends StatelessWidget {
+  const _TimezoneAutocompleteField({
+    required this.controller,
+    required this.timezones,
+  });
+
+  final TextEditingController controller;
+  final List<String> timezones;
+
+  @override
+  Widget build(BuildContext context) {
+    return Autocomplete<String>(
+      optionsBuilder: (TextEditingValue value) {
+        final String query = value.text.trim().toLowerCase();
+        if (query.isEmpty) {
+          return timezones.take(20);
+        }
+        return timezones.where(
+          (String timezone) => timezone.toLowerCase().contains(query),
+        );
+      },
+      onSelected: (String value) {
+        controller.text = value;
+      },
+      fieldViewBuilder:
+          (
+            BuildContext context,
+            TextEditingController textEditingController,
+            FocusNode focusNode,
+            VoidCallback onFieldSubmitted,
+          ) {
+            textEditingController.text = controller.text;
+            textEditingController.selection = TextSelection.fromPosition(
+              TextPosition(offset: textEditingController.text.length),
+            );
+
+            return TextField(
+              key: const Key('manual-timezone-field'),
+              controller: textEditingController,
+              focusNode: focusNode,
+              onChanged: (String value) {
+                controller.text = value;
+              },
+              decoration: const InputDecoration(
+                labelText: 'Timezone (optional)',
+                hintText: 'Europe/Istanbul',
+                helperText:
+                    'Select from list or leave empty to detect by city.',
+              ),
+            );
+          },
     );
   }
 }
