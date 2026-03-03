@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Coordinates {
   const Coordinates({required this.latitude, required this.longitude});
 
@@ -47,9 +49,7 @@ class UserLocationProfile {
 
   static UserLocationProfile fromMap(Map<String, Object?> map) {
     final Object? updatedAtRaw = map['updatedAt'];
-    final DateTime updatedAt = updatedAtRaw is DateTime
-        ? updatedAtRaw
-        : DateTime.tryParse('${updatedAtRaw ?? ''}') ?? DateTime.now().toUtc();
+    final DateTime updatedAt = _parseDateTime(updatedAtRaw);
 
     return UserLocationProfile(
       latitude: (map['latitude'] as num?)?.toDouble() ?? 0,
@@ -67,5 +67,18 @@ class UserLocationProfile {
       (LocationSource value) => value.name == raw,
       orElse: () => LocationSource.manual,
     );
+  }
+
+  static DateTime _parseDateTime(Object? value) {
+    if (value is Timestamp) {
+      return value.toDate().toUtc();
+    }
+    if (value is DateTime) {
+      return value.toUtc();
+    }
+    if (value is int) {
+      return DateTime.fromMillisecondsSinceEpoch(value, isUtc: true);
+    }
+    return DateTime.tryParse('${value ?? ''}') ?? DateTime.now().toUtc();
   }
 }
