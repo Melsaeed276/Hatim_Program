@@ -61,7 +61,6 @@ class FirestoreLocationProfileRepository implements LocationProfileRepository {
         ...location.toFirestoreMap(),
         'updatedAt': Timestamp.fromDate(location.updatedAt.toUtc()),
       },
-      'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 
