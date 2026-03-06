@@ -49,6 +49,10 @@ AlAdhan is selected for MVP because it has:
 | Monthly calendar | Yes | Via list endpoints | Limited |
 | Method configuration | Yes (`method` incl. 13) | Diyanet-oriented dataset | Limited |
 | Official government API | No | No (community) | No |
+| API key required | No (free, keyless) | No (keyless) | Yes (free key) |
+| Rate limits/quotas | ~3,600 req/h per IP (documented); daily and monthly endpoints count toward quota | Not publicly documented; community-operated capacity unknown | Not publicly documented |
+| Caching policy | Responses may be cached; re-fetching identical requests counts against quota | No explicit policy; cache strongly recommended given unofficial nature | Not publicly documented |
+| ToS / Licensing | Free for non-commercial and commercial use; attribution encouraged; no redistribution of bulk data | No formal ToS; community service, no SLA guarantee | Free for non-commercial use; commercial use requires permission |
 | MVP suitability | **Primary** | **Fallback** | Backup only |
 
 ## 5. Normalized Data Contract
@@ -88,6 +92,14 @@ Mapping rules:
   - Mitigation: feature-flag fallback and monitor response consistency.
 - API schema or availability changes.
   - Mitigation: parser tests + response validation + offline cache (issue #11/#16).
+- **Rate limits / quotas**: AlAdhan enforces ~3,600 requests/h per IP; ezanvakti quotas are undocumented (community service).
+  - Mitigation: cache daily and monthly responses locally (issue #11/#16); implement request de-duplication; alert on 429 responses.
+- **Caching policy**: Repeatedly fetching identical prayer-time data wastes quota and may trigger throttling.
+  - Mitigation: persist provider responses with a TTL keyed by date/city/method; refresh only when TTL expires or user forces refresh.
+- **API key / authentication**: Both AlAdhan and ezanvakti currently require no API key, reducing onboarding friction but also meaning no per-key quota management.
+  - Mitigation: abstract authentication behind a provider config so a key can be injected via env/secret if either provider introduces key-gated tiers in future.
+- **ToS / Licensing**: AlAdhan is free for commercial use with attribution encouraged; ezanvakti has no formal ToS or SLA; MuslimSalat restricts commercial use.
+  - Mitigation: review AlAdhan terms before GA release; do not rely on ezanvakti in commercial contexts without explicit approval; document chosen provider and terms in release notes.
 
 ## 8. Final Recommendation
 - Lock **AlAdhan** as MVP primary provider now.
